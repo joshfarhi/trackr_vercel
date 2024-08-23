@@ -1,21 +1,5 @@
 {
   "node": {
-    "f4ec8d7d08ac920c04b5ccac337d77ccedb2ecb4": {
-      "workers": {
-        "app/(dashboard)/transactions/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2Ftransactions%2F_actions%2FdeleteTransaction.ts%22%2C%5B%22DeleteTransaction%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(dashboard)/transactions/page": "action-browser"
-      }
-    },
-    "001ded317619a1abd08dc0e2c2ab9c199a964d87": {
-      "workers": {
-        "app/(dashboard)/inventory/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2Finventory%2F_actions%2FdeleteProduct.ts%22%2C%5B%22DeleteProduct%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(dashboard)/inventory/page": "action-browser"
-      }
-    },
     "5b0a4eac14f8f541ce317bb53a325185a7b0d3b4": {
       "workers": {
         "app/(dashboard)/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2F_actions%2Fstrains.ts%22%2C%5B%22CreateStrain%22%2C%22DeleteStrain%22%5D%5D%2C%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2F_actions%2Fgrowers.ts%22%2C%5B%22DeleteGrower%22%2C%22CreateGrower%22%5D%5D%2C%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2F_actions%2Fcategories.ts%22%2C%5B%22DeleteCategory%22%2C%22CreateCategory%22%5D%5D%2C%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2F_actions%2Fnew-products.ts%22%2C%5B%22CreateProduct%22%2C%22DeleteProduct%22%5D%5D%2C%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2F(dashboard)%2F_actions%2Ftransactions.ts%22%2C%5B%22CreateTransaction%22%5D%5D%5D&__client_imported__=true!"
@@ -87,8 +71,16 @@
       "layer": {
         "app/(dashboard)/page": "action-browser"
       }
+    },
+    "077df9c8cf8b29805ec56062a8491e8cfa4fe3b6": {
+      "workers": {
+        "app/wizard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2Fwizard%2F_actions%2FuserSettings.ts%22%2C%5B%22UpdateUserWeight%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/wizard/page": "action-browser"
+      }
     }
   },
   "edge": {},
-  "encryptionKey": "nzfE0nHXXMoHIYFsxaCZX4Jley7yV3TNI9gHTRBWUfs="
+  "encryptionKey": "6+aU7nvPVsRs5YGWGt7nWdlHCkWSyG/9O24gGcOX6PA="
 }

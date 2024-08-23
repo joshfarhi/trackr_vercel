@@ -22,7 +22,6 @@ import {
 import { Input } from "@/components/ui/input";
 import StrainPicker from "@/app/(dashboard)/_components/StrainPicker";
 import GrowerPicker from "@/app/(dashboard)/_components/GrowerPicker";
-import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
 
 import {
