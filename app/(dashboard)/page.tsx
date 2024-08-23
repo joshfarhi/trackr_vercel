@@ -1,5 +1,4 @@
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
-import ImportProductDialog from "@/app/(dashboard)/_components/ImportProductDialog";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs";
@@ -29,17 +28,6 @@ async function page() {
           <p className="text-3xl font-bold">Hello, {user.firstName}! 👋</p>
 
           <div className="flex items-center gap-3">
-          {/* <ImportProductDialog
-              trigger={
-                <Button
-                  variant={"outline"}
-                  className="border-blue-500 bg-blue-950 text-white hover:bg-blue-700 hover:text-white"
-                >
-                  Import Product
-                </Button>
-              }
-              // type="order"
-            /> */}
             <CreateTransactionDialog
               trigger={
                 <Button
