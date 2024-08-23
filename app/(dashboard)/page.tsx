@@ -1,7 +1,5 @@
 import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 import ImportProductDialog from "@/app/(dashboard)/_components/ImportProductDialog";
-import History from "@/app/(dashboard)/_components/History";
-import Overview from "@/app/(dashboard)/_components/Overview";
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs";
@@ -68,8 +66,6 @@ async function page() {
           </div>
         </div>
       </div>
-      <Overview userSettings={userSettings} />
-      <History userSettings={userSettings} />
     </div>
   );
 }
