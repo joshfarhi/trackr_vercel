@@ -1,7 +1,7 @@
 {
   "/(dashboard)/page": "app/(dashboard)/page.js",
   "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js",
+  "/wizard/page": "app/wizard/page.js",
   "/(dashboard)/inventory/page": "app/(dashboard)/inventory/page.js",
-  "/(dashboard)/manage/page": "app/(dashboard)/manage/page.js",
-  "/wizard/page": "app/wizard/page.js"
+  "/(dashboard)/manage/page": "app/(dashboard)/manage/page.js"
 }

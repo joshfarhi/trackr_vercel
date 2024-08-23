@@ -402,7 +402,7 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
       <DeleteTransactionDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
-        transactionId={transaction.id}
+        transactionId={transaction.id.toString()}
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
