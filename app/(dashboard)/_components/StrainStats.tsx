@@ -92,7 +92,7 @@ function StrainsCard({
           <ScrollArea className="h-60 w-full px-4">
             <div className="flex w-full flex-col gap-4 p-4">
               {filteredData.map((item) => {
-                const amount = item._sum?.amount || 0;
+                const amount = item._sum?.amount ?? 0;
                 const percentage = (amount * 100) / (total || amount);
 
                 return (
