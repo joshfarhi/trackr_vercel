@@ -53,11 +53,13 @@ function page() {
             <WeightComboBox />
           </CardContent>
         </Card>
+        <StrainList />
+        <GrowerList  />
         <CategoryList  />
      
-        <GrowerList  />
+        
        
-        <StrainList />
+        
       
       </div>
     </>
