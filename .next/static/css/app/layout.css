@@ -1001,6 +1001,12 @@ video {
   .w-px {
   width: 1px;
 }
+  .w-14 {
+  width: 3.5rem;
+}
+  .w-16 {
+  width: 4rem;
+}
   .min-w-0 {
   min-width: 0px;
 }
