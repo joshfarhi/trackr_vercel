@@ -71,6 +71,14 @@
       "layer": {
         "app/(dashboard)/page": "action-browser"
       }
+    },
+    "077df9c8cf8b29805ec56062a8491e8cfa4fe3b6": {
+      "workers": {
+        "app/wizard/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fjoshuafarhi%2FDownloads%2Ftrackr_vercel%2Fapp%2Fwizard%2F_actions%2FuserSettings.ts%22%2C%5B%22UpdateUserWeight%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/wizard/page": "action-browser"
+      }
     }
   },
   "edge": {},

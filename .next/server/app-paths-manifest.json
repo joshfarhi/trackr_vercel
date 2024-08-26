@@ -1,5 +1,7 @@
 {
+  "/api/user-settings/route": "app/api/user-settings/route.js",
   "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/(dashboard)/page": "app/(dashboard)/page.js",
   "/(auth)/sign-in/[[...sign-in]]/page": "app/(auth)/sign-in/[[...sign-in]]/page.js",
-  "/(dashboard)/page": "app/(dashboard)/page.js"
+  "/wizard/page": "app/wizard/page.js"
 }
