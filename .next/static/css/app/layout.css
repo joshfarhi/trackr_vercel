@@ -1146,9 +1146,6 @@ video {
   .flex-wrap {
   flex-wrap: wrap;
 }
-  .items-start {
-  align-items: flex-start;
-}
   .items-end {
   align-items: flex-end;
 }
@@ -1166,9 +1163,6 @@ video {
 }
   .justify-between {
   justify-content: space-between;
-}
-  .gap-0 {
-  gap: 0px;
 }
   .gap-1 {
   gap: 0.25rem;
@@ -1405,9 +1399,6 @@ video {
 }
   .bg-transparent {
   background-color: transparent;
-}
-  .bg-violet-400\/10 {
-  background-color: rgb(167 139 250 / 0.1);
 }
   .fill-current {
   fill: currentColor;
@@ -1673,10 +1664,6 @@ video {
 }
   .text-secondary-foreground {
   color: hsl(var(--secondary-foreground));
-}
-  .text-violet-500 {
-  --tw-text-opacity: 1;
-  color: rgb(139 92 246 / var(--tw-text-opacity));
 }
   .text-white {
   --tw-text-opacity: 1;
@@ -2740,10 +2727,6 @@ video {
 
   .md\:grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .md\:flex-nowrap {
-    flex-wrap: nowrap;
   }
 }
 
