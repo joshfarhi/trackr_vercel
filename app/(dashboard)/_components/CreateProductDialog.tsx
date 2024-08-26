@@ -46,7 +46,6 @@ import { CreateProduct } from "@/app/(dashboard)/_actions/new-products";
 import { Product } from "@prisma/client";
 import { toast } from "sonner";
 import { useTheme } from "next-themes";
-import { orderColumns } from "@tanstack/react-table";
 import { useQuery } from "@tanstack/react-query";
 
 interface Props {
@@ -59,22 +58,21 @@ async function fetchUserSettings() {
   if (!res.ok) throw new Error("Failed to fetch user settings");
   return res.json();
 }
+
 function CreateProductDialog({ trigger, successCallback }: Props) {
- 
   const form = useForm<CreateProductSchemaType>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
       createdAt: new Date(),
     },
   });
- 
+
   const [open, setOpen] = useState(false);
 
   const { data: userSettings, isLoading } = useQuery({
-    queryKey: ["userSettings"],    // Query key
-    queryFn: fetchUserSettings,    // Query function
+    queryKey: ["userSettings"], // Query key
+    queryFn: fetchUserSettings, // Query function
   });
-
 
   const handleProductChange = useCallback(
     (value: string) => {
@@ -82,19 +80,21 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     },
     [form]
   );
-  
-  const handleStrainChange = useCallback( 
+
+  const handleStrainChange = useCallback(
     (value: string) => {
       form.setValue("strain", value);
     },
     [form]
   );
+
   const handleGrowerChange = useCallback(
     (value: string) => {
       form.setValue("grower", value);
     },
     [form]
   );
+
   const handleCategoryChange = useCallback(
     (value: string) => {
       form.setValue("category", value);
@@ -108,18 +108,17 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
   const { mutate, isPending } = useMutation({
     mutationFn: CreateProduct,
     onSuccess: async (data: Product) => {
-    form.reset({
+      form.reset({
         product: "",
         icon: "",
         strain: undefined,
         grower: undefined,
-        category: undefined
+        category: undefined,
       });
 
       toast.success(`Product ${data.product} created successfully 🎉`, {
         id: "create-product",
       });
-
 
       successCallback(data);
 
@@ -145,13 +144,14 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     },
     [mutate]
   );
+
   // If loading user settings, show a loading state (optional)
   if (isLoading) {
     return <div>Loading user settings...</div>;
   }
 
   // Destructure the weight unit from userSettings
-  const weightUnit = userSettings?.weight || "g";  // Default to grams if not available
+  const weightUnit = userSettings?.weight || "g"; // Default to grams if not available
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -161,7 +161,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         ) : (
           <Button
             variant={"ghost"}
-            className="flex border-separate items-center justify-start roudned-none border-b px-3 py-3 text-muted-foreground"
+            className="flex border-separate items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
           >
             <PlusSquare className="mr-2 h-4 w-4" />
             Create new
@@ -172,13 +172,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         <DialogHeader>
           <DialogTitle>
             Create
-            <span
-              className={cn(
-                "m-1",
-                 "text-emerald-500" 
-              )}
-            >
-            </span>
+            <span className={cn("m-1", "text-emerald-500")}></span>
             new Product
           </DialogTitle>
           <DialogDescription>
@@ -209,16 +203,15 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
-                  <Input
-          {...field}
-          value={field.value ?? 0} // Ensure default value is 0
-          type="number"
-          placeholder="Enter product quantity"
-        />
-
-            </FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? 0} // Ensure default value is 0
+                      type="number"
+                      placeholder="Enter product quantity"
+                    />
+                  </FormControl>
                   <FormDescription>
-                  Quantity in {weightUnit} (e.g., 100 {weightUnit})
+                    Quantity in {weightUnit} (e.g., 100 {weightUnit})
                   </FormDescription>
                 </FormItem>
               )}
@@ -232,10 +225,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                   <FormControl>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className="h-[100px] w-full"
-                        >
+                        <Button variant={"outline"} className="h-[100px] w-full">
                           {form.watch("icon") ? (
                             <div className="flex flex-col items-center gap-2">
                               <span className="text-5xl" role="img">
@@ -272,61 +262,53 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                      <CategoryPicker
-                        onChange={handleCategoryChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Select a category for this Product
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
-<FormField
-                control={form.control}
-                name="grower"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Grower</FormLabel>
-                    <FormControl>
-                      <GrowerPicker
-                        onChange={handleGrowerChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Select a grower for this transaction
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
-                            <FormField
-                control={form.control}
-                name="strain"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Strain</FormLabel>
-                    <FormControl>
-                      <StrainPicker
-                      
-                        onChange={handleStrainChange}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Select a strain for this Product
-                    </FormDescription>
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <CategoryPicker onChange={handleCategoryChange} />
+                  </FormControl>
+                  <FormDescription>
+                    Select a category for this Product
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="grower"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Grower</FormLabel>
+                  <FormControl>
+                    <GrowerPicker onChange={handleGrowerChange} />
+                  </FormControl>
+                  <FormDescription>
+                    Select a grower for this transaction
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="strain"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Strain</FormLabel>
+                  <FormControl>
+                    <StrainPicker onChange={handleStrainChange} />
+                  </FormControl>
+                  <FormDescription>
+                    Select a strain for this Product
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
           </form>
         </Form>
-
         <DialogFooter>
           <DialogClose asChild>
             <Button
