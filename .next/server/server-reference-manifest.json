@@ -84,14 +84,6 @@
         "app/(dashboard)/page": "action-browser"
       }
     },
-    "9039c3f02639419d041065f33ffde4af958a4424": {
-      "workers": {
-        "app/(dashboard)/inventory/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Csabri%5C%5CDocuments%5C%5CGitHub%5C%5Ctrackr_vercel%5C%5Capp%5C%5C(dashboard)%5C%5Cinventory%5C%5C_actions%5C%5CdeleteProduct.ts%22%2C%5B%22DeleteProduct%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(dashboard)/inventory/page": "action-browser"
-      }
-    },
     "656262fa9224baf7ccd7ce8d9c4da6d639f7eb36": {
       "workers": {
         "app/(dashboard)/transactions/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Csabri%5C%5CDocuments%5C%5CGitHub%5C%5Ctrackr_vercel%5C%5Capp%5C%5C(dashboard)%5C%5Ctransactions%5C%5C_actions%5C%5CdeleteTransaction.ts%22%2C%5B%22DeleteTransaction%22%5D%5D%5D&__client_imported__=true!"
@@ -100,15 +92,15 @@
         "app/(dashboard)/transactions/page": "action-browser"
       }
     },
-    "f7d889e4722d9d26d46443477f94b906a51a5dbb": {
+    "9039c3f02639419d041065f33ffde4af958a4424": {
       "workers": {
-        "app/(dashboard)/manage/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Csabri%5C%5CDocuments%5C%5CGitHub%5C%5Ctrackr_vercel%5C%5Capp%5C%5C(dashboard)%5C%5C_actions%5C%5Ccategories.ts%22%2C%5B%22DeleteCategory%22%2C%22CreateCategory%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5Csabri%5C%5CDocuments%5C%5CGitHub%5C%5Ctrackr_vercel%5C%5Capp%5C%5C(dashboard)%5C%5C_actions%5C%5Cgrowers.ts%22%2C%5B%22CreateGrower%22%2C%22DeleteGrower%22%5D%5D%2C%5B%22C%3A%5C%5CUsers%5C%5Csabri%5C%5CDocuments%5C%5CGitHub%5C%5Ctrackr_vercel%5C%5Capp%5C%5C(dashboard)%5C%5C_actions%5C%5Cstrains.ts%22%2C%5B%22DeleteStrain%22%2C%22CreateStrain%22%5D%5D%5D&__client_imported__=true!"
+        "app/(dashboard)/inventory/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Csabri%5C%5CDocuments%5C%5CGitHub%5C%5Ctrackr_vercel%5C%5Capp%5C%5C(dashboard)%5C%5Cinventory%5C%5C_actions%5C%5CdeleteProduct.ts%22%2C%5B%22DeleteProduct%22%5D%5D%5D&__client_imported__=true!"
       },
       "layer": {
-        "app/(dashboard)/manage/page": "action-browser"
+        "app/(dashboard)/inventory/page": "action-browser"
       }
     }
   },
   "edge": {},
-  "encryptionKey": "61IFfjNOhm+0Dc6G/2znUjclWeTUzQJcboA2Tn4dLCI="
+  "encryptionKey": "NwxHtvCIcvVmcYho343q8MsmT5yBD4R84tDe78dubnA="
 }

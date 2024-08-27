@@ -61,19 +61,19 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
       category: {
         select: {
           name: true,  // Include category name
-          icon: true,  // Include category icon
+          // icon: true,  // Include category icon
         },
       },
       grower: {
         select: {
           name: true,  // Include grower name
-          icon: true,  // Include grower icon
+          // icon: true,  // Include grower icon
         },
       },
       strain: {
         select: {
           name: true,  // Include strain name
-          icon: true,  // Include strain icon
+          // icon: true,  // Include strain icon
         },
       },
     },
@@ -86,9 +86,9 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
     growerName: product?.grower.name || "Unknown Grower",  // Add grower name
     strainName: product?.strain.name || "Unknown Strain",  // Add strain name
     categoryName: product?.category.name || "Unknown Category",  // Add category name
-    growerIcon: product?.grower.icon || "Unknown Grower",  // Add grower name
-    strainIcon: product?.strain.icon || "Unknown Strain",  // Add strain name
-    categoryIcon: product?.category.icon || "Unknown Category",  // Add category name
+    // growerIcon: product?.grower.icon || "Unknown Grower",  // Add grower name
+    // strainIcon: product?.strain.icon || "Unknown Strain",  // Add strain name
+    // categoryIcon: product?.category.icon || "Unknown Category",  // Add category name
     // formattedAmount: formatter.format(product.quantity),
     date: product?.createdAt  // Format the amount based on user weight
   }));

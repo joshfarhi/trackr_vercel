@@ -66,7 +66,7 @@ function CreateCategoryDialog({ successCallback, trigger }: Props) {
     onSuccess: async (data: Category) => {
       form.reset({
         name: "",
-        icon: "",
+        // icon: "",
        
       });
 
@@ -148,7 +148,7 @@ function CreateCategoryDialog({ successCallback, trigger }: Props) {
                 </FormItem>
               )}
             />
-
+{/* 
             <FormField
               control={form.control}
               name="icon"
@@ -197,7 +197,7 @@ function CreateCategoryDialog({ successCallback, trigger }: Props) {
                   </FormDescription>
                 </FormItem>
               )}
-            />
+            /> */}
           </form>
         </Form>
         <DialogFooter>

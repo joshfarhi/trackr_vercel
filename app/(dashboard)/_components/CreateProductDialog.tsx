@@ -216,7 +216,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="icon"
               render={({ field }) => (
@@ -261,7 +261,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                   </FormDescription>
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="category"

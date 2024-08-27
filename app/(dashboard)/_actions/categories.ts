@@ -21,11 +21,11 @@ export async function CreateCategory(form: CreateCategorySchemaType) {
     redirect("/sign-in");
   }
 
-  const { name, icon } = parsedBody.data;
+  const { name } = parsedBody.data;
   return await prisma.category.create({
     data: {
       name,
-      icon
+      // icon
     },
   });
 }

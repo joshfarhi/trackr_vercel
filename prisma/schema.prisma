@@ -25,7 +25,6 @@ model Strain {
  id        Int       @id @default(autoincrement())
   name      String    @unique 
   createdAt DateTime  @default(now())
-  icon      String?
   products  Product[] 
 
 }
@@ -34,7 +33,6 @@ model Category {
  id        Int       @id @default(autoincrement())
   createdAt DateTime @default(now())
   name      String    @unique
-  icon      String
   products  Product[] 
 
 }
@@ -43,7 +41,6 @@ model Grower {
    id        Int       @id @default(autoincrement())
   createdAt DateTime  @default(now())
   name      String    @unique
-  icon      String
   products  Product[] 
 
 }
@@ -54,7 +51,6 @@ model Product {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   product     String    @unique
-  icon        String?
   strainId    Int
   strain      Strain    @relation(fields: [strainId], references: [id])
   growerId    Int

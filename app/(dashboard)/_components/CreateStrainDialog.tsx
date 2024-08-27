@@ -64,7 +64,7 @@ function CreateStrainDialog({ successCallback, trigger }: Props) {
     onSuccess: async (data: Strain) => {
       form.reset({
         name: "",
-        icon: "",
+        // icon: "",
       });
 
       toast.success(`Strain ${data.name} created successfully 🎉`, {
@@ -147,7 +147,7 @@ function CreateStrainDialog({ successCallback, trigger }: Props) {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="icon"
               render={({ field }) => (
@@ -195,7 +195,7 @@ function CreateStrainDialog({ successCallback, trigger }: Props) {
                   </FormDescription>
                 </FormItem>
               )}
-            />
+            /> */}
           </form>
         </Form>
         <DialogFooter>

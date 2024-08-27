@@ -21,11 +21,11 @@ export async function CreateStrain(form: CreateStrainSchemaType) {
     redirect("/sign-in");
   }
 
-  const { name, icon} = parsedBody.data;
+  const { name} = parsedBody.data;
   return await prisma.strain.create({
     data: {
       name,
-      icon,
+      // icon,
     },
   });
 }

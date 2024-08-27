@@ -21,11 +21,11 @@ export async function CreateGrower(form: CreateGrowerSchemaType) {
     redirect("/sign-in");
   }
 
-  const { name, icon} = parsedBody.data;
+  const { name} = parsedBody.data;
   return await prisma.grower.create({
     data: {
       name,
-      icon,
+      // icon,
     },
   });
 }

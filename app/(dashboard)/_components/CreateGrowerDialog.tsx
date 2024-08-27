@@ -148,7 +148,7 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="icon"
               render={({ field }) => (
@@ -196,7 +196,7 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
                   </FormDescription>
                 </FormItem>
               )}
-            />
+            /> */}
           </form>
         </Form>
         <DialogFooter>
