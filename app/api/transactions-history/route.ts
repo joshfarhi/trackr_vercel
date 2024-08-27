@@ -49,7 +49,7 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     throw new Error("user settings not found");
   }
 
-  const formatter = GetFormatterForWeight(userSettings.weight);
+  // const formatter = GetFormatterForWeight(userSettings.weight);
 
   // Fetch transactions including product's grower, strain, and category
   const transactions = await prisma.transaction.findMany({
@@ -99,6 +99,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     growerIcon: transaction.product?.grower?.icon || "Unknown Grower",  // Add grower name
     strainIcon: transaction.product?.strain?.icon || "Unknown Strain",  // Add strain name
     categoryIcon: transaction.product?.category?.icon || "Unknown Category",  // Add category name
-    formattedAmount: formatter.format(transaction.amount),  // Format the amount based on user weight
+    // formattedAmount: formatter.format(transaction.amount),  // Format the amount based on user weight
   }));
 }

@@ -1,4 +1,4 @@
-// File: /Users/joshuafarhi/Downloads/trackr_vercel/app/api/user-settings/route.ts
+// File: C:\Users\sabri\Documents\GitHub\trackr_vercel\app\api\user-settings\route.ts
 import * as entry from '../../../../../app/api/user-settings/route.js'
 import type { NextRequest } from 'next/server.js'
 

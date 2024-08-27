@@ -49,7 +49,7 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
     throw new Error("user settings not found");
   }
 
-  const formatter = GetFormatterForWeight(userSettings.weight);
+  // const formatter = GetFormatterForWeight(userSettings.weight);
 
   // Fetch products including product's grower, strain, and category
   const products = await prisma.product.findMany({
@@ -89,7 +89,7 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
     growerIcon: product?.grower.icon || "Unknown Grower",  // Add grower name
     strainIcon: product?.strain.icon || "Unknown Strain",  // Add strain name
     categoryIcon: product?.category.icon || "Unknown Category",  // Add category name
-    formattedAmount: formatter.format(product.quantity),
+    // formattedAmount: formatter.format(product.quantity),
     date: product?.createdAt  // Format the amount based on user weight
   }));
 }

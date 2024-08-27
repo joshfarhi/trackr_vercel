@@ -1,4 +1,4 @@
-// File: /Users/joshuafarhi/Downloads/trackr_vercel/app/(dashboard)/inventory/page.tsx
+// File: C:\Users\sabri\Documents\GitHub\trackr_vercel\app\(dashboard)\inventory\page.tsx
 import * as entry from '../../../../../app/(dashboard)/inventory/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

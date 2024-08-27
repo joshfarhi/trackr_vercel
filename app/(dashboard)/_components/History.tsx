@@ -28,9 +28,9 @@ function History({ userSettings }: { userSettings: UserSettings }) {
     year: new Date().getFullYear(),
   });
 
-  const formatter = useMemo(() => {
-    return GetFormatterForWeight(userSettings.weight);
-  }, [userSettings.weight]);
+  // const formatter = useMemo(() => {
+  //   return GetFormatterForWeight(userSettings.weight);
+  // }, [userSettings.weight]);
 
   const historyDataQuery = useQuery({
     queryKey: ["overview", "history", timeframe, period],
@@ -157,7 +157,7 @@ function History({ userSettings }: { userSettings: UserSettings }) {
                   <Tooltip
                     cursor={{ opacity: 0.1 }}
                     content={(props) => (
-                      <CustomTooltip formatter={formatter} {...props} />
+                      <CustomTooltip {...props} />
                     )}
                   />
                 </BarChart>
@@ -179,8 +179,7 @@ function History({ userSettings }: { userSettings: UserSettings }) {
 }
 
 export default History;
-
-function CustomTooltip({ active, payload, formatter }: any) {
+function CustomTooltip({ active, payload }: any) {
   if (!active || !payload || payload.length === 0) return null;
 
   const data = payload[0].payload;
@@ -189,21 +188,21 @@ function CustomTooltip({ active, payload, formatter }: any) {
   return (
     <div className="min-w-[300px] rounded border bg-background p-4">
       <TooltipRow
-        formatter={formatter}
+        // formatter={formatter}
         label="returns"
         value={returns}
         bgColor="bg-red-500"
         textColor="text-red-500"
       />
       <TooltipRow
-        formatter={formatter}
+        // formatter={formatter}
         label="order"
         value={order}
         bgColor="bg-emerald-500"
         textColor="text-emerald-500"
       />
       <TooltipRow
-        formatter={formatter}
+        // formatter={formatter}
         label="Balance"
         value={order - returns}
         bgColor="bg-gray-100"
@@ -218,20 +217,20 @@ function TooltipRow({
   value,
   bgColor,
   textColor,
-  formatter,
+  // formatter,
 }: {
   label: string;
   textColor: string;
   bgColor: string;
   value: number;
-  formatter: Intl.NumberFormat;
+  // formatter: Intl.NumberFormat;
 }) {
-  const formattingFn = useCallback(
-    (value: number) => {
-      return formatter.format(value);
-    },
-    [formatter]
-  );
+  // const formattingFn = useCallback(
+  //   (value: number) => {
+  //     return formatter.format(value);
+  //   },
+  //   [formatter]
+  // );
 
   return (
     <div className="flex items-center gap-2">
@@ -244,7 +243,7 @@ function TooltipRow({
             preserveValue
             end={value}
             decimals={0}
-            formattingFn={formattingFn}
+            // formattingFn={formattingFn}
             className="text-sm"
           />
         </div>

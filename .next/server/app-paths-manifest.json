@@ -1,13 +1,7 @@
 {
-  "/api/growers/route": "app/api/growers/route.js",
-  "/api/strains/route": "app/api/strains/route.js",
-  "/api/categories/route": "app/api/categories/route.js",
-  "/api/user-settings/route": "app/api/user-settings/route.js",
-  "/api/products/route": "app/api/products/route.js",
-  "/favicon.ico/route": "app/favicon.ico/route.js",
-  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js",
-  "/(dashboard)/inventory/page": "app/(dashboard)/inventory/page.js",
-  "/(dashboard)/manage/page": "app/(dashboard)/manage/page.js",
+  "/api/products-history/route": "app/api/products-history/route.js",
+  "/api/transactions-history/route": "app/api/transactions-history/route.js",
   "/(dashboard)/page": "app/(dashboard)/page.js",
-  "/(auth)/sign-up/[[...sign-up]]/page": "app/(auth)/sign-up/[[...sign-up]]/page.js"
+  "/(dashboard)/inventory/page": "app/(dashboard)/inventory/page.js",
+  "/(dashboard)/transactions/page": "app/(dashboard)/transactions/page.js"
 }
