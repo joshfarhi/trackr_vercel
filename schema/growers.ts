@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const CreateGrowerSchema = z.object({
-  name: z.string().min(3).max(20),
+  name: z.string().min(1).max(20),
   icon: z.string().max(20),
   
 
@@ -10,7 +10,7 @@ export const CreateGrowerSchema = z.object({
 export type CreateGrowerSchemaType = z.infer<typeof CreateGrowerSchema>;
 
 export const DeleteGrowerSchema = z.object({
-  name: z.string().min(3).max(20),
+  name: z.string().min(1).max(20),
   icon: z.string().max(20)
 
  
