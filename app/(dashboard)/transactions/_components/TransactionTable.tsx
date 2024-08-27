@@ -165,7 +165,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.formattedAmount}
+        {row.original.amount}
       </p>
     ),
   },
@@ -306,7 +306,7 @@ function TransactionTable({ from, to }: Props) {
                 description: row.original.description,
                 type: row.original.type,
                 amount: row.original.amount,
-                formattedAmount: row.original.formattedAmount,
+                // formattedAmount: row.original.formattedAmount,
                 date: row.original.date,
               }));
               handleExportCSV(data);

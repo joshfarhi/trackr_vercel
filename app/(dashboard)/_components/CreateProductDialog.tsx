@@ -211,7 +211,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     />
                   </FormControl>
                   <FormDescription>
-                    Quantity in {weightUnit} (e.g., 100 {weightUnit})
+                    Quantity
                   </FormDescription>
                 </FormItem>
               )}

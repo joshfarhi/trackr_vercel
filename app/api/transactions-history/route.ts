@@ -99,6 +99,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
     growerIcon: transaction.product?.grower?.icon || "Unknown Grower",  // Add grower name
     strainIcon: transaction.product?.strain?.icon || "Unknown Strain",  // Add strain name
     categoryIcon: transaction.product?.category?.icon || "Unknown Category",  // Add category name
-    // formattedAmount: formatter.format(transaction.amount),  // Format the amount based on user weight
+    amount: transaction.amount,  // Format the amount based on user weight
   }));
 }

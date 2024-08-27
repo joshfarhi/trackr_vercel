@@ -212,7 +212,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
                     <Input defaultValue={0} type="number" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Transaction amount in {weightUnit} (required)
+                    Transaction amount (required)
                   </FormDescription>
                 </FormItem>
               )}

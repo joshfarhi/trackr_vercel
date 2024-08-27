@@ -165,7 +165,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.formattedAmount}
+        {row.original.quantity}
       </p>
     ),
   },
@@ -306,7 +306,7 @@ function ProductTable({ from, to }: Props) {
                 strain: row.original.strain,
                 strainIcon: row.original.strainIcon,
                 amount: row.original.amount,
-                formattedAmount: row.original.formattedAmount,
+                // formattedAmount: row.original.formattedAmount,
                 date: row.original.date,
               }));
               handleExportCSV(data);

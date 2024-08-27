@@ -42,7 +42,7 @@ function page() {
       </div>
       {/* END HEADER */}
       <div className="container flex flex-col gap-4 p-4">
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Weight</CardTitle>
             <CardDescription>
@@ -52,7 +52,7 @@ function page() {
           <CardContent>
             <WeightComboBox />
           </CardContent>
-        </Card>
+        </Card> */}
         <StrainList />
         <GrowerList  />
         <CategoryList  />
