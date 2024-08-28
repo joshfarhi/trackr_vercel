@@ -20,7 +20,7 @@ import { Separator } from "@/components/ui/separator";
 import { TransactionType } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Category } from "@prisma/client";
-import { Strain } from "@prisma/client";
+// import { Strain } from "@prisma/client";
 import { Grower } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
 import { PlusSquare, TrashIcon, TrendingDown, TrendingUp } from "lucide-react";
