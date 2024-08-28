@@ -110,7 +110,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     onSuccess: async (data: Product) => {
       form.reset({
         product: "",
-        icon: "",
+        // icon: "",
         strain: undefined,
         grower: undefined,
         category: undefined,

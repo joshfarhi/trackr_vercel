@@ -65,7 +65,7 @@ function CreateGrowerDialog({  successCallback, trigger }: Props) {
     onSuccess: async (data: Grower) => {
       form.reset({
         name: "",
-        icon: "",
+        // icon: "",
       
       });
 
