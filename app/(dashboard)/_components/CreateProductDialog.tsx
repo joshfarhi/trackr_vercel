@@ -111,12 +111,12 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
       form.reset({
         product: "",
         // icon: "",
-        strain: undefined,
+        // strain: undefined,
         grower: undefined,
         category: undefined,
       });
 
-      toast.success(`Product ${data.product} created successfully 🎉`, {
+      toast.success(`Strain ${data.product} created successfully 🎉`, {
         id: "create-product",
       });
 
@@ -137,7 +137,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
 
   const onSubmit = useCallback(
     (values: CreateProductSchemaType) => {
-      toast.loading("Creating product...", {
+      toast.loading("Creating strain...", {
         id: "create-product",
       });
       mutate(values);
@@ -173,10 +173,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
           <DialogTitle>
             Create
             <span className={cn("m-1", "text-emerald-500")}></span>
-            new Product
+            new Strain
           </DialogTitle>
           <DialogDescription>
-            Name a new Product and assign a Grower, Strain, and Category
+            Name a new Strain and assign a Grower and Category
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -188,10 +188,10 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Product" {...field} />
+                    <Input placeholder="Strain" {...field} />
                   </FormControl>
                   <FormDescription>
-                    This is how your product will appear in the app
+                    This is how your strain will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -272,7 +272,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <CategoryPicker onChange={handleCategoryChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a category for this Product
+                    Select a category for this Strain
                   </FormDescription>
                 </FormItem>
               )}
@@ -287,12 +287,12 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <GrowerPicker onChange={handleGrowerChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a grower for this transaction
+                    Select a grower for this Strain
                   </FormDescription>
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="strain"
               render={({ field }) => (
@@ -306,7 +306,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                   </FormDescription>
                 </FormItem>
               )}
-            />
+            /> */}
           </form>
         </Form>
         <DialogFooter>

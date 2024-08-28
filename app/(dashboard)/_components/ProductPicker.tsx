@@ -69,7 +69,7 @@ function ProductPicker({ onChange }: Props) {
           {selectedProduct ? (
             <ProductRow product={selectedProduct} />
           ) : (
-            "Select product"
+            "Select strain"
           )}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -83,9 +83,9 @@ function ProductPicker({ onChange }: Props) {
           <CommandInput placeholder="Search product..." />
           <CreateProductDialog successCallback={successCallback} trigger={undefined} />
           <CommandEmpty>
-            <p>Product not found</p>
+            <p>Strain not found</p>
             <p className="text-xs text-muted-foreground">
-              Tip: Create a new product
+              Tip: Create a new strain
             </p>
           </CommandEmpty>
           <CommandGroup>

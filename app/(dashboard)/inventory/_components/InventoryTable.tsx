@@ -71,21 +71,35 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     },
   },
   {
-    accessorKey: "strain",
+    accessorKey: "product.product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
     ),
     filterFn: (row, id, value) => {
-      const strainName = row.original.strainName; // Direct access to category name
-      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
+      return value.includes(row.getValue(id));
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-       
-        <div className="capitalize">{row.original.strainName}</div>
+        {row.original.productName}
       </div>
     ),
   },
+  // {
+  //   accessorKey: "strain",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Strain" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     const strainName = row.original.strainName; // Direct access to category name
+  //     return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="flex gap-2 capitalize">
+       
+  //       <div className="capitalize">{row.original.strainName}</div>
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "grower",
     header: ({ column }) => (
@@ -131,20 +145,20 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       </div>
     ),
   },
-  {
-    accessorKey: "product.product",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Product" />
-    ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.productName}
-      </div>
-    ),
-  },
+  // {
+  //   accessorKey: "product.product",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Product" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="flex gap-2 capitalize">
+  //       {row.original.productName}
+  //     </div>
+  //   ),
+  // },
 
 
 
@@ -259,18 +273,18 @@ function ProductTable({ from, to }: Props) {
     return Array.from(growersMap.values());
   }, [history.data]);
   
-  const strainsOptions = useMemo(() => {
-    const strainsMap = new Map<string, { value: string; label: string }>();
+  // const strainsOptions = useMemo(() => {
+  //   const strainsMap = new Map<string, { value: string; label: string }>();
   
-    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
-      strainsMap.set(product.strainName, {
-        value: product.strainName,
-        label: `${product.strainName}`,
-      });
-    });
+  //   history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
+  //     strainsMap.set(product.strainName, {
+  //       value: product.strainName,
+  //       label: `${product.strainName}`,
+  //     });
+  //   });
   
-    return Array.from(strainsMap.values());
-  }, [history.data]);
+  //   return Array.from(strainsMap.values());
+  // }, [history.data]);
   
   return (
     <div className="w-full">
@@ -290,13 +304,13 @@ function ProductTable({ from, to }: Props) {
               options={growersOptions}
             />
           )}
-                    {table.getColumn("strain") && (
+                    {/* {table.getColumn("strain") && (
             <DataTableFacetedFilter
               title="Strain"
               column={table.getColumn("strain")}
               options={strainsOptions}
             />
-          )}
+          )} */}
           
           {/* {table.getColumn("type") && (
             <DataTableFacetedFilter

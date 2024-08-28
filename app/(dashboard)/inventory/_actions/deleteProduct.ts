@@ -32,7 +32,7 @@ export async function DeleteProduct(id: string) {
   });
 
   if (!product) {
-    throw new Error("Product not found");
+    throw new Error("Strain not found");
   }
 
   // Delete the product
@@ -42,5 +42,5 @@ export async function DeleteProduct(id: string) {
     },
   });
 
-  return "Product deleted successfully";
+  return "Strain deleted successfully";
 }

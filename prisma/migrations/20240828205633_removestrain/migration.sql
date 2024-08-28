@@ -8,21 +8,10 @@ CREATE TABLE "UserSettings" (
 );
 
 -- CreateTable
-CREATE TABLE "Strain" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "icon" TEXT,
-
-    CONSTRAINT "Strain_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Category" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
-    "icon" TEXT NOT NULL,
 
     CONSTRAINT "Category_pkey" PRIMARY KEY ("id")
 );
@@ -32,7 +21,6 @@ CREATE TABLE "Grower" (
     "id" SERIAL NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "name" TEXT NOT NULL,
-    "icon" TEXT NOT NULL,
 
     CONSTRAINT "Grower_pkey" PRIMARY KEY ("id")
 );
@@ -43,8 +31,6 @@ CREATE TABLE "Product" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "product" TEXT NOT NULL,
-    "icon" TEXT,
-    "strainId" INTEGER NOT NULL,
     "growerId" INTEGER NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 0,
@@ -90,9 +76,6 @@ CREATE TABLE "YearHistory" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Strain_name_key" ON "Strain"("name");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
@@ -100,9 +83,6 @@ CREATE UNIQUE INDEX "Grower_name_key" ON "Grower"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Product_product_key" ON "Product"("product");
-
--- AddForeignKey
-ALTER TABLE "Product" ADD CONSTRAINT "Product_strainId_fkey" FOREIGN KEY ("strainId") REFERENCES "Strain"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Product" ADD CONSTRAINT "Product_growerId_fkey" FOREIGN KEY ("growerId") REFERENCES "Grower"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

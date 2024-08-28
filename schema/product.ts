@@ -8,7 +8,7 @@ export const CreateProductSchema = z.object({
   category: z.string(),
   grower: z.string(),
   // growerIcon: z.string().optional(),
-  strain: z.string(),
+  // strain: z.string(),
   // strainIcon: z.string().optional(),
   // icon: z.string().nullable(),
 });

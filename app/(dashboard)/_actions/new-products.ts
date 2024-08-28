@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, category, grower, strain, createdAt } = parsedBody.data;
+  const { product, quantity, category, grower, createdAt } = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -55,16 +55,16 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     throw new Error("grower not found");
   }
 
-  const strainRow = await prisma.strain.findFirst({
-    where: {
+  // const strainRow = await prisma.strain.findFirst({
+  //   where: {
     
-      name: strain,
-    },
-  });
+  //     name: strain,
+  //   },
+  // });
 
-  if (!strainRow) {
-    throw new Error("strain not found");
-  }
+  // if (!strainRow) {
+  //   throw new Error("strain not found");
+  // }
 
 
   return await prisma.product.create({
@@ -78,9 +78,9 @@ export async function CreateProduct(form: CreateProductSchemaType) {
       grower: {
         connect: { id: growerRow.id },    // Connect to an existing grower by ID
       },
-      strain: {
-        connect: { id: strainRow.id },    // Connect to an existing strain by ID
-      },
+      // strain: {
+      //   connect: { id: strainRow.id },    // Connect to an existing strain by ID
+      // },
       // strainIcon: strainRow.icon,
       // description: description || "",
       // createdAt,

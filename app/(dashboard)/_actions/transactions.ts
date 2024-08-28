@@ -49,15 +49,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     throw new Error("grower not found");
   }
 
-  const strainRow = await prisma.strain.findFirst({
-    where: {
-      // name: strain,
-    },
-  });
+  // const strainRow = await prisma.strain.findFirst({
+  //   where: {
+  //     // name: strain,
+  //   },
+  // });
 
-  if (!strainRow) {
-    throw new Error("strain not found");
-  }
+  // if (!strainRow) {
+  //   throw new Error("strain not found");
+  // }
 
   await prisma.transaction.create({
     data: {

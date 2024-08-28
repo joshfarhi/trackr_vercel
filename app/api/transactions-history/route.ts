@@ -79,12 +79,12 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
               // icon: true,
             },
           },
-          strain: {
-            select: {
-              name: true, // Include strain name
-              // icon: true,
-            },
-          },
+          // strain: {
+          //   select: {
+          //     name: true, // Include strain name
+          //     // icon: true,
+          //   },
+          // },
         },
       },
     },
@@ -92,9 +92,9 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
 
   return transactions.map((transaction) => ({
     ...transaction,
-    productName: transaction.product?.product || "Unknown Product",  // Add product name
+    productName: transaction.product?.product || "Unknown Strain",  // Add product name
     growerName: transaction.product?.grower?.name || "Unknown Grower",  // Add grower name
-    strainName: transaction.product?.strain?.name || "Unknown Strain",  // Add strain name
+    // strainName: transaction.product?.strain?.name || "Unknown Strain",  // Add strain name
     categoryName: transaction.product?.category?.name || "Unknown Category",  // Add category name
     // growerIcon: transaction.product?.grower?.icon || "Unknown Grower",  // Add grower name
     // strainIcon: transaction.product?.strain?.icon || "Unknown Strain",  // Add strain name

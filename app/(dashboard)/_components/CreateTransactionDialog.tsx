@@ -189,7 +189,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
                 name="product"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Product</FormLabel>
+                    <FormLabel>Strain</FormLabel>
                     <FormControl>
                       <ProductPicker
                       
@@ -197,7 +197,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
                       />
                     </FormControl>
                     <FormDescription>
-                      Select a product for this transaction
+                      Select a strain for this transaction
                     </FormDescription>
                   </FormItem>
                 )}
@@ -230,7 +230,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
         />
           </FormControl>
                   <FormDescription>
-                    Product 
+                    Strain 
                   </FormDescription>
                 </FormItem>
               )}

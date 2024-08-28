@@ -40,10 +40,10 @@ function InventoryPage() {
             }}
           />
           <CreateProductDialog
-            trigger={<Button>Create New Product</Button>}
+            trigger={<Button>Create New Strain</Button>}
             successCallback={() => {
               // Logic to handle after a product is successfully created
-              console.log("Product created successfully");
+              console.log("Strain created successfully");
             }}
           />
         </div>
