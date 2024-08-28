@@ -81,12 +81,12 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     [form]
   );
 
-  const handleStrainChange = useCallback(
-    (value: string) => {
-      form.setValue("strain", value);
-    },
-    [form]
-  );
+  // const handleStrainChange = useCallback(
+  //   (value: string) => {
+  //     form.setValue("strain", value);
+  //   },
+  //   [form]
+  // );
 
   const handleGrowerChange = useCallback(
     (value: string) => {
