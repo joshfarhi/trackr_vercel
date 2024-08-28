@@ -19,13 +19,11 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, amount,  date, description, type } = parsedBody.data;
+  const { product, amount, date, description, type } = parsedBody.data;
 
   const productRow = await prisma.product.findUnique({
     where: { product: parsedBody.data.product }, // Fetch by product name or any other identifier
   });
-  
- 
 
   if (!productRow) {
     throw new Error("product not found");
@@ -33,7 +31,6 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   const categoryRow = await prisma.category.findFirst({
     where: {
-    
       // name: category,
     },
   });
@@ -44,7 +41,6 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   const growerRow = await prisma.grower.findFirst({
     where: {
-    
       // name: grower,
     },
   });
@@ -55,7 +51,6 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   const strainRow = await prisma.strain.findFirst({
     where: {
-   
       // name: strain,
     },
   });
@@ -64,35 +59,32 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     throw new Error("strain not found");
   }
 
-
-await prisma.transaction.create({
-  data: {
-    amount: parsedBody.data.amount,
-    description: description || null || "",  // Set to null if not provided
-    date: parsedBody.data.date,
-    type: parsedBody.data.type,
-    product: {
-      connect: { product: productRow.product },  // Use the product's ID for the relation
+  await prisma.transaction.create({
+    data: {
+      amount: parsedBody.data.amount,
+      description: description || null || "", // Set to null if not provided
+      date: parsedBody.data.date,
+      type: parsedBody.data.type,
+      product: {
+        connect: { product: productRow.product }, // Use the product's ID for the relation
+      },
+      // productId: productRow.id, // You might not need this if the relation is already being set via `product`
     },
-    // productId: productRow.id, // You might not need this if the relation is already being set via `product`
-  },
-});
+  });
 
-  
-await prisma.product.update({
-  where: { product: parsedBody.data.product },
-  data: {
-    quantity: {
-      increment: type === "order" ? amount : -amount, // Increment for returns, decrement for orders
+  await prisma.product.update({
+    where: { product: parsedBody.data.product },
+    data: {
+      quantity: {
+        increment: type === "order" ? -amount : amount, // Decrement for orders, increment for returns
+      },
     },
-  },
-});
-  
+  });
+
   // Update month aggregate table
   await prisma.monthHistory.upsert({
     where: {
       day_month_year: {
-      
         day: date.getUTCDate(),
         month: date.getUTCMonth(),
         year: date.getUTCFullYear(),
@@ -114,13 +106,12 @@ await prisma.product.update({
         increment: type === "order" ? amount : 0,
       },
     },
-  })
-  
-  // Update year aggreate
+  });
+
+  // Update year aggregate
   await prisma.yearHistory.upsert({
     where: {
       month_year: {
-       
         month: date.getUTCMonth(),
         year: date.getUTCFullYear(),
       },
@@ -140,6 +131,5 @@ await prisma.product.update({
         increment: type === "order" ? amount : 0,
       },
     },
-  })
-
+  });
 }
