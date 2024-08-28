@@ -221,7 +221,7 @@ function TransactionTable({ from, to }: Props) {
     history.data?.forEach((transaction) => {
       categoriesMap.set(transaction.product.category.name, {
         value: transaction.product.category.name,
-        label: `${transaction.product.category.icon} ${transaction.product.category.name}`,
+        label: `${transaction.product.category.name}`,
       });
     });
     // const uniqueCategories = new Set(categoriesMap.values());
@@ -235,7 +235,7 @@ function TransactionTable({ from, to }: Props) {
     history.data?.forEach((transaction) => {
       growersMap.set(transaction.product.grower.name, {
         value: transaction.product.grower.name,
-        label: `${transaction.product.grower.name} ${transaction.product.grower.icon}`,
+        label: `${transaction.product.grower.name}`,
       });
     });
     const uniqueGrowers = new Set(growersMap.values());
@@ -247,7 +247,7 @@ function TransactionTable({ from, to }: Props) {
     history.data?.forEach((transaction) => {
       strainsMap.set(transaction.product.strain.name, {
         value: transaction.product.strain.name,
-        label: `${transaction.product.strain.name} ${transaction.product.strain.icon}`,
+        label: `${transaction.product.strain.name}`,
       });
     });
     const uniqueStrains = new Set(strainsMap.values());
@@ -298,11 +298,11 @@ function TransactionTable({ from, to }: Props) {
             onClick={() => {
               const data = table.getFilteredRowModel().rows.map((row) => ({
                 category: row.original.category,
-                categoryIcon: row.original.categoryIcon,
+                // categoryIcon: row.original.categoryIcon,
                 grower: row.original.grower,
-                growerIcon: row.original.growerIcon,
+                // growerIcon: row.original.growerIcon,
                 strain: row.original.strain,
-                strainIcon: row.original.strainIcon,
+                // strainIcon: row.original.strainIcon,
                 description: row.original.description,
                 type: row.original.type,
                 amount: row.original.amount,
