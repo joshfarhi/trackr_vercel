@@ -54,31 +54,34 @@ type ProductHistoryRow = GetProductHistoryResponseType[0];
 
 const columns: ColumnDef<ProductHistoryRow>[] = [
   {
-    accessorKey: "product.product",
+    accessorKey: "amount",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Product" />
+      <DataTableColumnHeader column={column} title="Amount" />
     ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
     cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.productName}
-      </div>
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.quantity}
+      </p>
     ),
+    sortingFn: (rowA, rowB) => {
+      const amountA = rowA.original.quantity;
+      const amountB = rowB.original.quantity;
+      return amountA - amountB; // Sort as numbers
+    },
   },
   {
-    accessorKey: "category",
+    accessorKey: "strain",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
+      <DataTableColumnHeader column={column} title="Strain" />
     ),
     filterFn: (row, id, value) => {
-      const categoryName = row.original.categoryName; // Direct access to category name
-      return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
+      const strainName = row.original.strainName; // Direct access to category name
+      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.categoryName}
+       
+        <div className="capitalize">{row.original.strainName}</div>
       </div>
     ),
   },
@@ -99,33 +102,8 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     ),
   },
   {
-    accessorKey: "strain",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Strain" />
-    ),
-    filterFn: (row, id, value) => {
-      const strainName = row.original.strainName; // Direct access to category name
-      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-       
-        <div className="capitalize">{row.original.strainName}</div>
-      </div>
-    ),
-  },
-  // {
-  //   accessorKey: "description",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Description" />
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div className="capitalize">{row.original.description}</div>
-  //   ),
-  // },
-  {
     accessorKey: "date",
-    header: "Date Created",
+    header: "Date Dropped",
     cell: ({ row }) => {
       const date = new Date(row.original.date);
       const formattedDate = date.toLocaleDateString("default", {
@@ -137,6 +115,48 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
   },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+    filterFn: (row, id, value) => {
+      const categoryName = row.original.categoryName; // Direct access to category name
+      return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.categoryName}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "product.product",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Product" />
+    ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.productName}
+      </div>
+    ),
+  },
+
+
+
+  // {
+  //   accessorKey: "description",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Description" />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">{row.original.description}</div>
+  //   ),
+  // },
+
   // {
   //   accessorKey: "type",
   //   header: ({ column }) => (
@@ -158,17 +178,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   //     </div>
   //   ),
   // },
-  {
-    accessorKey: "amount",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.quantity}
-      </p>
-    ),
-  },
+
   {
     id: "actions",
     enableHiding: false,
