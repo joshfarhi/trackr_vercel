@@ -120,7 +120,7 @@ export default ProductPicker;
 function ProductRow({ product }: { product: Product }) {
   return (
     <div className="flex items-center gap-2">
-      <span role="img">{product.icon}</span>
+      {/* <span role="img">{product.icon}</span> */}
       <span>{product.product}</span>
     </div>
   );

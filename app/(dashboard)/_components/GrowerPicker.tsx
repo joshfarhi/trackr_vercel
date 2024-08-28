@@ -120,7 +120,7 @@ export default GrowerPicker;
 function GrowerRow({ grower }: { grower: Grower }) {
   return (
     <div className="flex items-center gap-2">
-      <span role="img">{grower.icon}</span>
+      {/* <span role="img">{grower.icon}</span> */}
       <span>{grower.name}</span>
     </div>
   );

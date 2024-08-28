@@ -121,7 +121,7 @@ export default StrainPicker;
 function StrainRow({ strain }: { strain: Strain }) {
   return (
     <div className="flex items-center gap-2">
-      <span role="img">{strain.icon}</span>
+      {/* <span role="img">{strain.icon}</span> */}
       <span>{strain.name}</span>
     </div>
   );
