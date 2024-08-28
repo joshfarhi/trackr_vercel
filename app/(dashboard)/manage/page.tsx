@@ -4,8 +4,8 @@ import CreateCategoryDialog from "@/app/(dashboard)/_components/CreateCategoryDi
 import DeleteCategoryDialog from "@/app/(dashboard)/_components/DeleteCategoryDialog";
 import CreateGrowerDialog from "@/app/(dashboard)/_components/CreateGrowerDialog";
 import DeleteGrowerDialog from "@/app/(dashboard)/_components/DeleteGrowerDialog";
-import CreateStrainDialog from "@/app/(dashboard)/_components/CreateStrainDialog";
-import DeleteStrainDialog from "@/app/(dashboard)/_components/DeleteStrainDialog";
+// import CreateStrainDialog from "@/app/(dashboard)/_components/CreateStrainDialog";
+// import DeleteStrainDialog from "@/app/(dashboard)/_components/DeleteStrainDialog";
 import { WeightComboBox } from "@/components/WeightComboBox";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Button } from "@/components/ui/button";
@@ -256,96 +256,96 @@ function GrowerCard({ grower }: { grower: Grower }) {
   );
 }
 
-function StrainList() {
-  const strainsQuery = useQuery({
-    queryKey: ["strains"],
-    queryFn: () =>
-      fetch(`/api/strains`).then((res) => res.json()),
-  });
+// function StrainList() {
+//   const strainsQuery = useQuery({
+//     queryKey: ["strains"],
+//     queryFn: () =>
+//       fetch(`/api/strains`).then((res) => res.json()),
+//   });
 
-  const dataAvailable = strainsQuery.data && strainsQuery.data.length > 0;
+//   const dataAvailable = strainsQuery.data && strainsQuery.data.length > 0;
 
-  return (
-    <SkeletonWrapper isLoading={strainsQuery.isLoading}>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
+//   return (
+//     <SkeletonWrapper isLoading={strainsQuery.isLoading}>
+//       <Card>
+//         <CardHeader>
+//           <CardTitle className="flex items-center justify-between gap-2">
+//             <div className="flex items-center gap-2">
             
-              <div>
-               strains
-                <div className="text-sm text-muted-foreground">
-                  Sorted by name
-                </div>
-              </div>
-            </div>
+//               <div>
+//                strains
+//                 <div className="text-sm text-muted-foreground">
+//                   Sorted by name
+//                 </div>
+//               </div>
+//             </div>
 
-            <CreateStrainDialog
+//             <CreateStrainDialog
         
-              successCallback={() => strainsQuery.refetch()}
-              trigger={
-                <Button className="gap-2 text-sm">
-                  <PlusSquare className="h-4 w-4" />
-                  Create strain
-                </Button>
-              }
-            />
-          </CardTitle>
-        </CardHeader>
-        <Separator />
-        {!dataAvailable && (
-          <div className="flex h-40 w-full flex-col items-center justify-center">
-            <p>
-              No
-              <span
-                className={cn(
-                  "m-1",
-                "text-emerald-500"
-                )}
-              >
+//               successCallback={() => strainsQuery.refetch()}
+//               trigger={
+//                 <Button className="gap-2 text-sm">
+//                   <PlusSquare className="h-4 w-4" />
+//                   Create strain
+//                 </Button>
+//               }
+//             />
+//           </CardTitle>
+//         </CardHeader>
+//         <Separator />
+//         {!dataAvailable && (
+//           <div className="flex h-40 w-full flex-col items-center justify-center">
+//             <p>
+//               No
+//               <span
+//                 className={cn(
+//                   "m-1",
+//                 "text-emerald-500"
+//                 )}
+//               >
               
-              </span>
-              strains yet
-            </p>
+//               </span>
+//               strains yet
+//             </p>
 
-            <p className="text-sm text-muted-foreground">
-              Create one to get started
-            </p>
-          </div>
-        )}
-        {dataAvailable && (
-          <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {strainsQuery.data.map((strain: Strain) => (
-              <StrainCard strain={strain} key={strain.name} />
-            ))}
-          </div>
-        )}
-      </Card>
-    </SkeletonWrapper>
-  );
-}
+//             <p className="text-sm text-muted-foreground">
+//               Create one to get started
+//             </p>
+//           </div>
+//         )}
+//         {dataAvailable && (
+//           <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+//             {strainsQuery.data.map((strain: Strain) => (
+//               <StrainCard strain={strain} key={strain.name} />
+//             ))}
+//           </div>
+//         )}
+//       </Card>
+//     </SkeletonWrapper>
+//   );
+// }
 
-function StrainCard({ strain }: { strain: Strain }) {
-  return (
-    <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
-      <div className="flex flex-col items-center gap-2 p-4">
-        {/* <span className="text-3xl" role="img">
-          {strain.icon}
-        </span> */}
-        <span>{strain.name}</span>
-      </div>
-      <DeleteStrainDialog
-        strain={strain}
-        trigger={
-          <Button
-            className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
-            variant={"secondary"}
-          >
-            <TrashIcon className="h-4 w-4" />
-            Remove
-          </Button>
-        }
-      />
-    </div>
-  );
-}
+// function StrainCard({ strain }: { strain: Strain }) {
+//   return (
+//     <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
+//       <div className="flex flex-col items-center gap-2 p-4">
+//         {/* <span className="text-3xl" role="img">
+//           {strain.icon}
+//         </span> */}
+//         <span>{strain.name}</span>
+//       </div>
+//       <DeleteStrainDialog
+//         strain={strain}
+//         trigger={
+//           <Button
+//             className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
+//             variant={"secondary"}
+//           >
+//             <TrashIcon className="h-4 w-4" />
+//             Remove
+//           </Button>
+//         }
+//       />
+//     </div>
+//   );
+// }
