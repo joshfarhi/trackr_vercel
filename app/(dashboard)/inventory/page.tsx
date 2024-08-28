@@ -6,12 +6,15 @@ import { differenceInDays, startOfMonth } from "date-fns";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import InventoryTable from "./_components/InventoryTable";
+import { Button } from "@/components/ui/button"; // Import the Button component
+import CreateProductDialog from "@/app/(dashboard)/_components/CreateProductDialog"; // Import the CreateProductDialog component
 
 function InventoryPage() {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
     from: startOfMonth(new Date()),
     to: new Date(),
   });
+
   return (
     <>
       <div className="border-b bg-card">
@@ -26,7 +29,6 @@ function InventoryPage() {
             onUpdate={(values) => {
               const { from, to } = values.range;
               // We update the date range only if both dates are set
-
               if (!from || !to) return;
               if (differenceInDays(to, from) > MAX_DATE_RANGE_DAYS) {
                 toast.error(
@@ -34,8 +36,14 @@ function InventoryPage() {
                 );
                 return;
               }
-
               setDateRange({ from, to });
+            }}
+          />
+          <CreateProductDialog
+            trigger={<Button>Create New Product</Button>}
+            successCallback={() => {
+              // Logic to handle after a product is successfully created
+              console.log("Product created successfully");
             }}
           />
         </div>
