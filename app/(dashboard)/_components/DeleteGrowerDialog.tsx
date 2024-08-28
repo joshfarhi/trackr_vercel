@@ -64,7 +64,7 @@ function DeleteGrowerDialog({ grower, trigger }: Props) {
               });
               deleteMutation.mutate({
                 name: grower.name,
-                icon: grower.icon
+                // icon: grower.icon
 
               });
             }}

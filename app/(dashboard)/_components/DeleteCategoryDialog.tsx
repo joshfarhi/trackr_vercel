@@ -64,7 +64,7 @@ function DeleteCategoryDialog({ category, trigger }: Props) {
               });
               deleteMutation.mutate({
                 name: category.name,
-                icon: category.icon
+                // icon: category.icon
               
               });
             }}
