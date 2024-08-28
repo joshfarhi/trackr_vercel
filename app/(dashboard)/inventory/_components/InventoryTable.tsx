@@ -222,7 +222,7 @@ function ProductTable({ from, to }: Props) {
     history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
       categoriesMap.set(product.categoryName, {
         value: product.categoryName,
-        label: `${product.categoryIcon} ${product.categoryName}`,
+        label: `${product.categoryName}`,
       });
     });
   
@@ -235,7 +235,7 @@ function ProductTable({ from, to }: Props) {
     history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
       growersMap.set(product.growerName, {
         value: product.growerName,
-        label: `${product.growerIcon} ${product.growerName}`,
+        label: `${product.growerName}`,
       });
     });
   
@@ -248,7 +248,7 @@ function ProductTable({ from, to }: Props) {
     history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
       strainsMap.set(product.strainName, {
         value: product.strainName,
-        label: `${product.strainIcon} ${product.strainName}`,
+        label: `${product.strainName}`,
       });
     });
   
@@ -300,11 +300,11 @@ function ProductTable({ from, to }: Props) {
             onClick={() => {
               const data = table.getFilteredRowModel().rows.map((row) => ({
                 category: row.original.category,
-                categoryIcon: row.original.categoryIcon,
+                // categoryIcon: row.original.categoryIcon,
                 grower: row.original.grower,
-                growerIcon: row.original.growerIcon,
+                // growerIcon: row.original.growerIcon,
                 strain: row.original.strain,
-                strainIcon: row.original.strainIcon,
+                // strainIcon: row.original.strainIcon,
                 amount: row.original.amount,
                 // formattedAmount: row.original.formattedAmount,
                 date: row.original.date,
