@@ -54,48 +54,14 @@ type TransactionHistoryRow = GetTransactionHistoryResponseType[0];
 
 const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
-    accessorKey: "product.product",
+    accessorKey: "amount",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Product" />
+      <DataTableColumnHeader column={column} title="Amount" />
     ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
     cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.product.product}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "category",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
-    ),
-    filterFn: (row, id, value) => {
-      const categoryName = row.original.product.category.name; // Direct access to category name
-      return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.product.category.name}
-      </div>
-    ),
-  },
-  {
-    accessorKey: "grower",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Grower" />
-    ),
-    filterFn: (row, id, value) => {
-      const growerName = row.original.product.grower.name; // Direct access to category name
-      return value.includes(growerName); // Filter logic that checks if the filter value includes the category name
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.product.grower.name}
-        
-      </div>
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.amount}
+      </p>
     ),
   },
   {
@@ -115,6 +81,25 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
   },
   {
+    accessorKey: "grower",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Grower" />
+    ),
+    filterFn: (row, id, value) => {
+      const growerName = row.original.product.grower.name; // Direct access to category name
+      return value.includes(growerName); // Filter logic that checks if the filter value includes the category name
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.product.grower.name}
+        
+      </div>
+    ),
+  },
+
+
+
+  {
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
@@ -125,7 +110,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   },
   {
     accessorKey: "date",
-    header: "Date",
+    header: "Date dropped",
     cell: ({ row }) => {
       const date = new Date(row.original.date);
       const formattedDate = date.toLocaleDateString("default", {
@@ -137,6 +122,20 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
   },
+  //   {
+  //   accessorKey: "product.product",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Product" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="flex gap-2 capitalize">
+  //       {row.original.product.product}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "type",
     header: ({ column }) => (
@@ -159,14 +158,18 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
   },
   {
-    accessorKey: "amount",
+    accessorKey: "category",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
+      <DataTableColumnHeader column={column} title="Category" />
     ),
+    filterFn: (row, id, value) => {
+      const categoryName = row.original.product.category.name; // Direct access to category name
+      return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
+    },
     cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.amount}
-      </p>
+      <div className="flex gap-2 capitalize">
+        {row.original.product.category.name}
+      </div>
     ),
   },
   {
