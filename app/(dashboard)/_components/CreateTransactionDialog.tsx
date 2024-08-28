@@ -230,7 +230,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
         />
           </FormControl>
                   <FormDescription>
-                    Strain 
+                    Transaction description/notes (optional)
                   </FormDescription>
                 </FormItem>
               )}
