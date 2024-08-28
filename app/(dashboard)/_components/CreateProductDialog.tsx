@@ -20,7 +20,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import StrainPicker from "@/app/(dashboard)/_components/StrainPicker";
+// import StrainPicker from "@/app/(dashboard)/_components/StrainPicker";
 import GrowerPicker from "@/app/(dashboard)/_components/GrowerPicker";
 import CategoryPicker from "@/app/(dashboard)/_components/CategoryPicker";
 
