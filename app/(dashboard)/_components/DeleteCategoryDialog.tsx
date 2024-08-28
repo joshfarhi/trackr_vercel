@@ -39,7 +39,7 @@ function DeleteCategoryDialog({ category, trigger }: Props) {
       });
     },
     onError: () => {
-      toast.error("Something went wrong", {
+      toast.error("Please delete all Products assigned to this Category under the Inventory tab first.", {
         id: categoryIdentifier,
       });
     },

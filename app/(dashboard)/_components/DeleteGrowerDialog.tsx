@@ -39,7 +39,7 @@ function DeleteGrowerDialog({ grower, trigger }: Props) {
       });
     },
     onError: () => {
-      toast.error("Something went wrong", {
+      toast.error("Please delete all Products assigned to this Grower under the Inventory tab first.", {
         id: growerIdentifier,
       });
     },
