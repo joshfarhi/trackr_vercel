@@ -42,6 +42,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DeleteTransactionDialog from "@/app/(dashboard)/transactions/_components/DeleteTransactionDialog";
+import * as XLSX from "xlsx";
 
 interface Props {
   from: Date;
@@ -203,6 +204,13 @@ function TransactionTable({ from, to }: Props) {
     const csv = generateCsv(csvConfig)(data);
     download(csvConfig)(csv);
   };
+  const handleExportExcel = (data: any[]) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+    
+    XLSX.writeFile(workbook, "transactions.xlsx");
+  };
 
   const table = useReactTable({
     data: history.data || emptyData,
@@ -312,11 +320,13 @@ function TransactionTable({ from, to }: Props) {
                 // formattedAmount: row.original.formattedAmount,
                 date: row.original.date,
               }));
-              handleExportCSV(data);
+              handleExportExcel(data); // Use Excel export function
+
+              // handleExportCSV(data);
             }}
           >
             <DownloadIcon className="mr-2 h-4 w-4" />
-            Export CSV
+            Export Excel
           </Button>
           <DataTableViewOptions table={table} />
         </div>
