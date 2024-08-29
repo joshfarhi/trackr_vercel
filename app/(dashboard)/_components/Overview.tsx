@@ -22,7 +22,7 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
 
         <h2 className="text-3xl font-bold">Overview</h2>
         <p className="text-sm text-gray-400">
-        Please refresh to update stats after creating a Transaction
+        Please refresh to update inventory balance after creating a Transaction
       </p>
       </div>
         <div className="flex items-center gap-3">
@@ -54,11 +54,11 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
           to={dateRange.to}
         />
 
-        <ProductsStats
+        {/* <ProductsStats
           userSettings={userSettings}
           from={dateRange.from}
           to={dateRange.to}
-        />
+        /> */}
       </div>
     </>
   );
