@@ -4,7 +4,7 @@ import HistoryPeriodSelector from "@/app/(dashboard)/_components/HistoryPeriodSe
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { GetFormatterForWeight } from "@/lib/helpers";
+// import { GetFormatterForWeight } from "@/lib/helpers";
 import { Period, Timeframe } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { UserSettings } from "@prisma/client";
