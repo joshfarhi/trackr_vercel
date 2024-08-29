@@ -1,6 +1,8 @@
 "use client";
 
-import { DeleteProduct } from "@/app/(dashboard)/_actions/new-products";
+// import { DeleteProduct } from "@/app/(dashboard)/_actions/new-products";
+import { DeleteProduct } from "@/app/(dashboard)/inventory/_actions/deleteProduct";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,26 +23,29 @@ import { toast } from "sonner";
 interface Props {
   trigger: ReactNode;
   product: Product;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  productId: string;
 }
 
-function DeleteProductDialog({ product, trigger }: Props) {
-  const productIdentifier = `${product.product}`;
+function DeleteProductDialog({ productId, trigger }: Props) {
+  // const productIdentifier = `${product.product}`;
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
     mutationFn: DeleteProduct,
     onSuccess: async () => {
       toast.success("Product deleted successfully", {
-        id: productIdentifier,
+        id: productId,
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["categories"],
+        queryKey: ["products"],
       });
     },
     onError: () => {
       toast.error("Something went wrong", {
-        id: productIdentifier,
+        id: productId,
       });
     },
   });
@@ -60,11 +65,9 @@ function DeleteProductDialog({ product, trigger }: Props) {
           <AlertDialogAction
             onClick={() => {
               toast.loading("Deleting product...", {
-                id: productIdentifier,
+                id: productId,
               });
-              deleteMutation.mutate({
-                id: product.id
-              });
+              deleteMutation.mutate(productId);
             }}
           >
             Continue

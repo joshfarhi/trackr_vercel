@@ -23,12 +23,85 @@ import { Category, Product } from "@prisma/client";
 // import { Strain } from "@prisma/client";
 import { Grower } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
+//START needed for deleting product 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { DeleteProduct } from "@/app/(dashboard)/inventory/_actions/deleteProduct";
+import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import React, { ReactNode, useState } from "react";
+//END
 import { PlusSquare, TrashIcon, TrendingDown, TrendingUp } from "lucide-react";
-import React from "react";
 import { CreateProduct } from "../_actions/new-products";
-import CreateProductDialog from "../_components/CreateProductDialog";
-import DeleteProductDialog from "../_components/DeleteProductDialog";
+// import CreateProductDialog from "../_components/CreateProductDialog";
+import CreateProductDialog from "@/app/(dashboard)/_components/CreateProductDialog";
+// import DeleteProductDialog from "@/app/(dashboard)/_components/DeleteGrowerDialog";
+// import DeleteProductDialog from "@/app/(dashboard)/inventory/_components/DeleteProductDialog";
+//needed for deleting product (see DeleteProductDialog in dashboard/_components)
+interface Props {
+  trigger: ReactNode;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  productId: string;
+}
+function DeleteProductDialog({ productId, trigger }: Props) {
+  // const productIdentifier = `${product.product}`;
+  const queryClient = useQueryClient();
 
+  const deleteMutation = useMutation({
+    mutationFn: DeleteProduct,
+    onSuccess: async () => {
+      toast.success("Product deleted successfully", {
+        id: productId,
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: ["products"],
+      });
+    },
+    onError: () => {
+      toast.error("Something went wrong", {
+        id: productId,
+      });
+    },
+  });
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            product
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => {
+              toast.loading("Deleting product...", {
+                id: productId,
+              });
+              deleteMutation.mutate(productId);
+            }}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 function page() {
   return (
     <>
@@ -56,7 +129,7 @@ function page() {
             <WeightComboBox />
           </CardContent>
         </Card> */}
-        {/* <ProductList /> */}
+        <ProductList />
         <GrowerList  />
         <CategoryList  />
      
@@ -70,99 +143,103 @@ function page() {
 }
 
 export default page;
-// function ProductList() {
-//   const productsQuery = useQuery({
-//     queryKey: ["products"],
-//     queryFn: () =>
-//       fetch(`/api/products`).then((res) => res.json()),
-//   });
+function ProductList() {
+  const productsQuery = useQuery({
+    queryKey: ["products"],
+    queryFn: () =>
+      fetch(`/api/products`).then((res) => res.json()),
+  });
 
-//   const dataAvailable = productsQuery.data && productsQuery.data.length > 0;
+  const dataAvailable = productsQuery.data && productsQuery.data.length > 0;
 
-//   return (
-//     <SkeletonWrapper isLoading={productsQuery.isLoading}>
-//       <Card>
-//         <CardHeader>
-//           <CardTitle className="flex items-center justify-between gap-2">
-//             <div className="flex items-center gap-2">
+  return (
+    <SkeletonWrapper isLoading={productsQuery.isLoading}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
              
-//               <div>
-//                  products
-//                 <div className="text-sm text-muted-foreground">
-//                   Sorted by name
-//                 </div>
-//               </div>
-//             </div>
+              <div>
+                 strains
+                <div className="text-sm text-muted-foreground">
+                  Sorted by name
+                </div>
+              </div>
+            </div>
 
-//             <CreateProductDialog
+            <CreateProductDialog
             
-//               successCallback={() => productsQuery.refetch()}
-//               trigger={
-//                 <Button className="gap-2 text-sm">
-//                   <PlusSquare className="h-4 w-4" />
-//                   Create product
-//                 </Button>
-//               }
-//             />
-//           </CardTitle>
-//         </CardHeader>
-//         <Separator />
-//         {!dataAvailable && (
-//           <div className="flex h-40 w-full flex-col items-center justify-center">
-//             <p>
-//               No
-//               <span
-//                 className={cn(
-//                   "m-1",
-//                  "text-emerald-500" 
-//                 )}
-//               >
+              successCallback={() => productsQuery.refetch()}
+              trigger={
+                <Button className="gap-2 text-sm">
+                  <PlusSquare className="h-4 w-4" />
+                  Create strain
+                </Button>
+              }
+            />
+          </CardTitle>
+        </CardHeader>
+        <Separator />
+        {!dataAvailable && (
+          <div className="flex h-40 w-full flex-col items-center justify-center">
+            <p>
+              No
+              <span
+                className={cn(
+                  "m-1",
+                 "text-emerald-500" 
+                )}
+              >
               
-//               </span>
-//               products yet
-//             </p>
+              </span>
+              strains yet
+            </p>
 
-//             <p className="text-sm text-muted-foreground">
-//               Create one to get started
-//             </p>
-//           </div>
-//         )}
-//         {dataAvailable && (
-//           <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-//             {productsQuery.data.map((product: Product) => (
-//               <ProductCard product={product} key={product.product} />
-//             ))}
-//           </div>
-//         )}
-//       </Card>
-//     </SkeletonWrapper>
-//   );
-// }
+            <p className="text-sm text-muted-foreground">
+              Create one to get started
+            </p>
+          </div>
+        )}
+        {dataAvailable && (
+          <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {productsQuery.data.map((product: Product) => (
+              <ProductCard product={product} key={product.product} />
+            ))}
+          </div>
+        )}
+      </Card>
+    </SkeletonWrapper>
+  );
+}
 
-// function ProductCard({ product }: { product: Product }) {
-//   return (
-//     <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
-//       <div className="flex flex-col items-center gap-2 p-4">
-//         {/* <span className="text-3xl" role="img">
-//           {category.icon}
-//         </span> */}
-//         <span>{product.product}</span>
-//       </div>
-//       <DeleteProductDialog
-//         product={product}
-//         trigger={
-//           <Button
-//             className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
-//             variant={"secondary"}
-//           >
-//             <TrashIcon className="h-4 w-4" />
-//             Remove
-//           </Button>
-//         }
-//       />
-//     </div>
-//   );
-// }
+function ProductCard({ product }: { product: Product }) {
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  return (
+    <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
+      <div className="flex flex-col items-center gap-2 p-4">
+        {/* <span className="text-3xl" role="img">
+          {category.icon}
+        </span> */}
+        <span>{product.product}</span>
+      </div>
+      <DeleteProductDialog
+              open={showDeleteDialog}
+              setOpen={setShowDeleteDialog}
+        productId={product.id.toString()}
+        trigger={
+          <Button
+            className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
+            variant={"secondary"}
+          >
+            <TrashIcon className="h-4 w-4" />
+            Remove
+          </Button>
+        }
+      />
+    </div>
+  );
+}
 
 function CategoryList() {
   const categoriesQuery = useQuery({
