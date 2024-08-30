@@ -81,17 +81,24 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   //     </div>
   //   ),
   // },
-      {
-    accessorKey: "product.product",
+  {
+    accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
     ),
+    // filterFn: (row, id, value) => {
+    //   // Assuming the strain name is stored in productName
+    //   const strainName = row.original.productName || "";
+    //   const filterValue = typeof value === "string" ? value.toLowerCase() : "";
+    //   return strainName.toLowerCase().includes(filterValue);
+    // },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
+      const strainName = row.original.productName; // Direct access to category name
+      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
     },
     cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.product.product}
+      <div className="flex gap-2">
+        <div className="">{row.original.productName}</div>
       </div>
     ),
   },
@@ -292,7 +299,18 @@ function TransactionTable({ from, to }: Props) {
     const uniqueGrowers = new Set(growersMap.values());
     return Array.from(uniqueGrowers);
   }, [history.data]);
-
+  const productsOptions = useMemo(() => {
+    const productsMap = new Map<string, { value: string; label: string }>();
+  
+    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
+      productsMap.set(product.productName, {
+        value: product.productName,
+        label: `${product.productName}`,
+      });
+    });
+  
+    return Array.from(productsMap.values());
+  }, [history.data]);
   // const strainsOptions = useMemo(() => {
   //   const strainsMap = new Map();
   //   history.data?.forEach((transaction) => {
@@ -322,13 +340,13 @@ function TransactionTable({ from, to }: Props) {
               options={growersOptions}
             />
           )}
-                    {/* {table.getColumn("strain") && (
+                    {table.getColumn("product") && (
             <DataTableFacetedFilter
               title="Strain"
-              column={table.getColumn("strain")}
-              options={strainsOptions}
+              column={table.getColumn("product")}
+              options={productsOptions}
             />
-          )} */}
+          )}
           
           {table.getColumn("type") && (
             <DataTableFacetedFilter
