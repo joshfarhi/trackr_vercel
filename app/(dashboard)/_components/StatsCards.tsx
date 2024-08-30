@@ -31,12 +31,11 @@ function StatsCards({ from, to, userSettings }: Props) {
 
   const order = statsQuery.data?.order || 0;
   const returns = statsQuery.data?.returns || 0;
-
   const balance = order - returns;
 
   return (
     <div className="relative flex w-full flex-wrap gap-2 md:flex-nowrap">
-      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+      {/* <SkeletonWrapper isLoading={statsQuery.isFetching}>
         <StatCard
           // formatter={formatter}
           value={order}
@@ -56,7 +55,7 @@ function StatsCards({ from, to, userSettings }: Props) {
             <TrendingDown className="h-12 w-12 items-center rounded-lg p-2 text-red-500 bg-red-400/10" />
           }
         />
-      </SkeletonWrapper>
+      </SkeletonWrapper> */}
 
       <SkeletonWrapper isLoading={statsQuery.isFetching}>
         <StatCard
