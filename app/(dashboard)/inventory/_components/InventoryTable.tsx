@@ -70,36 +70,41 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       return amountA - amountB; // Sort as numbers
     },
   },
-  {
-    accessorKey: "product.product",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Strain" />
-    ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.productName}
-      </div>
-    ),
-  },
   // {
-  //   accessorKey: "strain",
+  //   accessorKey: "product.product",
   //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Strain" />
+  //     <DataTableColumnHeader column={column} title="Product" />
   //   ),
   //   filterFn: (row, id, value) => {
-  //     const strainName = row.original.strainName; // Direct access to category name
-  //     return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
+  //     return value.includes(row.getValue(id));
   //   },
   //   cell: ({ row }) => (
   //     <div className="flex gap-2 capitalize">
-       
-  //       <div className="capitalize">{row.original.strainName}</div>
+  //       {row.original.productName}
   //     </div>
   //   ),
   // },
+  {
+    accessorKey: "product",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Strain" />
+    ),
+    // filterFn: (row, id, value) => {
+    //   // Assuming the strain name is stored in productName
+    //   const strainName = row.original.productName || "";
+    //   const filterValue = typeof value === "string" ? value.toLowerCase() : "";
+    //   return strainName.toLowerCase().includes(filterValue);
+    // },
+    filterFn: (row, id, value) => {
+      const strainName = row.original.productName; // Direct access to category name
+      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2">
+        <div className="">{row.original.productName}</div>
+      </div>
+    ),
+  },
   {
     accessorKey: "grower",
     header: ({ column }) => (
@@ -110,7 +115,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       return value.includes(growerName); // Filter logic that checks if the filter value includes the category name
     },
     cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
+      <div className="flex gap-2">
         {row.original.growerName}
         
       </div>
@@ -140,7 +145,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
     },
     cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
+      <div className="flex gap-2">
         {row.original.categoryName}
       </div>
     ),
@@ -228,9 +233,9 @@ function ProductTable({ from, to }: Props) {
   const handleExportExcel = (data: any[]) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Transactions");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
     
-    XLSX.writeFile(workbook, "transactions.xlsx");
+    XLSX.writeFile(workbook, "inventory.xlsx");
   };
   const table = useReactTable({
     data: history.data || emptyData,
@@ -277,7 +282,7 @@ function ProductTable({ from, to }: Props) {
     const productsMap = new Map<string, { value: string; label: string }>();
   
     history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
-      productsMap.set(product.product, {
+      productsMap.set(product.productName, {
         value: product.productName,
         label: `${product.productName}`,
       });
@@ -307,7 +312,7 @@ function ProductTable({ from, to }: Props) {
                     {table.getColumn("product") && (
             <DataTableFacetedFilter
               title="Strain"
-              column={table.getColumn("Strain")}
+              column={table.getColumn("product")}
               options={productsOptions}
             />
           )}

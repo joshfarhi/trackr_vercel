@@ -172,18 +172,34 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </div>
     ),
   },
+  // old
+  // {
+  //   accessorKey: "category",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Category" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     const categoryName = row.original.product.category.name; // Direct access to category name
+  //     return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="flex gap-2 capitalize">
+  //       {row.original.product.category.name}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "category",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Category" />
     ),
     filterFn: (row, id, value) => {
-      const categoryName = row.original.product.category.name; // Direct access to category name
-      return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
+      const categoryName = row.original.product.category?.name || "No Category"; 
+      return value.includes(categoryName); 
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.product.category.name}
+        {row.original.product.category?.name || "No Category"}
       </div>
     ),
   },
@@ -240,20 +256,30 @@ function TransactionTable({ from, to }: Props) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
   const categoriesOptions = useMemo(() => {
-    const categoriesMap = new Map();
+    const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((transaction) => {
-      categoriesMap.set(transaction.product.category.name, {
-        value: transaction.product.category.name,
-        label: `${transaction.product.category.name}`,
+      const categoryName = transaction.product.category?.name || "No Category";
+      categoriesMap.set(categoryName, {
+        value: categoryName,
+        label: `${categoryName}`,
       });
     });
-    // const uniqueCategories = new Set(categoriesMap.values());
-    // return Array.from(uniqueCategories);
-    return Array.from(categoriesMap.values()); // Ensure this returns a proper array
-
+    return Array.from(categoriesMap.values());
   }, [history.data]);
+  // const categoriesOptions = useMemo(() => {
+  //   const categoriesMap = new Map();
+  //   history.data?.forEach((transaction) => {
+  //     categoriesMap.set(transaction.product.category.name, {
+  //       value: transaction.product.category.name,
+  //       label: `${transaction.product.category.name}`,
+  //     });
+  //   });
+  //   // const uniqueCategories = new Set(categoriesMap.values());
+  //   // return Array.from(uniqueCategories);
+  //   return Array.from(categoriesMap.values()); // Ensure this returns a proper array
+
+  // }, [history.data]);
 
   const growersOptions = useMemo(() => {
     const growersMap = new Map();

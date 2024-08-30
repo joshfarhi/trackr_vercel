@@ -33,17 +33,17 @@ export async function CreateProduct(form: CreateProductSchemaType) {
   // if (!productRow) {
   //   throw new Error("category not found");
   // }
-  const categoryRow = await prisma.category.findFirst({
-    where: {
-     
-      name: category,
-    },
-  });
+  // Handle the optional category
+  let categoryRow = null;
+  if (category) {
+    categoryRow = await prisma.category.findFirst({
+      where: { name: category },
+    });
 
-  if (!categoryRow) {
-    throw new Error("category not found");
+    if (!categoryRow) {
+      throw new Error("Category not found");
+    }
   }
-
   const growerRow = await prisma.grower.findFirst({
     where: {
     
@@ -72,9 +72,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
       quantity,
       product,
       // icon: icon ?? "",  // Default to an empty string if icon is null
-      category: {
-        connect: { id: categoryRow.id },  // Connect to an existing category by ID
-      },
+      category: categoryRow ? { connect: { id: categoryRow.id } } : undefined, // Conditionally connect to a category
       grower: {
         connect: { id: growerRow.id },    // Connect to an existing grower by ID
       },

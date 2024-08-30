@@ -5,7 +5,8 @@ export const CreateProductSchema = z.object({
   quantity: z.coerce.number().min(0).multipleOf(0.01).default(0), // Make it optional with a default value of 0
   createdAt: z.coerce.date(),
   // categoryIcon: z.string().optional(),
-  category: z.string(),
+  category: z.string().nullable().optional(), // Make description optional
+
   grower: z.string(),
   // growerIcon: z.string().optional(),
   // strain: z.string(),

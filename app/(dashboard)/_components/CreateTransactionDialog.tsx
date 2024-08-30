@@ -202,6 +202,25 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
                   </FormItem>
                 )}
               />
+              
+              {/* <FormField
+                control={form.control}
+                name="category"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Category</FormLabel>
+                    <FormControl>
+                      <CategoryPicker
+                        type={type}
+                        onChange={handleCategoryChange}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Select a category for this transaction
+                    </FormDescription>
+                  </FormItem>
+                )}
+              /> */}
             <FormField
               control={form.control}
               name="amount"

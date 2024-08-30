@@ -59,9 +59,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
       grower: {         // Nested query to match the grower by name
         name: parsedBody.data.grower, 
       },
-      category: {       // Nested query to match the category by name
-        name: parsedBody.data.category,
-      },
+
     },
   });
 

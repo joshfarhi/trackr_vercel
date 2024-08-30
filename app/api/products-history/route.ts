@@ -53,7 +53,6 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
 
   // Fetch products including product's grower, strain, and category
   const products = await prisma.product.findMany({
-
     orderBy: {
       createdAt: "desc",
     },
@@ -85,7 +84,7 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
     productName: product?.product || "Unknown Product",  // Add product name
     growerName: product?.grower.name || "Unknown Grower",  // Add grower name
     // strainName: product?.strain.name || "Unknown Strain",  // Add strain name
-    categoryName: product?.category.name || "Unknown Category",  // Add category name
+    categoryName: product?.category?.name ?? "---",
     // growerIcon: product?.grower.icon || "Unknown Grower",  // Add grower name
     // strainIcon: product?.strain.icon || "Unknown Strain",  // Add strain name
     // categoryIcon: product?.category.icon || "Unknown Category",  // Add category name

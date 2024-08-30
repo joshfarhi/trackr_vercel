@@ -52,7 +52,7 @@ function ProductPicker({ onChange }: Props) {
 
   const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
   const growers = Array.isArray(growersQuery.data) ? growersQuery.data : [];
-  const categories = Array.isArray(categoriesQuery.data) ? categoriesQuery.data : [];
+  // const categories = Array.isArray(categoriesQuery.data) ? categoriesQuery.data : [];
 
   const selectedProduct = products.find((product: Product) => product.product === value);
 
@@ -65,12 +65,19 @@ function ProductPicker({ onChange }: Props) {
   );
 
   // Handle loading and error states separately
-  if (growersQuery.isLoading || categoriesQuery.isLoading) {
+  // if (growersQuery.isLoading || categoriesQuery.isLoading) {
+  //   return <div>Loading...</div>;
+  // }
+
+  // if (growersQuery.isError ) {
+  //   return <div>Error: {(growersQuery.error || categoriesQuery.error).message}</div>;
+  // }
+  if (growersQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (growersQuery.isError || categoriesQuery.isError) {
-    return <div>Error: {(growersQuery.error || categoriesQuery.error).message}</div>;
+  if (growersQuery.isError ) {
+    return <div>Error: {(growersQuery.error).message}</div>;
   }
 
   return (
@@ -83,7 +90,7 @@ function ProductPicker({ onChange }: Props) {
           className="w-[200px] justify-between"
         >
           {selectedProduct ? (
-            <ProductRow product={selectedProduct} growers={growers} categories={categories} />
+            <ProductRow product={selectedProduct} growers={growers} />
           ) : (
             "Select strain"
           )}
@@ -108,7 +115,7 @@ function ProductPicker({ onChange }: Props) {
                     setOpen(false);
                   }}
                 >
-                  <ProductRow product={product} growers={growers} categories={categories} />
+                  <ProductRow product={product} growers={growers} />
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
@@ -127,15 +134,17 @@ function ProductPicker({ onChange }: Props) {
 
 export default ProductPicker;
 
-function ProductRow({ product, growers, categories }: { product: Product, growers: any[], categories: any[] }) {
+// function ProductRow({ product, growers, categories }: { product: Product, growers: any[], categories: any[] }) {
+
+function ProductRow({ product, growers }: { product: Product, growers: any[]}) {
   const growerName = growers.find((grower) => grower.id === product.growerId)?.name;
-  const categoryName = categories.find((category) => category.id === product.categoryId)?.name;
+  // const categoryName = categories.find((category) => category.id === product.categoryId)?.name;
 
   return (
     <div className="flex items-center gap-2">
       <span>{product.product}</span>
       <span> - {growerName}</span>
-      <span> - {categoryName}</span>
+      {/* <span> - {categoryName}</span> */}
     </div>
   );
 }

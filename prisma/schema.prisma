@@ -46,8 +46,8 @@ model Product {
   product     String    
   growerId    Int
   grower      Grower    @relation(fields: [growerId], references: [id])
-  categoryId  Int
-  category    Category  @relation(fields: [categoryId], references: [id])
+  categoryId  Int?
+  category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
   quantity    Int       @default(0)
 
