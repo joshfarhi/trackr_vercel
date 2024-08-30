@@ -302,10 +302,10 @@ function TransactionTable({ from, to }: Props) {
   const productsOptions = useMemo(() => {
     const productsMap = new Map<string, { value: string; label: string }>();
   
-    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
-      productsMap.set(product.productName, {
-        value: product.productName,
-        label: `${product.productName}`,
+    history.data?.forEach((transaction) => {  // Explicitly type 'product'
+      productsMap.set(transaction.productName, {
+        value: transaction.productName,
+        label: `${transaction.productName}`,
       });
     });
   
