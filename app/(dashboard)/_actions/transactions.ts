@@ -35,13 +35,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
 
   // const growerRow = await prisma.grower.findFirst({
   //   where: {
+    
   //     name: grower,
   //   },
   // });
 
   // if (!growerRow) {
-  //   throw new Error("Grower not found");
+  //   throw new Error("grower not found");
   // }
+
 
   // const productRow = await prisma.product.findUnique({
   //   where: {
@@ -56,9 +58,9 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   const productRow = await prisma.product.findFirst({
     where: {
       product: product, // Assuming product is the name
-      grower: {         // Nested query to match the grower by name
-        name: parsedBody.data.grower, 
-      },
+      // grower: {
+      //   connect: { id: growerRow.id },    // Connect to an existing grower by ID
+      // },
 
     },
   });
