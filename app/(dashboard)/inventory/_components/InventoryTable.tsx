@@ -122,6 +122,15 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     ),
   },
   {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.description}</div>
+    ),
+  },
+  {
     accessorKey: "date",
     header: "Date Dropped",
     cell: ({ row }) => {
@@ -340,6 +349,8 @@ function ProductTable({ from, to }: Props) {
                 grower: row.original.grower,
                 // growerIcon: row.original.growerIcon,
                 strain: row.original.strain,
+                description: row.original.description,
+
                 // strainIcon: row.original.strainIcon,
                 amount: row.original.amount,
                 // formattedAmount: row.original.formattedAmount,
