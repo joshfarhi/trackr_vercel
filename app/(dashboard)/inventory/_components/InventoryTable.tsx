@@ -273,18 +273,18 @@ function ProductTable({ from, to }: Props) {
     return Array.from(growersMap.values());
   }, [history.data]);
   
-  // const strainsOptions = useMemo(() => {
-  //   const strainsMap = new Map<string, { value: string; label: string }>();
+  const productsOptions = useMemo(() => {
+    const productsMap = new Map<string, { value: string; label: string }>();
   
-  //   history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
-  //     strainsMap.set(product.strainName, {
-  //       value: product.strainName,
-  //       label: `${product.strainName}`,
-  //     });
-  //   });
+    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
+      productsMap.set(product.product, {
+        value: product.productName,
+        label: `${product.productName}`,
+      });
+    });
   
-  //   return Array.from(strainsMap.values());
-  // }, [history.data]);
+    return Array.from(productsMap.values());
+  }, [history.data]);
   
   return (
     <div className="w-full">
@@ -304,13 +304,13 @@ function ProductTable({ from, to }: Props) {
               options={growersOptions}
             />
           )}
-                    {/* {table.getColumn("strain") && (
+                    {table.getColumn("product") && (
             <DataTableFacetedFilter
               title="Strain"
-              column={table.getColumn("strain")}
-              options={strainsOptions}
+              column={table.getColumn("Strain")}
+              options={productsOptions}
             />
-          )} */}
+          )}
           
           {/* {table.getColumn("type") && (
             <DataTableFacetedFilter

@@ -51,7 +51,7 @@ model Product {
   transactions Transaction[]  // No @relation attribute needed here
   quantity    Int       @default(0)
 
-  @@unique([product, growerId, categoryId])  // Enforce unique combination of product, grower, and category
+  @@unique([product, growerId])  // Enforce unique combination of product, grower, and category
 }
 
 model Transaction {

@@ -12,7 +12,10 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
  
   const products = await prisma.product.findMany({
-
+    include: {
+      grower: true,
+      category: true,
+    },
     orderBy: {
       product: "asc",
     },
