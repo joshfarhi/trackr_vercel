@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, category, grower, createdAt } = parsedBody.data;
+  const { product, quantity, category, grower, createdAt, description } = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -71,6 +71,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     data: {
       quantity,
       product,
+      description: description || "", // Set to empty string if not provided
       // icon: icon ?? "",  // Default to an empty string if icon is null
       category: categoryRow ? { connect: { id: categoryRow.id } } : undefined, // Conditionally connect to a category
       grower: {

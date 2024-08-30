@@ -110,6 +110,8 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
     onSuccess: async (data: Product) => {
       form.reset({
         product: "",
+        description: "",
+
         // icon: "",
         // strain: undefined,
         grower: undefined,
@@ -288,6 +290,24 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                   </FormControl>
                   <FormDescription>
                     Select a grower for this Strain
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+                        <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                  <Input
+          {...field}   // Spread field but override `value` within it
+          value={field.value ?? ""}  // Coerce `null` to an empty string
+        />
+          </FormControl>
+                  <FormDescription>
+                    New strain description/notes (optional)
                   </FormDescription>
                 </FormItem>
               )}
