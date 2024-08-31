@@ -24,8 +24,6 @@ export async function GET(request: Request) {
 
   const stats = await getBalanceStats(
     user.id,
-    queryParams.data.from,
-    queryParams.data.to
   );
 
   return new Response(JSON.stringify(stats));
