@@ -28,10 +28,11 @@ function StatsCards({ from, to, userSettings }: Props) {
   // const formatter = useMemo(() => {
   //   return GetFormatterForWeight(userSettings.weight);
   // }, [userSettings.weight]);
-
-  const order = statsQuery.data?.order || 0;
-  const returns = statsQuery.data?.returns || 0;
-  const balance = order - returns;
+//Transaction balance
+  // const order = statsQuery.data?.order || 0;
+  // const returns = statsQuery.data?.returns || 0;
+  // const balance = order - returns;
+  const balance = statsQuery.data?.balance || 0;
 
   return (
     <div className="relative flex w-full flex-wrap gap-2 md:flex-nowrap">

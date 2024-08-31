@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   const queryParams = OverviewQuerySchema.safeParse({ from, to });
 
   if (!queryParams.success) {
-    return Response.json(queryParams.error.message, {
+    return new Response(JSON.stringify({ error: queryParams.error.message }), {
       status: 400,
     });
   }
@@ -28,30 +28,41 @@ export async function GET(request: Request) {
     queryParams.data.to
   );
 
-  return Response.json(stats);
+  return new Response(JSON.stringify(stats));
 }
 
 export type GetBalanceStatsResponseType = Awaited<
   ReturnType<typeof getBalanceStats>
 >;
+//Stats for Transaction Balance
+// async function getBalanceStats(userId: string, from: Date, to: Date) {
+//   const totals = await prisma.transaction.groupBy({
+//     by: ["type"],
+//     where: {
+//     //   userId,
+//       date: {
+//         gte: from,
+//         lte: to,
+//       },
+//     },
+//     _sum: {
+//       amount: true,
+//     },
+//   });
 
-async function getBalanceStats(userId: string, from: Date, to: Date) {
-  const totals = await prisma.transaction.groupBy({
-    by: ["type"],
-    where: {
-    //   userId,
-      date: {
-        gte: from,
-        lte: to,
-      },
-    },
+//   return {
+//     returns: totals.find((t) => t.type === "returns")?._sum.amount || 0,
+//     order: totals.find((t) => t.type === "order")?._sum.amount || 0,
+//   };
+// }
+async function getBalanceStats(userId: string) {
+  const totalQuantity = await prisma.product.aggregate({
     _sum: {
-      amount: true,
+      quantity: true,
     },
   });
 
   return {
-    returns: totals.find((t) => t.type === "returns")?._sum.amount || 0,
-    order: totals.find((t) => t.type === "order")?._sum.amount || 0,
+    balance: totalQuantity._sum.quantity || 0,
   };
 }
