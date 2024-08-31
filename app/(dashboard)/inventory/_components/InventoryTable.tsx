@@ -42,11 +42,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import DeleteProductDialog from "@/app/(dashboard)/inventory/_components/DeleteProductDialog";
+import EditProductDialog from "@/app/(dashboard)/inventory/_components/EditProductDialog";
+
 import * as XLSX from "xlsx";
 
 interface Props {
   from: Date;
   to: Date;
+
 }
 
 const emptyData: any[] = [];
@@ -445,9 +448,39 @@ export default ProductTable;
 
 function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
 
   return (
     <>
+    <EditProductDialog
+      open={showEditDialog}
+      setOpen={setShowEditDialog}
+      productId={product.id.toString()}
+     trigger={undefined}
+      product={product}
+    />
+    {/* <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant={"ghost"} className="h-8 w-8 p-0 ">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="flex items-center gap-2"
+          onSelect={() => {
+            setShowEditDialog((prev) => !prev);
+          }}
+        >
+          <TrashIcon className="h-4 w-4 text-muted-foreground" />
+          Edit
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu> */}
+ 
       <DeleteProductDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
