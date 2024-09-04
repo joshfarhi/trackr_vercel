@@ -5,7 +5,6 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { EditProductSchema, EditProductSchemaType } from '@/schema/product';
 
-// Update the function to accept a single object with both id and data
 export async function EditProduct({
   id,           // Product ID
   data,         // Form data
@@ -50,6 +49,10 @@ export async function EditProduct({
 
   const { quantity, category, grower, updatedAt, description } = parsed.data;
 
+  // Check if grower and category are valid IDs and only connect if valid
+  const growerConnect = grower ? { connect: { id: parseInt(grower) } } : undefined;
+  const categoryConnect = category ? { connect: { id: parseInt(category) } } : undefined;
+
   // Update the product in the database
   const updatedProduct = await prisma.product.update({
     where: {
@@ -59,11 +62,10 @@ export async function EditProduct({
       quantity,
       updatedAt: new Date(updatedAt),
       description: description || "", 
-      category: category ? { connect: { id: parseInt(category) } } : undefined, 
-      grower: { connect: { id: parseInt(grower) } }, // Connect to grower by ID
+      grower: growerConnect,   // Only connect if grower is valid
+      category: categoryConnect, // Only connect if category is valid
     },
   });
   
-
   return updatedProduct;
 }

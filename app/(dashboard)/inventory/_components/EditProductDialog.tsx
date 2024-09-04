@@ -56,13 +56,13 @@ interface Props {
   setOpen: (open: boolean) => void;
 }
 
-function EditProductDialog({ productId, trigger, successCallback, product }: Props) {
+function EditProductDialog({ productId, trigger, successCallback, product, open, setOpen }: Props) {
   const [showPicker, setShowPicker] = useState(false); 
   const [showCategoryPicker, setShowCategoryPicker] = useState(false); 
 
   const [categoryName, setCategoryName] = useState<string>("");
   const [growerName, setGrowerName] = useState<string>("");
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
 
   useEffect(() => {
     async function fetchCategoryAndGrower() {
@@ -127,8 +127,9 @@ quantity: 0,
       await queryClient.invalidateQueries({
         queryKey: ["products"],
       });
+      setOpen(false); // Close the dialog after success
 
-      setOpen((prev) => !prev);
+      // setOpen((prev) => !prev);
     },
     onError: () => {
       toast.error("Something went wrong", {
@@ -193,7 +194,7 @@ quantity: 0,
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="category"
               render={({ field }) => (
@@ -248,7 +249,7 @@ quantity: 0,
                   <FormDescription>Select or enter the grower</FormDescription>
                 </FormItem>
               )}
-            />
+            /> */}
             <FormField
               control={form.control}
               name="description"
@@ -266,7 +267,7 @@ quantity: 0,
                 </FormItem>
               )}
             />
-            <FormField
+            {/* <FormField
               control={form.control}
               name="updatedAt"
               render={({ field }) => (
@@ -302,7 +303,7 @@ quantity: 0,
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             <DialogFooter>
               <Button
                 type="button"
