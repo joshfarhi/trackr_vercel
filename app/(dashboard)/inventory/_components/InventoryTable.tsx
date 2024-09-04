@@ -259,7 +259,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
           {/* Edit Action */}
           <DropdownMenuItem
             className="flex items-center gap-2"
-            onSelect={() => setShowEditDialog(true)}
+            onSelect={() => setShowEditDialog(true)} // Open the Edit dialog
           >
             Edit
           </DropdownMenuItem>
