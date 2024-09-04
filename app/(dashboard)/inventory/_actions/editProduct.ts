@@ -47,7 +47,7 @@ export async function EditProduct({
     throw new Error("Strain not found");
   }
 
-  const { quantity, category, grower, createdAt, description } = parsed.data;
+  const { quantity, category, grower, updatedAt, description } = parsed.data;
 
   // Update the product in the database
   const updatedProduct = await prisma.product.update({
@@ -56,7 +56,7 @@ export async function EditProduct({
     },
     data: {
       quantity,
-      createdAt: new Date(createdAt), // Ensure valid Date object
+      updatedAt: new Date(updatedAt), // Ensure valid Date object
       description: description || "", // Fallback to empty string if description is not provided
       category: category ? { connect: { id: parseInt(category) } } : undefined, // Conditionally connect to a category
       grower: { connect: { id: parseInt(grower) } }, // Connect to a grower by ID

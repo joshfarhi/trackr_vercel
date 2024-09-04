@@ -55,44 +55,53 @@ interface Props {
 }
 
 function EditProductDialog({ productId, trigger, product, open, setOpen }: Props) {
+  const [showPicker, setShowPicker] = useState(false); // Track whether to show the picker
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false); // Track whether to show the picker
+
   const [categoryName, setCategoryName] = useState<string>("");
   const [growerName, setGrowerName] = useState<string>("");
-
+  const [growerData, setGrowerData] = useState<any>(null);
+  const [categoryData, setCategoryData] = useState<any>(null);
   // Fetch category and grower names
   useEffect(() => {
     async function fetchCategoryAndGrower() {
       try {
-        const categoryResponse = await fetch(`/api/category/${product.categoryId}`);
-        const growerResponse = await fetch(`/api/grower/${product.growerId}`);
-
+        // Fetch the category
+        const categoryResponse = await fetch(`/api/categories?id=${product.categoryId}`);
+        const categoryData = await categoryResponse.json(); // Parse the response once
+  
+        // Fetch the grower
+        const growerResponse = await fetch(`/api/growers?id=${product.growerId}`);
+        const growerData = await growerResponse.json(); // Parse the response once
+  
         if (categoryResponse.ok) {
-          const categoryData = await categoryResponse.json();
-          setCategoryName(categoryData.name);
+          console.log('Category Data:', categoryData);
+          setCategoryName(categoryData.name); // Set the category name
         }
-
+  
         if (growerResponse.ok) {
-          const growerData = await growerResponse.json();
-          setGrowerName(growerData.name);
+          console.log('Grower Data:', growerData);
+
+          setGrowerName(growerData.name); // Set the grower name
         }
       } catch (error) {
         console.error("Error fetching category or grower", error);
         toast.error("Failed to fetch category or grower information.");
       }
     }
-
+  
     if (open) {
       fetchCategoryAndGrower();
     }
   }, [open, product.categoryId, product.growerId]);
-
   const form = useForm<EditProductSchemaType>({
     resolver: zodResolver(EditProductSchema),
     defaultValues: {
       quantity: product.quantity,
-      grower: growerName, // Set growerName after fetching
-      category: categoryName, // Set categoryName after fetching
+    grower: growerData?.name, // Use the growerData.name
+      category: categoryData?.name, // Set categoryName after fetching
       description: product.description || "",
-      createdAt: new Date(product.createdAt),
+      updatedAt: new Date(product.updatedAt),
     },
   });
 
@@ -126,7 +135,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
       data: {
         id: product.id, // The product's ID
         quantity: values.quantity, // Quantity from the form values
-        createdAt: values.createdAt, // CreatedAt from the form values
+        updatedAt: values.updatedAt, // CreatedAt from the form values
         grower: values.grower, // Grower from the form values
         description: values.description || null, // Description or null if empty
         category: values.category || null, // Category or null if empty
@@ -171,32 +180,65 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    <CategoryPicker onChange={field.onChange} categoryName={categoryName} />
-                  </FormControl>
-                  <FormDescription>Select a category for this strain</FormDescription>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="grower"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Grower</FormLabel>
-                  <FormControl>
-                    <GrowerPicker onChange={field.onChange} growerName={growerName} />
-                  </FormControl>
-                  <FormDescription>Select a grower for this strain</FormDescription>
-                </FormItem>
-              )}
-            />
+<FormField
+  control={form.control}
+  name="category"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Category</FormLabel>
+      <FormControl>
+        {/* Ensure FormControl only contains the Input */}
+        {!showCategoryPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || categoryName} // Displays the fetched growerName
+          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
+          placeholder="Enter category name"
+        />
+      ) : (
+        <CategoryPicker
+          categoryName={categoryName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowCategoryPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>Select or enter the grower for this strain</FormDescription>
+    </FormItem>
+  )}
+/>
+<FormField
+  control={form.control}
+  name="grower"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Grower</FormLabel>
+      <FormControl>
+        {/* Ensure FormControl only contains the Input */}
+        {!showPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || growerName} // Displays the fetched growerName
+          onFocus={() => setShowPicker(true)} // Show picker on input focus
+          placeholder="Enter grower name"
+        />
+      ) : (
+        <GrowerPicker
+          growerName={growerName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>Select or enter the grower for this strain</FormDescription>
+    </FormItem>
+  )}
+/>
+
             <FormField
               control={form.control}
               name="description"
@@ -216,7 +258,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
             />
             <FormField
               control={form.control}
-              name="createdAt"
+              name="updatedAt"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Transaction date</FormLabel>
@@ -254,7 +296,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                 <Button
                   type="button"
                   variant={"secondary"}
-                  onClick={() => {
+                  onSubmit={() => {
                     form.reset();
                     setOpen(false);
                   }}
@@ -262,9 +304,32 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={editMutation.status === "pending"}>
-                {editMutation.status === "pending" ? <Loader2 className="animate-spin" /> : "Edit"}
-              </Button>
+              <Button
+  type="submit"
+  onSubmit={() => {
+    // Show a toast while the mutation is in progress
+    toast.loading("Editing product...", {
+      id: productId,
+    });
+
+    // Call the mutation with the correct object structure
+    editMutation.mutate({
+      id: productId, // Product ID
+
+      data: {
+        id: form.getValues("id"),
+        quantity: form.getValues("quantity"), // Form value for quantity
+        updatedAt: form.getValues("updatedAt"), // Form value for createdAt
+        grower: form.getValues("grower"), // Form value for grower
+        description: form.getValues("description"), // Form value for description
+        category: form.getValues("category"), // Form value for category
+      },
+    });
+  }}
+>
+  {editMutation.status ==="pending" ? <Loader2 className="animate-spin" /> : "Edit"}
+</Button>
+
             </DialogFooter>
           </form>
         </Form>
