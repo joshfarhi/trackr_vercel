@@ -220,8 +220,12 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
         open={showEditDialog}
         setOpen={setShowEditDialog}
         product={product}              
-        productId={product.id.toString()}  
-        trigger={undefined}          
+        productId={product.id}  
+        trigger={undefined}   
+        successCallback={() => {
+          // Logic to handle after a product is successfully created
+          console.log("Strain edited successfully");
+        }}  
             />
 
       {/* DeleteProductDialog */}
