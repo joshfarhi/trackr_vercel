@@ -24,9 +24,11 @@ import React, { useCallback, useEffect, useState } from "react";
 
 interface Props {
   onChange: (value: string) => void;
+  categoryName: string; // Add this line
+
 }
 
-function CategoryPicker({  onChange }: Props) {
+function CategoryPicker({  onChange, categoryName }: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 

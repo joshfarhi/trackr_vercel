@@ -274,7 +274,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <CategoryPicker onChange={handleCategoryChange} />
+                    <CategoryPicker categoryName="" onChange={handleCategoryChange} />
                   </FormControl>
                   <FormDescription>
                     Select a category for this Strain
@@ -289,7 +289,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Grower</FormLabel>
                   <FormControl>
-                    <GrowerPicker onChange={handleGrowerChange} />
+                    <GrowerPicker growerName="" onChange={handleGrowerChange} />
                   </FormControl>
                   <FormDescription>
                     Select a grower for this Strain

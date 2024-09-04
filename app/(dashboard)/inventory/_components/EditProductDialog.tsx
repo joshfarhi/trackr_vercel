@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Product } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { ReactNode, useCallback, useState, useEffect } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -39,38 +39,78 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   trigger: ReactNode;
-  product: Product;
+  product: {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    product: string;
+    growerId: number;
+    categoryId: number | null;
+    quantity: number;
+    description: string | null;
+  };
+  productId: string;
   open: boolean;
   setOpen: (open: boolean) => void;
-  productId: string;
 }
 
-function EditProductDialog({ productId, trigger, product }: Props) {
+function EditProductDialog({ productId, trigger, product, open, setOpen }: Props) {
+  const [categoryName, setCategoryName] = useState<string>("");
+  const [growerName, setGrowerName] = useState<string>("");
+
+  // Fetch category and grower names
+  useEffect(() => {
+    async function fetchCategoryAndGrower() {
+      try {
+        const categoryResponse = await fetch(`/api/category/${product.categoryId}`);
+        const growerResponse = await fetch(`/api/grower/${product.growerId}`);
+
+        if (categoryResponse.ok) {
+          const categoryData = await categoryResponse.json();
+          setCategoryName(categoryData.name);
+        }
+
+        if (growerResponse.ok) {
+          const growerData = await growerResponse.json();
+          setGrowerName(growerData.name);
+        }
+      } catch (error) {
+        console.error("Error fetching category or grower", error);
+        toast.error("Failed to fetch category or grower information.");
+      }
+    }
+
+    if (open) {
+      fetchCategoryAndGrower();
+    }
+  }, [open, product.categoryId, product.growerId]);
+
   const form = useForm<EditProductSchemaType>({
     resolver: zodResolver(EditProductSchema),
     defaultValues: {
       quantity: product.quantity,
-      grower: product.grower, // Assuming grower is part of the product model
-      category: product.category, // Assuming category is part of the product model
+      grower: growerName, // Set growerName after fetching
+      category: categoryName, // Set categoryName after fetching
       description: product.description || "",
       createdAt: new Date(product.createdAt),
     },
   });
 
-  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: (values: EditProductSchemaType) => EditProduct({ id: productId, data: values }),
-    onSuccess: async (updatedProduct: Product) => {
-      form.reset();
-      toast.success(`Strain ${updatedProduct.product} edited successfully 🎉`, {
+  const editMutation = useMutation({
+    mutationFn: EditProduct,
+    onSuccess: async () => {
+      toast.success("Product edited successfully", {
         id: productId,
       });
+
       await queryClient.invalidateQueries({
         queryKey: ["products"],
       });
-      setOpen(false);
+
+      form.reset(); // Reset the form after successful submission
+      setOpen(false); // Close the dialog
     },
     onError: () => {
       toast.error("Something went wrong", {
@@ -79,13 +119,20 @@ function EditProductDialog({ productId, trigger, product }: Props) {
     },
   });
 
-  const onSubmit = useCallback(
-    (values: EditProductSchemaType) => {
-      toast.loading("Editing product...", { id: productId });
-      mutate(values);
-    },
-    [mutate, productId]
-  );
+  const onSubmit = (values: EditProductSchemaType) => {
+    toast.loading("Editing product...", { id: productId });
+    editMutation.mutate({
+      id: productId, // The product ID
+      data: {
+        id: product.id, // The product's ID
+        quantity: values.quantity, // Quantity from the form values
+        createdAt: values.createdAt, // CreatedAt from the form values
+        grower: values.grower, // Grower from the form values
+        description: values.description || null, // Description or null if empty
+        category: values.category || null, // Category or null if empty
+      },
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -131,7 +178,7 @@ function EditProductDialog({ productId, trigger, product }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Category</FormLabel>
                   <FormControl>
-                    <CategoryPicker onChange={field.onChange} value={field.value} />
+                    <CategoryPicker onChange={field.onChange} categoryName={categoryName} />
                   </FormControl>
                   <FormDescription>Select a category for this strain</FormDescription>
                 </FormItem>
@@ -144,7 +191,7 @@ function EditProductDialog({ productId, trigger, product }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Grower</FormLabel>
                   <FormControl>
-                    <GrowerPicker onChange={field.onChange} value={field.value} />
+                    <GrowerPicker onChange={field.onChange} growerName={growerName} />
                   </FormControl>
                   <FormDescription>Select a grower for this strain</FormDescription>
                 </FormItem>
@@ -215,8 +262,8 @@ function EditProductDialog({ productId, trigger, product }: Props) {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? <Loader2 className="animate-spin" /> : "Edit"}
+              <Button type="submit" disabled={editMutation.status === "pending"}>
+                {editMutation.status === "pending" ? <Loader2 className="animate-spin" /> : "Edit"}
               </Button>
             </DialogFooter>
           </form>

@@ -24,9 +24,10 @@ import React, { useCallback, useEffect, useState } from "react";
 
 interface Props {
   onChange: (value: string) => void;
+  growerName: string;
 }
 
-function GrowerPicker({  onChange }: Props) {
+function GrowerPicker({  onChange, growerName }: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
