@@ -205,7 +205,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
         />
       )}
       </FormControl>
-      <FormDescription>*Selecting this box will reset the category for this item</FormDescription>
+      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
     </FormItem>
   )}
 />
@@ -234,7 +234,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
         />
       )}
       </FormControl>
-      <FormDescription>*Selecting this box will reset the grower for this item</FormDescription>
+      <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
     </FormItem>
   )}
 />
