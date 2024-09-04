@@ -32,7 +32,7 @@ import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "@/components/datatable/ColumnToggle";
 
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { DownloadIcon, MoreHorizontal } from "lucide-react";
+import { DownloadIcon, MoreHorizontal, TrashIcon, PencilIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +49,7 @@ import * as XLSX from "xlsx";
 interface Props {
   from: Date;
   to: Date;
+
 }
 
 const emptyData: any[] = [];
@@ -69,19 +70,43 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     sortingFn: (rowA, rowB) => {
       const amountA = rowA.original.quantity;
       const amountB = rowB.original.quantity;
-      return amountA - amountB;
+      return amountA - amountB; // Sort as numbers
     },
   },
+  // {
+  //   accessorKey: "product.product",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Product" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="flex gap-2 capitalize">
+  //       {row.original.productName}
+  //     </div>
+  //   ),
+  // },
   {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
     ),
+    // filterFn: (row, id, value) => {
+    //   // Assuming the strain name is stored in productName
+    //   const strainName = row.original.productName || "";
+    //   const filterValue = typeof value === "string" ? value.toLowerCase() : "";
+    //   return strainName.toLowerCase().includes(filterValue);
+    // },
     filterFn: (row, id, value) => {
-      const strainName = row.original.productName;
-      return value.includes(strainName);
+      const strainName = row.original.productName; // Direct access to category name
+      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
     },
-    cell: ({ row }) => <div className="flex gap-2">{row.original.productName}</div>,
+    cell: ({ row }) => (
+      <div className="flex gap-2">
+        <div className="">{row.original.productName}</div>
+      </div>
+    ),
   },
   {
     accessorKey: "grower",
@@ -89,21 +114,24 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       <DataTableColumnHeader column={column} title="Grower" />
     ),
     filterFn: (row, id, value) => {
-      const growerName = row.original.growerName;
-      return value.includes(growerName);
+      const growerName = row.original.growerName; // Direct access to category name
+      return value.includes(growerName); // Filter logic that checks if the filter value includes the category name
     },
-    cell: ({ row }) => <div className="flex gap-2">{row.original.growerName}</div>,
+    cell: ({ row }) => (
+      <div className="flex gap-2">
+        {row.original.growerName}
+        
+      </div>
+    ),
   },
   {
-    accessorKey: "category",
+    accessorKey: "description",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
+      <DataTableColumnHeader column={column} title="Description" />
     ),
-    filterFn: (row, id, value) => {
-      const categoryName = row.original.categoryName;
-      return value.includes(categoryName);
-    },
-    cell: ({ row }) => <div className="flex gap-2">{row.original.categoryName}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.description}</div>
+    ),
   },
   {
     accessorKey: "date",
@@ -119,6 +147,70 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
   },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+    filterFn: (row, id, value) => {
+      const categoryName = row.original.categoryName; // Direct access to category name
+      return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2">
+        {row.original.categoryName}
+      </div>
+    ),
+  },
+  // {
+  //   accessorKey: "product.product",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Product" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   cell: ({ row }) => (
+  //     <div className="flex gap-2 capitalize">
+  //       {row.original.productName}
+  //     </div>
+  //   ),
+  // },
+
+
+
+  // {
+  //   accessorKey: "description",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Description" />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <div className="capitalize">{row.original.description}</div>
+  //   ),
+  // },
+
+  // {
+  //   accessorKey: "type",
+  //   header: ({ column }) => (
+  //     <DataTableColumnHeader column={column} title="Type" />
+  //   ),
+  //   filterFn: (row, id, value) => {
+  //     return value.includes(row.getValue(id));
+  //   },
+  //   cell: ({ row }) => (
+  //     <div
+  //       className={cn(
+  //         "capitalize rounded-lg text-center p-2",
+  //         row.original.type === "order" &&
+  //           "bg-emerald-400/10 text-emerald-500",
+  //         row.original.type === "returns" && "bg-red-400/10 text-red-500"
+  //       )}
+  //     >
+  //       {row.original.type === "order" ? "ordered" : "returned"}
+  //     </div>
+  //   ),
+  // },
+
   {
     id: "actions",
     enableHiding: false,
@@ -139,11 +231,24 @@ function ProductTable({ from, to }: Props) {
   const history = useQuery<GetProductHistoryResponseType>({
     queryKey: ["products", "history", from, to],
     queryFn: () =>
-      fetch(`/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`).then(
-        (res) => res.json()
-      ),
+      fetch(
+        `/api/products-history?from=${DateToUTCDate(
+          from
+        )}&to=${DateToUTCDate(to)}`
+      ).then((res) => res.json()),
   });
 
+  const handleExportCSV = (data: any[]) => {
+    const csv = generateCsv(csvConfig)(data);
+    download(csvConfig)(csv);
+  };
+  const handleExportExcel = (data: any[]) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+    
+    XLSX.writeFile(workbook, "inventory.xlsx");
+  };
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -159,8 +264,112 @@ function ProductTable({ from, to }: Props) {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const categoriesOptions = useMemo(() => {
+    const categoriesMap = new Map<string, { value: string; label: string }>();
+    
+    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
+      categoriesMap.set(product.categoryName, {
+        value: product.categoryName,
+        label: `${product.categoryName}`,
+      });
+    });
+  
+    return Array.from(categoriesMap.values()); // Ensure this returns a proper array
+  }, [history.data]);
+  
+  const growersOptions = useMemo(() => {
+    const growersMap = new Map<string, { value: string; label: string }>();
+  
+    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
+      growersMap.set(product.growerName, {
+        value: product.growerName,
+        label: `${product.growerName}`,
+      });
+    });
+  
+    return Array.from(growersMap.values());
+  }, [history.data]);
+  
+  const productsOptions = useMemo(() => {
+    const productsMap = new Map<string, { value: string; label: string }>();
+  
+    history.data?.forEach((product: ProductHistoryRow) => {  // Explicitly type 'product'
+      productsMap.set(product.productName, {
+        value: product.productName,
+        label: `${product.productName}`,
+      });
+    });
+  
+    return Array.from(productsMap.values());
+  }, [history.data]);
+  
   return (
     <div className="w-full">
+      <div className="flex flex-wrap items-end justify-between gap-2 py-4">
+        <div className="flex gap-2">
+          {table.getColumn("category") && (
+            <DataTableFacetedFilter
+              title="Category"
+              column={table.getColumn("category")}
+              options={categoriesOptions}
+            />
+          )}
+          {table.getColumn("grower") && (
+            <DataTableFacetedFilter
+              title="Grower"
+              column={table.getColumn("grower")}
+              options={growersOptions}
+            />
+          )}
+                    {table.getColumn("product") && (
+            <DataTableFacetedFilter
+              title="Strain"
+              column={table.getColumn("product")}
+              options={productsOptions}
+            />
+          )}
+          
+          {/* {table.getColumn("type") && (
+            <DataTableFacetedFilter
+              title="Type"
+              column={table.getColumn("type")}
+              options={[
+                { label: "order", value: "order" },
+                { label: "returns", value: "returns" },
+              ]}
+            />
+          )} */}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            className="ml-auto h-8 lg:flex"
+            onClick={() => {
+              const data = table.getFilteredRowModel().rows.map((row) => ({
+                category: row.original.category,
+                // categoryIcon: row.original.categoryIcon,
+                grower: row.original.grower,
+                // growerIcon: row.original.growerIcon,
+                strain: row.original.strain,
+                description: row.original.description,
+
+                // strainIcon: row.original.strainIcon,
+                amount: row.original.amount,
+                // formattedAmount: row.original.formattedAmount,
+                date: row.original.date,
+              }));
+              handleExportExcel(data); // Use Excel export function
+
+              // handleExportCSV(data);
+            }}
+          >
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Export Excel
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
+      </div>
       <SkeletonWrapper isLoading={history.isFetching}>
         <div className="rounded-md border">
           <Table>
@@ -185,23 +394,50 @@ function ProductTable({ from, to }: Props) {
             <TableBody>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && "selected"}
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={columns.length} className="h-24 text-center">
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
                     No results.
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
+        </div>
+        <div className="flex items-center justify-end space-x-2 py-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
         </div>
       </SkeletonWrapper>
     </div>
@@ -216,24 +452,43 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
 
   return (
     <>
-      {/* EditProductDialog will open when showEditDialog is true */}
-      <EditProductDialog
-        open={showEditDialog}
-        setOpen={setShowEditDialog}
-        product={product}
-      />
-
-      {/* DeleteProductDialog */}
+    <EditProductDialog
+      open={showEditDialog}
+      setOpen={setShowEditDialog}
+      productId={product.id.toString()}
+     trigger={undefined}
+      product={product}
+    />
+    {/* <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant={"ghost"} className="h-8 w-8 p-0 ">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="flex items-center gap-2"
+          onSelect={() => {
+            setShowEditDialog((prev) => !prev);
+          }}
+        >
+          <TrashIcon className="h-4 w-4 text-muted-foreground" />
+          Edit
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu> */}
+ 
       <DeleteProductDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
         productId={product.id.toString()}
       />
-
-      {/* Dropdown Menu for Actions */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant={"ghost"} className="h-8 w-8 p-0">
+          <Button variant={"ghost"} className="h-8 w-8 p-0 ">
             <span className="sr-only">Open menu</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
@@ -241,20 +496,13 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-
-          {/* Edit Action */}
           <DropdownMenuItem
             className="flex items-center gap-2"
-            onSelect={() => setShowEditDialog(true)}
+            onSelect={() => {
+              setShowDeleteDialog((prev) => !prev);
+            }}
           >
-            Edit
-          </DropdownMenuItem>
-
-          {/* Delete Action */}
-          <DropdownMenuItem
-            className="flex items-center gap-2"
-            onSelect={() => setShowDeleteDialog(true)}
-          >
+            <TrashIcon className="h-4 w-4 text-muted-foreground" />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
