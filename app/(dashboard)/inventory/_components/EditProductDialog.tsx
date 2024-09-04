@@ -98,7 +98,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
     resolver: zodResolver(EditProductSchema),
     defaultValues: {
       quantity: product.quantity,
-    grower: growerData?.name, // Use the growerData.name
+      grower: growerData?.name, // Use the growerData.name
       category: categoryData?.name, // Set categoryName after fetching
       description: product.description || "",
       updatedAt: new Date(product.updatedAt),
@@ -180,65 +180,62 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                 </FormItem>
               )}
             />
-<FormField
-  control={form.control}
-  name="category"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Category</FormLabel>
-      <FormControl>
-        {/* Ensure FormControl only contains the Input */}
-        {!showCategoryPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || categoryName} // Displays the fetched growerName
-          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
-          placeholder="Enter category name"
-        />
-      ) : (
-        <CategoryPicker
-          categoryName={categoryName} // Pass the current grower name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowCategoryPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
-    </FormItem>
-  )}
-/>
-<FormField
-  control={form.control}
-  name="grower"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Grower</FormLabel>
-      <FormControl>
-        {/* Ensure FormControl only contains the Input */}
-        {!showPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || growerName} // Displays the fetched growerName
-          onFocus={() => setShowPicker(true)} // Show picker on input focus
-          placeholder="Enter grower name"
-        />
-      ) : (
-        <GrowerPicker
-          growerName={growerName} // Pass the current grower name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-      <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
-    </FormItem>
-  )}
-/>
-
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    {!showCategoryPicker ? (
+                      <Input
+                        {...field} // Connects the input field to react-hook-form
+                        value={field.value || categoryName} // Displays the fetched growerName
+                        onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
+                        placeholder="Enter category name"
+                      />
+                    ) : (
+                      <CategoryPicker
+                        categoryName={categoryName} // Pass the current grower name
+                        onChange={(value: string) => {
+                          field.onChange(value); // Update form value
+                          setShowCategoryPicker(false); // Hide picker once a value is selected
+                        }}
+                      />
+                    )}
+                  </FormControl>
+                  <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="grower"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Grower</FormLabel>
+                  <FormControl>
+                    {!showPicker ? (
+                      <Input
+                        {...field} // Connects the input field to react-hook-form
+                        value={field.value || growerName} // Displays the fetched growerName
+                        onFocus={() => setShowPicker(true)} // Show picker on input focus
+                        placeholder="Enter grower name"
+                      />
+                    ) : (
+                      <GrowerPicker
+                        growerName={growerName} // Pass the current grower name
+                        onChange={(value: string) => {
+                          field.onChange(value); // Update form value
+                          setShowPicker(false); // Hide picker once a value is selected
+                        }}
+                      />
+                    )}
+                  </FormControl>
+                  <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="description"
@@ -296,7 +293,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                 <Button
                   type="button"
                   variant={"secondary"}
-                  onSubmit={() => {
+                  onClick={() => {
                     form.reset();
                     setOpen(false);
                   }}
@@ -304,32 +301,9 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                   Cancel
                 </Button>
               </DialogClose>
-              <Button
-  type="submit"
-  onSubmit={() => {
-    // Show a toast while the mutation is in progress
-    toast.loading("Editing product...", {
-      id: productId,
-    });
-
-    // Call the mutation with the correct object structure
-    editMutation.mutate({
-      id: productId, // Product ID
-
-      data: {
-        id: form.getValues("id"),
-        quantity: form.getValues("quantity"), // Form value for quantity
-        updatedAt: form.getValues("updatedAt"), // Form value for createdAt
-        grower: form.getValues("grower"), // Form value for grower
-        description: form.getValues("description"), // Form value for description
-        category: form.getValues("category"), // Form value for category
-      },
-    });
-  }}
->
-  {editMutation.status ==="pending" ? <Loader2 className="animate-spin" /> : "Edit"}
-</Button>
-
+              <Button type="submit">
+                {editMutation.status === "pending" ? <Loader2 className="animate-spin" /> : "Edit"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>

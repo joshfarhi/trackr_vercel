@@ -117,8 +117,14 @@ function NavbarItem({
         {label}
       </Link>
       {isActive && (
-        <div className="absolute -bottom-[2px] left-1/2 hidden h-[2px] w-[80%] -translate-x-1/2 rounded-xl bg-foreground md:block" />
+        <div className="absolute -bottom-[2px] left-1/2 h-[2px] w-[80%] -translate-x-1/2 bg-blue-500 md:block"
+      
+        />
       )}
+    {!isActive && (
+        <div className="absolute -bottom-[2px] left-1/2 h-[2px] w-[80%] -translate-x-1/2 bg-blue-500 opacity-0 group-hover:opacity-100 transition-all duration-300 md:block" />
+      )}
+      
     </div>
   );
 }
