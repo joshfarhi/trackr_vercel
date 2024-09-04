@@ -176,7 +176,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                       placeholder="Enter product quantity"
                     />
                   </FormControl>
-                  <FormDescription>Quantity</FormDescription>
+                  <FormDescription>Click to adjust the total item quantity in the inventory</FormDescription>
                 </FormItem>
               )}
             />
@@ -205,7 +205,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
         />
       )}
       </FormControl>
-      <FormDescription>Select or enter the grower for this strain</FormDescription>
+      <FormDescription>*Selecting this box will reset the category for this item</FormDescription>
     </FormItem>
   )}
 />
@@ -234,7 +234,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
         />
       )}
       </FormControl>
-      <FormDescription>Select or enter the grower for this strain</FormDescription>
+      <FormDescription>*Selecting this box will reset the grower for this item</FormDescription>
     </FormItem>
   )}
 />
@@ -252,7 +252,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                       placeholder="Enter description"
                     />
                   </FormControl>
-                  <FormDescription>Description/notes (optional)</FormDescription>
+                  <FormDescription>(optional)</FormDescription>
                 </FormItem>
               )}
             />
@@ -261,7 +261,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
               name="updatedAt"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Transaction date</FormLabel>
+                  <FormLabel>Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -286,7 +286,7 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>Select a date for this transaction</FormDescription>
+                  <FormDescription>Select a date for this item</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
