@@ -106,6 +106,15 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     cell: ({ row }) => <div className="flex gap-2">{row.original.categoryName}</div>,
   },
   {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.description}</div>
+    ),
+  },
+  {
     accessorKey: "date",
     header: "Date Dropped",
     cell: ({ row }) => {
