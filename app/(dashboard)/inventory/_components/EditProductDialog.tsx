@@ -190,66 +190,66 @@ quantity: 0,
                       placeholder="Enter product quantity"
                     />
                   </FormControl>
-                  <FormDescription>Quantity</FormDescription>
+                  <FormDescription>Click to adjust the total item quantity in the inventory</FormDescription>
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Category</FormLabel>
-                  <FormControl>
-                    {!showCategoryPicker ? (
-                      <Input
-                        {...field}
-                        value={field.value || categoryName}
-                        onFocus={() => setShowCategoryPicker(true)}
-                        placeholder="Enter category name"
-                      />
-                    ) : (
-<CategoryPicker
-  categoryName={categoryName}
-  onChange={(value: string) => {
-    field.onChange(value); // Ensure this is the category ID, not the name
-    setShowCategoryPicker(false);
-  }}
-/>
-                    )}
-                  </FormControl>
-                  <FormDescription>Select or enter the category</FormDescription>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="grower"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Grower</FormLabel>
-                  <FormControl>
-                    {!showPicker ? (
-                      <Input
-                        {...field}
-                        value={field.value || growerName}
-                        onFocus={() => setShowPicker(true)}
-                        placeholder="Enter grower name"
-                      />
-                    ) : (
-<GrowerPicker
-  growerName={growerName}
-  onChange={(value: string) => {
-    field.onChange(value); // Ensure this is the grower ID, not the name
-    setShowPicker(false);
-  }}
-/>
-                    )}
-                  </FormControl>
-                  <FormDescription>Select or enter the grower</FormDescription>
-                </FormItem>
-              )}
-            /> */}
+{/* <FormField
+  control={form.control}
+  name="category"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Category</FormLabel>
+      <FormControl>
+        {!showCategoryPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || categoryName} // Displays the fetched growerName
+          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
+          placeholder="Enter category name"
+        />
+      ) : (
+        <CategoryPicker
+          categoryName={categoryName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowCategoryPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
+    </FormItem>
+  )}
+/> */}
+{/* <FormField
+  control={form.control}
+  name="grower"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Grower</FormLabel>
+      <FormControl>
+        {!showPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || growerName} // Displays the fetched growerName
+          onFocus={() => setShowPicker(true)} // Show picker on input focus
+          placeholder="Enter grower name"
+        />
+      ) : (
+        <GrowerPicker
+          growerName={growerName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
+    </FormItem>
+  )}
+/> */}
             <FormField
               control={form.control}
               name="description"
@@ -263,7 +263,7 @@ quantity: 0,
                       placeholder="Enter description"
                     />
                   </FormControl>
-                  <FormDescription>Description/notes (optional)</FormDescription>
+                  <FormDescription>(optional)</FormDescription>
                 </FormItem>
               )}
             />
@@ -272,7 +272,7 @@ quantity: 0,
               name="updatedAt"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Transaction date</FormLabel>
+                  <FormLabel>Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -299,7 +299,7 @@ quantity: 0,
                       />
                     </PopoverContent>
                   </Popover>
-                  <FormDescription>Select a date for this transaction</FormDescription>
+                  <FormDescription>Select a date for this item</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
