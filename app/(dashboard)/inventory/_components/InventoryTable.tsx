@@ -249,11 +249,12 @@ function ProductTable({ from, to }: Props) {
             className="ml-auto h-8 lg:flex"
             onClick={() => {
               const data = table.getFilteredRowModel().rows.map((row) => ({
-                category: row.original.categoryName,
-                grower: row.original.growerName,
-                description: row.original.description,
-                quantity: row.original.quantity,
-                date: row.original.date,
+                Strain: row.original.productName,
+                Category: row.original.categoryName,
+                Grower: row.original.growerName,
+                Description: row.original.description,
+                Quantity: row.original.quantity,
+                Date: row.original.date,
               }));
               handleExportExcel(data);
             }}

@@ -291,17 +291,19 @@ function TransactionTable({ from, to }: Props) {
             className="ml-auto h-8 lg:flex"
             onClick={() => {
               const data = table.getFilteredRowModel().rows.map((row) => ({
-                category: row.original.categoryName,
+                Strain: row.original.productName,
+
+                Category: row.original.categoryName,
                 // categoryIcon: row.original.categoryIcon,
-                grower: row.original.growerName,
+                Grower: row.original.growerName,
                 // growerIcon: row.original.growerIcon,
                 // strain: row.original.strain,
                 // strainIcon: row.original.strainIcon,
-                description: row.original.description,
-                type: row.original.type,
-                amount: row.original.amount,
+                Description: row.original.description,
+                Type: row.original.type,
+                Amount: row.original.amount,
                 // formattedAmount: row.original.formattedAmount,
-                date: row.original.date,
+                Date: row.original.date,
               }));
               handleExportExcel(data); // Use Excel export function
 
