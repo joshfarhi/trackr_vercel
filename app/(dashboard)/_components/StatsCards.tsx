@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { DateToUTCDate, GetFormatterForWeight } from "@/lib/helpers";
 import { UserSettings } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
+import { Tally5 } from "lucide-react";
 import React, { ReactNode, useCallback, useMemo } from "react";
 import CountUp from "react-countup";
 
@@ -64,8 +64,8 @@ function StatsCards({ from, to, userSettings }: Props) {
           value={balance}
           title="Inventory Balance"
           icon={
-            <Wallet className="h-12 w-12 items-center rounded-lg p-2 text-violet-500 bg-violet-400/10" />
-          }
+            <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-blue-500 bg-blue-400/10" />
+            }
         />
       </SkeletonWrapper>
     </div>

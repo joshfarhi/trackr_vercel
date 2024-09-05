@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { EditProduct } from "@/app/(dashboard)/inventory/_actions/editProduct";
 import {
   Dialog,
   DialogClose,
@@ -13,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Product } from "@prisma/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -33,14 +34,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Loader2 } from "lucide-react";
+import { Loader2, PlusSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { EditProduct } from "@/app/(dashboard)/inventory/_actions/editProduct";
 
 interface Props {
   trigger: ReactNode;
-  successCallback: (product: Product) => void;
-
   product: {
     id: number;
     createdAt: Date;
@@ -51,52 +49,57 @@ interface Props {
     quantity: number;
     description: string | null;
   };
-  productId: number;
+  productId: string;
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
-function EditProductDialog({ productId, trigger, successCallback, product, open, setOpen }: Props) {
-  const [showPicker, setShowPicker] = useState(false); 
-  const [showCategoryPicker, setShowCategoryPicker] = useState(false); 
+function EditProductDialog({ productId, trigger, product, open, setOpen }: Props) {
+  const [showPicker, setShowPicker] = useState(false); // Track whether to show the picker
+  const [showCategoryPicker, setShowCategoryPicker] = useState(false); // Track whether to show the picker
 
   const [categoryName, setCategoryName] = useState<string>("");
   const [growerName, setGrowerName] = useState<string>("");
-  // const [open, setOpen] = useState(false);
-
+  const [growerData, setGrowerData] = useState<any>(null);
+  const [categoryData, setCategoryData] = useState<any>(null);
+  // Fetch category and grower names
   useEffect(() => {
     async function fetchCategoryAndGrower() {
       try {
+        // Fetch the category
         const categoryResponse = await fetch(`/api/categories?id=${product.categoryId}`);
-        const categoryData = await categoryResponse.json();
-
+        const categoryData = await categoryResponse.json(); // Parse the response once
+  
+        // Fetch the grower
         const growerResponse = await fetch(`/api/growers?id=${product.growerId}`);
-        const growerData = await growerResponse.json();
-
+        const growerData = await growerResponse.json(); // Parse the response once
+  
         if (categoryResponse.ok) {
-          setCategoryName(categoryData.name);
+          console.log('Category Data:', categoryData);
+          setCategoryName(categoryData.name); // Set the category name
         }
-
+  
         if (growerResponse.ok) {
-          setGrowerName(growerData.name);
+          console.log('Grower Data:', growerData);
+
+          setGrowerName(growerData.name); // Set the grower name
         }
       } catch (error) {
+        console.error("Error fetching category or grower", error);
         toast.error("Failed to fetch category or grower information.");
       }
     }
-
+  
     if (open) {
       fetchCategoryAndGrower();
     }
   }, [open, product.categoryId, product.growerId]);
-
   const form = useForm<EditProductSchemaType>({
     resolver: zodResolver(EditProductSchema),
     defaultValues: {
-      id: product.id,
       quantity: product.quantity,
-      grower: growerName,
-      category: categoryName,
+      grower: growerData?.name, // Use the growerData.name
+      category: categoryData?.name, // Set categoryName after fetching
       description: product.description || "",
       updatedAt: new Date(product.updatedAt),
     },
@@ -104,75 +107,58 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
 
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  const editMutation = useMutation({
     mutationFn: EditProduct,
-    onSuccess: async (data: Product) => {
-      form.reset({
-        id: product.id,
-        description: "",
-updatedAt: new Date(),
-quantity: 0,
-        // icon: "",
-        // strain: undefined,
-        grower: undefined,
-        category: undefined,
-      });
-
-      toast.success(`Strain ${data.product} edited successfully 🎉`, {
+    onSuccess: async () => {
+      toast.success("Product edited successfully", {
         id: productId,
       });
-
-      successCallback(data);
 
       await queryClient.invalidateQueries({
         queryKey: ["products"],
       });
-      setOpen(false); // Close the dialog after success
 
-      // setOpen((prev) => !prev);
+      form.reset(); // Reset the form after successful submission
+      setOpen(false); // Close the dialog
     },
     onError: () => {
       toast.error("Something went wrong", {
-        id: "edit-product",
+        id: productId,
       });
     },
   });
 
-  const onSubmit = useCallback(
-    (values: EditProductSchemaType) => {
-      toast.loading("Editing strain...", {
-        id: productId,
-      });
-      mutate({
-        id: productId,
-        data: {
-          id: values.id,
-          quantity: values.quantity,
-          updatedAt: values.updatedAt,
-          grower: values.grower,
-          description: values.description,
-          category: values.category, // Convert category to ID if present
-        },
-      });    },
-    [mutate]
-  );
+  const onSubmit = (values: EditProductSchemaType) => {
+    toast.loading("Editing product...", { id: productId });
+    editMutation.mutate({
+      id: productId, // The product ID
+      data: {
+        id: product.id, // The product's ID
+        quantity: values.quantity, // Quantity from the form values
+        updatedAt: values.updatedAt, // CreatedAt from the form values
+        grower: values.grower, // Grower from the form values
+        description: values.description || null, // Description or null if empty
+        category: values.category || null, // Category or null if empty
+      },
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {trigger || (
-          <Button
-            variant={"ghost"}
-            className="flex items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground"
-          >
+        {trigger ? (
+          trigger
+        ) : (
+          <Button variant={"ghost"} className="flex items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground">
+            <PlusSquare className="mr-2 h-4 w-4" />
             Edit Product
           </Button>
         )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
-          <DialogDescription>Update product details</DialogDescription>
+          <DialogTitle>Edit Strain</DialogTitle>
+          <DialogDescription>Update strain details</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -194,62 +180,62 @@ quantity: 0,
                 </FormItem>
               )}
             />
-{/* <FormField
-  control={form.control}
-  name="category"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Category</FormLabel>
-      <FormControl>
-        {!showCategoryPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || categoryName} // Displays the fetched growerName
-          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
-          placeholder="Enter category name"
-        />
-      ) : (
-        <CategoryPicker
-          categoryName={categoryName} // Pass the current grower name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowCategoryPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
-    </FormItem>
-  )}
-/> */}
-{/* <FormField
-  control={form.control}
-  name="grower"
-  render={({ field }) => (
-    <FormItem className="flex flex-col">
-      <FormLabel>Grower</FormLabel>
-      <FormControl>
-        {!showPicker ? (
-        <Input
-          {...field} // Connects the input field to react-hook-form
-          value={field.value || growerName} // Displays the fetched growerName
-          onFocus={() => setShowPicker(true)} // Show picker on input focus
-          placeholder="Enter grower name"
-        />
-      ) : (
-        <GrowerPicker
-          growerName={growerName} // Pass the current grower name
-          onChange={(value: string) => {
-            field.onChange(value); // Update form value
-            setShowPicker(false); // Hide picker once a value is selected
-          }}
-        />
-      )}
-      </FormControl>
-      <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
-    </FormItem>
-  )}
-/> */}
+            <FormField
+              control={form.control}
+              name="category"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    {!showCategoryPicker ? (
+                      <Input
+                        {...field} // Connects the input field to react-hook-form
+                        value={field.value || categoryName} // Displays the fetched growerName
+                        onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
+                        placeholder="Enter category name"
+                      />
+                    ) : (
+                      <CategoryPicker
+                        categoryName={categoryName} // Pass the current grower name
+                        onChange={(value: string) => {
+                          field.onChange(value); // Update form value
+                          setShowCategoryPicker(false); // Hide picker once a value is selected
+                        }}
+                      />
+                    )}
+                  </FormControl>
+                  <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="grower"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Grower</FormLabel>
+                  <FormControl>
+                    {!showPicker ? (
+                      <Input
+                        {...field} // Connects the input field to react-hook-form
+                        value={field.value || growerName} // Displays the fetched growerName
+                        onFocus={() => setShowPicker(true)} // Show picker on input focus
+                        placeholder="Enter grower name"
+                      />
+                    ) : (
+                      <GrowerPicker
+                        growerName={growerName} // Pass the current grower name
+                        onChange={(value: string) => {
+                          field.onChange(value); // Update form value
+                          setShowPicker(false); // Hide picker once a value is selected
+                        }}
+                      />
+                    )}
+                  </FormControl>
+                  <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="description"
@@ -267,7 +253,7 @@ quantity: 0,
                 </FormItem>
               )}
             />
-            {/* <FormField
+            <FormField
               control={form.control}
               name="updatedAt"
               render={({ field }) => (
@@ -283,9 +269,7 @@ quantity: 0,
                             !field.value && "text-muted-foreground"
                           )}
                         >
-                          {field.value
-                            ? format(field.value, "PPP")
-                            : "Pick a date"}
+                          {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
                       </FormControl>
@@ -303,22 +287,23 @@ quantity: 0,
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            />
             <DialogFooter>
-              <Button
-                type="button"
-                variant={"secondary"}
-                onClick={() => {
-                  form.reset();
-                  setOpen(false);
-                }}
-              >
-                Cancel
+              <DialogClose asChild>
+                <Button
+                  type="button"
+                  variant={"secondary"}
+                  onClick={() => {
+                    form.reset();
+                    setOpen(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button type="submit">
+                {editMutation.status === "pending" ? <Loader2 className="animate-spin" /> : "Edit"}
               </Button>
-              <Button onClick={form.handleSubmit(onSubmit)} disabled={isPending}>
-              {!isPending && "Edit"}
-            {isPending && <Loader2 className="animate-spin" />}
-             </Button>
             </DialogFooter>
           </form>
         </Form>

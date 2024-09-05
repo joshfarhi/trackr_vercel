@@ -106,15 +106,6 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     cell: ({ row }) => <div className="flex gap-2">{row.original.categoryName}</div>,
   },
   {
-    accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
-    ),
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.description}</div>
-    ),
-  },
-  {
     accessorKey: "date",
     header: "Date Dropped",
     cell: ({ row }) => {
@@ -322,12 +313,8 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
         open={showEditDialog}
         setOpen={setShowEditDialog}
         product={product}              
-        productId={product.id}  
-        trigger={undefined}   
-        successCallback={() => {
-          // Logic to handle after a product is successfully created
-          console.log("Strain edited successfully");
-        }}  
+        productId={product.id.toString()}  
+        trigger={undefined}          
             />
 
       {/* DeleteProductDialog */}
@@ -352,7 +339,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
           {/* Edit Action */}
           <DropdownMenuItem
             className="flex items-center gap-2"
-            onSelect={() => setShowEditDialog(true)} // Open the Edit dialog
+            onSelect={() => setShowEditDialog(true)}
           >
             Edit
           </DropdownMenuItem>
