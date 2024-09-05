@@ -65,33 +65,11 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </p>
     ),
   },
-  // {
-  //   accessorKey: "strain",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Strain" />
-  //   ),
-  //   filterFn: (row, id, value) => {
-  //     const strainName = row.original.product.strain.name; // Direct access to category name
-  //     return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
-  //   },
-  //   cell: ({ row }) => (
-  //     <div className="flex gap-2 capitalize">
-       
-  //       <div className="capitalize">{row.original.product.strain.name}</div>
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
     ),
-    // filterFn: (row, id, value) => {
-    //   // Assuming the strain name is stored in productName
-    //   const strainName = row.original.productName || "";
-    //   const filterValue = typeof value === "string" ? value.toLowerCase() : "";
-    //   return strainName.toLowerCase().includes(filterValue);
-    // },
     filterFn: (row, id, value) => {
       const strainName = row.original.productName; // Direct access to category name
       return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
@@ -144,20 +122,6 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
   },
-  //   {
-  //   accessorKey: "product.product",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Product" />
-  //   ),
-  //   filterFn: (row, id, value) => {
-  //     return value.includes(row.getValue(id));
-  //   },
-  //   cell: ({ row }) => (
-  //     <div className="flex gap-2 capitalize">
-  //       {row.original.product.product}
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "type",
     header: ({ column }) => (
@@ -179,22 +143,6 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </div>
     ),
   },
-  // old
-  // {
-  //   accessorKey: "category",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="Category" />
-  //   ),
-  //   filterFn: (row, id, value) => {
-  //     const categoryName = row.original.product.category.name; // Direct access to category name
-  //     return value.includes(categoryName); // Filter logic that checks if the filter value includes the category name
-  //   },
-  //   cell: ({ row }) => (
-  //     <div className="flex gap-2 capitalize">
-  //       {row.original.product.category.name}
-  //     </div>
-  //   ),
-  // },
   {
     accessorKey: "category",
     header: ({ column }) => (
@@ -274,19 +222,6 @@ function TransactionTable({ from, to }: Props) {
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
-  // const categoriesOptions = useMemo(() => {
-  //   const categoriesMap = new Map();
-  //   history.data?.forEach((transaction) => {
-  //     categoriesMap.set(transaction.product.category.name, {
-  //       value: transaction.product.category.name,
-  //       label: `${transaction.product.category.name}`,
-  //     });
-  //   });
-  //   // const uniqueCategories = new Set(categoriesMap.values());
-  //   // return Array.from(uniqueCategories);
-  //   return Array.from(categoriesMap.values()); // Ensure this returns a proper array
-
-  // }, [history.data]);
 
   const growersOptions = useMemo(() => {
     const growersMap = new Map();
@@ -311,17 +246,7 @@ function TransactionTable({ from, to }: Props) {
   
     return Array.from(productsMap.values());
   }, [history.data]);
-  // const strainsOptions = useMemo(() => {
-  //   const strainsMap = new Map();
-  //   history.data?.forEach((transaction) => {
-  //     strainsMap.set(transaction.product.strain.name, {
-  //       value: transaction.product.strain.name,
-  //       label: `${transaction.product.strain.name}`,
-  //     });
-  //   });
-  //   const uniqueStrains = new Set(strainsMap.values());
-  //   return Array.from(uniqueStrains);
-  // }, [history.data]);
+
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
@@ -340,7 +265,7 @@ function TransactionTable({ from, to }: Props) {
               options={growersOptions}
             />
           )}
-                    {table.getColumn("product") && (
+          {table.getColumn("product") && (
             <DataTableFacetedFilter
               title="Strain"
               column={table.getColumn("product")}
