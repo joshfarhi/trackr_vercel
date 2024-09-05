@@ -81,7 +81,11 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       const strainName = row.original.productName;
       return value.includes(strainName);
     },
-    cell: ({ row }) => <div className="flex gap-2">{row.original.productName}</div>,
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.productName || "No Strain"}
+      </div>
+    ),
   },
   {
     accessorKey: "grower",
@@ -92,7 +96,11 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       const growerName = row.original.growerName;
       return value.includes(growerName);
     },
-    cell: ({ row }) => <div className="flex gap-2">{row.original.growerName}</div>,
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.growerName || "No Grower"}
+      </div>
+    ),
   },
   {
     accessorKey: "category",
@@ -103,7 +111,11 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       const categoryName = row.original.categoryName;
       return value.includes(categoryName);
     },
-    cell: ({ row }) => <div className="flex gap-2">{row.original.categoryName}</div>,
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.categoryName || "No Category"}
+      </div>
+    ),
   },
   {
     accessorKey: "date",
@@ -143,6 +155,7 @@ function ProductTable({ from, to }: Props) {
         (res) => res.json()
       ),
   });
+
   const handleExportExcel = (data: any[]) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -150,6 +163,7 @@ function ProductTable({ from, to }: Props) {
     
     XLSX.writeFile(workbook, "inventory.xlsx");
   };
+
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -164,6 +178,7 @@ function ProductTable({ from, to }: Props) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((inventory) => {
@@ -175,6 +190,7 @@ function ProductTable({ from, to }: Props) {
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
+
   const growersOptions = useMemo(() => {
     const growersMap = new Map();
     history.data?.forEach((inventory) => {
@@ -186,10 +202,11 @@ function ProductTable({ from, to }: Props) {
     const uniqueGrowers = new Set(growersMap.values());
     return Array.from(uniqueGrowers);
   }, [history.data]);
+
   const productsOptions = useMemo(() => {
     const productsMap = new Map<string, { value: string; label: string }>();
   
-    history.data?.forEach((inventory) => {  // Explicitly type 'product'
+    history.data?.forEach((inventory) => {
       productsMap.set(inventory.productName, {
         value: inventory.productName,
         label: `${inventory.productName}`,
@@ -198,12 +215,12 @@ function ProductTable({ from, to }: Props) {
   
     return Array.from(productsMap.values());
   }, [history.data]);
+
   return (
     <div className="w-full">
-            <div className="flex gap-2">
-
-      <SkeletonWrapper isLoading={history.isFetching}>
-      {table.getColumn("category") && (
+      <div className="flex flex-wrap items-end justify-between gap-2 py-4">
+        <div className="flex gap-2">
+          {table.getColumn("category") && (
             <DataTableFacetedFilter
               title="Category"
               column={table.getColumn("category")}
@@ -217,32 +234,50 @@ function ProductTable({ from, to }: Props) {
               options={growersOptions}
             />
           )}
-                    {table.getColumn("product") && (
+          {table.getColumn("product") && (
             <DataTableFacetedFilter
               title="Strain"
               column={table.getColumn("product")}
               options={productsOptions}
             />
           )}
-        <div className="rounded-md border">
-          
-          <Table>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            className="ml-auto h-8 lg:flex"
+            onClick={() => {
+              const data = table.getFilteredRowModel().rows.map((row) => ({
+                category: row.original.categoryName,
+                grower: row.original.growerName,
+                description: row.original.description,
+                quantity: row.original.quantity,
+                date: row.original.date,
+              }));
+              handleExportExcel(data);
+            }}
+          >
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Export Excel
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
+      </div>
 
+      <SkeletonWrapper isLoading={history.isFetching}>
+        <div className="rounded-md border">
+          <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </TableHead>
-                    );
-                  })}
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(header.column.columnDef.header, header.getContext())}
+                    </TableHead>
+                  ))}
                 </TableRow>
               ))}
             </TableHeader>
@@ -251,7 +286,7 @@ function ProductTable({ from, to }: Props) {
                 table.getRowModel().rows.map((row) => (
                   <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className="p-4 text-center">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -268,36 +303,7 @@ function ProductTable({ from, to }: Props) {
           </Table>
         </div>
       </SkeletonWrapper>
-      </div>
-      <div className="flex flex-wrap gap-2">
-          <Button
-            variant={"outline"}
-            size={"sm"}
-            className="ml-auto h-8 lg:flex"
-            onClick={() => {
-              const data = table.getFilteredRowModel().rows.map((row) => ({
-                category: row.original.categoryName,
-                // categoryIcon: row.original.categoryIcon,
-                grower: row.original.growerName,
-                // growerIcon: row.original.growerIcon,
-                // strain: row.original.strain,
-                // strainIcon: row.original.strainIcon,
-                description: row.original.description,
-                quantity: row.original.quantity,
-                // formattedAmount: row.original.formattedAmount,
-                date: row.original.date,
-              }));
-              handleExportExcel(data); // Use Excel export function
-
-              // handleExportCSV(data);
-            }}
-          >
-            <DownloadIcon className="mr-2 h-4 w-4" />
-            Export Excel
-          </Button>
-          <DataTableViewOptions table={table} />
-        </div>
-      </div>
+    </div>
   );
 }
 
@@ -312,19 +318,17 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
       <EditProductDialog
         open={showEditDialog}
         setOpen={setShowEditDialog}
-        product={product}              
-        productId={product.id.toString()}  
-        trigger={undefined}          
-            />
+        product={product}
+        productId={product.id.toString()}
+        trigger={undefined}
+      />
 
-      {/* DeleteProductDialog */}
       <DeleteProductDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
         productId={product.id.toString()}
       />
 
-      {/* Dropdown Menu for Actions */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant={"ghost"} className="h-8 w-8 p-0">
@@ -336,7 +340,6 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
 
-          {/* Edit Action */}
           <DropdownMenuItem
             className="flex items-center gap-2"
             onSelect={() => setShowEditDialog(true)}
@@ -344,7 +347,6 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
             Edit
           </DropdownMenuItem>
 
-          {/* Delete Action */}
           <DropdownMenuItem
             className="flex items-center gap-2"
             onSelect={() => setShowDeleteDialog(true)}
