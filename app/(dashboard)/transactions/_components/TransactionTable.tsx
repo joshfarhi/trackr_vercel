@@ -366,9 +366,9 @@ function TransactionTable({ from, to }: Props) {
             className="ml-auto h-8 lg:flex"
             onClick={() => {
               const data = table.getFilteredRowModel().rows.map((row) => ({
-                category: row.original.category,
+                category: row.original.categoryName,
                 // categoryIcon: row.original.categoryIcon,
-                grower: row.original.grower,
+                grower: row.original.growerName,
                 // growerIcon: row.original.growerIcon,
                 // strain: row.original.strain,
                 // strainIcon: row.original.strainIcon,

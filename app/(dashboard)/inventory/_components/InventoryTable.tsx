@@ -152,7 +152,13 @@ function ProductTable({ from, to }: Props) {
         (res) => res.json()
       ),
   });
-
+  const handleExportExcel = (data: any[]) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+    
+    XLSX.writeFile(workbook, "inventory.xlsx");
+  };
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -167,12 +173,70 @@ function ProductTable({ from, to }: Props) {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
+  const categoriesOptions = useMemo(() => {
+    const categoriesMap = new Map<string, { value: string; label: string }>();
+    history.data?.forEach((inventory) => {
+      const categoryName = inventory.categoryName || "No Category";
+      categoriesMap.set(categoryName, {
+        value: categoryName,
+        label: `${categoryName}`,
+      });
+    });
+    return Array.from(categoriesMap.values());
+  }, [history.data]);
+  const growersOptions = useMemo(() => {
+    const growersMap = new Map();
+    history.data?.forEach((inventory) => {
+      growersMap.set(inventory.growerName, {
+        value: inventory.growerName,
+        label: `${inventory.growerName}`,
+      });
+    });
+    const uniqueGrowers = new Set(growersMap.values());
+    return Array.from(uniqueGrowers);
+  }, [history.data]);
+  const productsOptions = useMemo(() => {
+    const productsMap = new Map<string, { value: string; label: string }>();
+  
+    history.data?.forEach((inventory) => {  // Explicitly type 'product'
+      productsMap.set(inventory.productName, {
+        value: inventory.productName,
+        label: `${inventory.productName}`,
+      });
+    });
+  
+    return Array.from(productsMap.values());
+  }, [history.data]);
   return (
     <div className="w-full">
+            <div className="flex gap-2">
+
       <SkeletonWrapper isLoading={history.isFetching}>
+      {table.getColumn("category") && (
+            <DataTableFacetedFilter
+              title="Category"
+              column={table.getColumn("category")}
+              options={categoriesOptions}
+            />
+          )}
+          {table.getColumn("grower") && (
+            <DataTableFacetedFilter
+              title="Grower"
+              column={table.getColumn("grower")}
+              options={growersOptions}
+            />
+          )}
+                    {table.getColumn("product") && (
+            <DataTableFacetedFilter
+              title="Strain"
+              column={table.getColumn("product")}
+              options={productsOptions}
+            />
+          )}
         <div className="rounded-md border">
+          
           <Table>
+
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id}>
@@ -213,7 +277,36 @@ function ProductTable({ from, to }: Props) {
           </Table>
         </div>
       </SkeletonWrapper>
-    </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            className="ml-auto h-8 lg:flex"
+            onClick={() => {
+              const data = table.getFilteredRowModel().rows.map((row) => ({
+                category: row.original.categoryName,
+                // categoryIcon: row.original.categoryIcon,
+                grower: row.original.growerName,
+                // growerIcon: row.original.growerIcon,
+                // strain: row.original.strain,
+                // strainIcon: row.original.strainIcon,
+                description: row.original.description,
+                quantity: row.original.quantity,
+                // formattedAmount: row.original.formattedAmount,
+                date: row.original.date,
+              }));
+              handleExportExcel(data); // Use Excel export function
+
+              // handleExportCSV(data);
+            }}
+          >
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Export Excel
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
+      </div>
   );
 }
 
