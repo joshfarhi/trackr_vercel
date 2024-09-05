@@ -5,14 +5,14 @@ import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { EditProductSchema, EditProductSchemaType } from '@/schema/product';
 
-// Update the function to accept a single object
 export async function EditProduct({
-  id,
-  data,
+  id,           // Product ID
+  data,         // Form data
 }: {
-  id: string;
+  id: number;
   data: EditProductSchemaType;
 }) {
+
   // Ensure the user is logged in
   const user = await currentUser();
   if (!user) {
@@ -23,17 +23,17 @@ export async function EditProduct({
   console.log("ID received:", id);
 
   // Convert the ID to a number
-  const parsedId = parseInt(id, 10);
+  const parsedId = Number(id);
   if (isNaN(parsedId)) {
     console.error("Invalid product ID:", id);
     throw new Error("Invalid product ID");
   }
 
-  // Validate the incoming data against the schema
+  // Validate the incoming form against the schema
   const parsed = EditProductSchema.safeParse(data);
   if (!parsed.success) {
-    console.error("Error parsing data:", parsed.error.format());
-    throw new Error("Invalid product data");
+    console.error("Error parsing form:", parsed.error.format());
+    throw new Error("Invalid product form");
   }
 
   // Find the product by its unique ID
@@ -44,10 +44,14 @@ export async function EditProduct({
   });
 
   if (!product) {
-    throw new Error("Strain not found");
+    throw new Error("Product not found");
   }
 
   const { quantity, category, grower, updatedAt, description } = parsed.data;
+
+  // Check if grower and category are valid IDs and only connect if valid
+  const growerConnect = grower ? { connect: { id: parseInt(grower) } } : undefined;
+  const categoryConnect = category ? { connect: { id: parseInt(category) } } : undefined;
 
   // Update the product in the database
   const updatedProduct = await prisma.product.update({
@@ -56,12 +60,12 @@ export async function EditProduct({
     },
     data: {
       quantity,
-      updatedAt: new Date(updatedAt), // Ensure valid Date object
-      description: description || "", // Fallback to empty string if description is not provided
-      category: category ? { connect: { id: parseInt(category) } } : undefined, // Conditionally connect to a category
-      grower: { connect: { id: parseInt(grower) } }, // Connect to a grower by ID
+      updatedAt: new Date(updatedAt),
+      description: description || "", 
+      grower: growerConnect,   // Only connect if grower is valid
+      category: categoryConnect, // Only connect if category is valid
     },
   });
-
+  
   return updatedProduct;
 }
