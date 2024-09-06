@@ -12,7 +12,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const from = searchParams.get("from");
   const to = searchParams.get("to");
-
+  if (from === null || to === null) {
+    return new Response(JSON.stringify({ error: "Missing from or to parameter" }), {
+      status: 400,
+    });
+  }
   const queryParams = OverviewQuerySchema.safeParse({ from, to });
 
   if (!queryParams.success) {
@@ -60,9 +64,15 @@ async function getBalanceStats(userId: string, from: string, to: string) {
     },
   });
 
+    const totalQuantity = await prisma.product.aggregate({
+      _sum: {
+        quantity: true,
+      },
+    });
+  
   return {
     flowerBalance: flowerBalance._sum.quantity || 0,
     miscBalance: miscBalance._sum.quantity || 0,
-    totalBalance: flowerBalance._sum.quantity + miscBalance._sum.quantity || 0,
+    totalBalance: totalQuantity._sum.quantity || 0,
   };
 }

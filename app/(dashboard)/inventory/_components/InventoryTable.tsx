@@ -119,7 +119,13 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
   },
   {
     accessorKey: "date",
-    header: "Date Dropped",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date Dropped" />
+    ),
+    filterFn: (row, id, value) => {
+      const date = row.original.date;
+      return value.includes(date);
+    },
     cell: ({ row }) => {
       const date = new Date(row.original.date);
       const formattedDate = date.toLocaleDateString("default", {
@@ -129,6 +135,11 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
         day: "2-digit",
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
+    },
+    sortingFn: (rowA, rowB) => {
+      const dateA = new Date(rowA.original.date).getTime();
+      const dateB = new Date(rowB.original.date).getTime();
+      return dateA - dateB;
     },
   },
   {
