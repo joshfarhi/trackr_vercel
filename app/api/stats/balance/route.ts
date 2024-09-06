@@ -1,4 +1,3 @@
-
 import prisma from "@/lib/prisma";
 import { OverviewQuerySchema } from "@/schema/overview";
 import { currentUser } from "@clerk/nextjs";
@@ -22,9 +21,7 @@ export async function GET(request: Request) {
     });
   }
 
-  const stats = await getBalanceStats(
-    user.id,
-  );
+  const stats = await getBalanceStats(user.id, from, to);
 
   return new Response(JSON.stringify(stats));
 }
@@ -32,35 +29,40 @@ export async function GET(request: Request) {
 export type GetBalanceStatsResponseType = Awaited<
   ReturnType<typeof getBalanceStats>
 >;
-//Stats for Transaction Balance
-// async function getBalanceStats(userId: string, from: Date, to: Date) {
-//   const totals = await prisma.transaction.groupBy({
-//     by: ["type"],
-//     where: {
-//     //   userId,
-//       date: {
-//         gte: from,
-//         lte: to,
-//       },
-//     },
-//     _sum: {
-//       amount: true,
-//     },
-//   });
 
-//   return {
-//     returns: totals.find((t) => t.type === "returns")?._sum.amount || 0,
-//     order: totals.find((t) => t.type === "order")?._sum.amount || 0,
-//   };
-// }
-async function getBalanceStats(userId: string) {
-  const totalQuantity = await prisma.product.aggregate({
+async function getBalanceStats(userId: string, from: string, to: string) {
+  const flowerCategoryId = 1;  // Assuming Flower has category ID 1
+  const miscCategoryId = 2;    // Assuming Misc has category ID 2
+
+  const flowerBalance = await prisma.product.aggregate({
+    where: {
+      categoryId: 3,
+      createdAt: {
+        gte: new Date(from),
+        lte: new Date(to),
+      },
+    },
+    _sum: {
+      quantity: true,
+    },
+  });
+
+  const miscBalance = await prisma.product.aggregate({
+    where: {
+      categoryId: 4,
+      createdAt: {
+        gte: new Date(from),
+        lte: new Date(to),
+      },
+    },
     _sum: {
       quantity: true,
     },
   });
 
   return {
-    balance: totalQuantity._sum.quantity || 0,
+    flowerBalance: flowerBalance._sum.quantity || 0,
+    miscBalance: miscBalance._sum.quantity || 0,
+    totalBalance: flowerBalance._sum.quantity + miscBalance._sum.quantity || 0,
   };
 }

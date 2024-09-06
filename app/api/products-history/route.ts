@@ -47,6 +47,8 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
   if (!userSettings) {
     throw new Error("User settings not found");
   }
+  // const today = new Date();
+  // const twoMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 12, today.getDate());
 
   // Fetch products including category and grower by their IDs
   const products = await prisma.product.findMany({
@@ -54,6 +56,8 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
       createdAt: {
         gte: from,
         lte: to,
+        // gte: twoMonthsAgo,  // Set the `from` date to two months ago
+        // lte: today,         // Set the `to` date to today
       },
     },
     orderBy: {

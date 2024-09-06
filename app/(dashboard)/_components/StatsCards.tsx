@@ -32,8 +32,11 @@ function StatsCards({ from, to, userSettings }: Props) {
   // const order = statsQuery.data?.order || 0;
   // const returns = statsQuery.data?.returns || 0;
   // const balance = order - returns;
-  const balance = statsQuery.data?.balance || 0;
 
+  // const balance = statsQuery.data?.balance || 0;
+  const flowerBalance = statsQuery.data?.flowerBalance || 0;
+  const miscBalance = statsQuery.data?.miscBalance || 0;
+  const totalBalance = statsQuery.data?.totalBalance || 0;
   return (
     <div className="relative flex w-full flex-wrap gap-2 md:flex-nowrap">
       {/* <SkeletonWrapper isLoading={statsQuery.isFetching}>
@@ -58,16 +61,34 @@ function StatsCards({ from, to, userSettings }: Props) {
         />
       </SkeletonWrapper> */}
 
-      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+<SkeletonWrapper isLoading={statsQuery.isFetching}>
         <StatCard
-          // formatter={formatter}
-          value={balance}
-          title="Inventory Balance"
+          value={flowerBalance}
+          title="Flower Balance"
           icon={
             <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-blue-500 bg-blue-400/10" />
-            }
+          }
         />
       </SkeletonWrapper>
+      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+        <StatCard
+          value={miscBalance}
+          title="Misc Balance"
+          icon={
+            <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-green-500 bg-green-400/10" />
+          }
+        />
+      </SkeletonWrapper>
+
+      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+        <StatCard
+          value={totalBalance}
+          title="Total Inventory Balance"
+          icon={
+            <Tally5 className="h-12 w-12 items-center rounded-lg p-2 text-red-500 bg-red-400/10" />
+          }
+        />
+        </SkeletonWrapper>
     </div>
   );
 }
