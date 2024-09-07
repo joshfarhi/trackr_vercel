@@ -45,7 +45,8 @@ import DeleteProductDialog from "@/app/(dashboard)/inventory/_components/DeleteP
 import EditProductDialog from "@/app/(dashboard)/inventory/_components/EditProductDialog";
 
 import * as XLSX from "xlsx";
-
+import { QRCodeSVG } from 'qrcode.react';
+import Modal from 'react-modal';
 interface Props {
   from: Date;
   to: Date;
@@ -324,6 +325,20 @@ export default ProductTable;
 function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+
+// Create a string with all the product details
+const qrCodeValue = JSON.stringify({
+  strain: product.productName,
+  grower: product.growerName,
+  category: product.categoryName,
+  date: new Date(product.date).toLocaleDateString("default", {
+    timeZone: "UTC",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }),
+});
 
   return (
     <>
@@ -365,8 +380,28 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
           >
             Delete
           </DropdownMenuItem>
+          {/* QR Code Button */}
+          <DropdownMenuItem onSelect={() => setIsQrModalOpen(true)}>
+            View QR Code
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+        {/* QR Code Modal */}
+        <Modal
+        isOpen={isQrModalOpen}
+        onRequestClose={() => setIsQrModalOpen(false)}
+        contentLabel="QR Code Modal"
+      >
+        <h2 className="text-lg font-bold">QR Code for {product.productName}</h2>
+        {/* QR Code now contains more information */}
+        <QRCodeSVG value={qrCodeValue} size={256} />
+        <button
+          className="mt-4 bg-gray-800 text-white px-4 py-2 rounded"
+          onClick={() => setIsQrModalOpen(false)}
+        >
+          Close
+        </button>
+      </Modal>
     </>
   );
 }
