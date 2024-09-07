@@ -150,8 +150,8 @@ function EditProductDialog({ productId, trigger, product, open, setOpen }: Props
           trigger
         ) : (
           <Button variant={"ghost"} className="flex items-center justify-start rounded-none border-b px-3 py-3 text-muted-foreground">
-            <PlusSquare className="mr-2 h-4 w-4" />
-            Edit Product
+            
+            Edit
           </Button>
         )}
       </DialogTrigger>
