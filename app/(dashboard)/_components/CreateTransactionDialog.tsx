@@ -154,7 +154,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Create a new{" "}
+            Create a new
             <span
               className={cn(
                 "m-1",
