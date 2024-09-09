@@ -15,7 +15,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { GetProductHistoryResponseType } from "@/app/api/products-history/route";
-
+ 
 import {
   Table,
   TableBody,
@@ -328,17 +328,8 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
 // Create a string with all the product details
-const qrCodeValue = JSON.stringify({
-  strain: product.productName,
-  grower: product.growerName,
-  category: product.categoryName,
-  date: new Date(product.date).toLocaleDateString("default", {
-    timeZone: "UTC",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }),
-});
+const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
+
 
   return (
     <>
