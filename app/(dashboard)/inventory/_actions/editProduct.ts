@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
-import { EditProductSchema, EditProductSchemaType } from '@/schema/product';
+import { EditProductSchema, EditProductSchemaType } from "@/schema/product";
 
 export async function EditProduct({
   id,           // Product ID
@@ -36,36 +36,56 @@ export async function EditProduct({
     throw new Error("Invalid product form");
   }
 
-  // Find the product by its unique ID
-  const product = await prisma.product.findUnique({
-    where: {
-      id: parsedId,
-    },
-  });
-
-  if (!product) {
-    throw new Error("Product not found");
-  }
-
   const { quantity, category, grower, updatedAt, description } = parsed.data;
 
-  // Check if grower and category are valid IDs and only connect if valid
-  const growerConnect = grower ? { connect: { id: parseInt(grower) } } : undefined;
-  const categoryConnect = category ? { connect: { id: parseInt(category) } } : undefined;
+  // Fetch grower ID from the grower code (e.g., "EV10")
+  let growerConnect;
+  if (grower) {
+    const growerRecord = await prisma.grower.findUnique({
+      where: { name: grower }, // Assuming 'code' is the field storing values like "EV10"
+    });
+
+    if (!growerRecord) {
+      throw new Error(`Grower with code ${grower} not found`);
+    }
+    growerConnect = { connect: { id: growerRecord.id } };
+  }
+
+  // Fetch category ID from the category code (e.g., "MISC")
+  let categoryConnect;
+  if (category) {
+    const categoryRecord = await prisma.category.findUnique({
+      where: { name: category }, // Assuming 'code' is the field storing values like "MISC"
+    });
+
+    if (!categoryRecord) {
+      throw new Error(`Category with code ${category} not found`);
+    }
+    categoryConnect = { connect: { id: categoryRecord.id } };
+  }
+
+  // Log the grower and category connections before the update
+  console.log("Grower connect:", growerConnect);
+  console.log("Category connect:", categoryConnect);
 
   // Update the product in the database
-  const updatedProduct = await prisma.product.update({
-    where: {
-      id: parsedId,
-    },
-    data: {
-      quantity,
-      updatedAt: new Date(updatedAt),
-      description: description || "", 
-      grower: growerConnect,   // Only connect if grower is valid
-      category: categoryConnect, // Only connect if category is valid
-    },
-  });
-  
-  return updatedProduct;
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: {
+        id: parsedId,
+      },
+      data: {
+        quantity,
+        updatedAt: new Date(updatedAt),
+        description: description || "",
+        ...(growerConnect && { grower: growerConnect }),   // Only connect if grower is valid
+        ...(categoryConnect && { category: categoryConnect }), // Only connect if category is valid
+      },
+    });
+
+    return updatedProduct;
+  } catch (error) {
+    console.error("Error updating product details:", error); // Log the exact error
+    throw new Error(`Product update failed: ${error.message}`); // Pass the original error message for easier debugging
+  }
 }

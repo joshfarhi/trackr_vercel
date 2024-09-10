@@ -64,6 +64,21 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
   const [growerName, setGrowerName] = useState<string>("");
   // const [open, setOpen] = useState(false);
 
+
+
+  const form = useForm<EditProductSchemaType>({
+    resolver: zodResolver(EditProductSchema),
+    defaultValues: {
+      id: product.id,
+      quantity: product.quantity,
+      grower: growerName,
+      category: categoryName,
+      description: product.description || "",
+      updatedAt: new Date(product.updatedAt),
+    },
+  });
+
+  const queryClient = useQueryClient();
   useEffect(() => {
     async function fetchCategoryAndGrower() {
       try {
@@ -89,21 +104,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       fetchCategoryAndGrower();
     }
   }, [open, product.categoryId, product.growerId]);
-
-  const form = useForm<EditProductSchemaType>({
-    resolver: zodResolver(EditProductSchema),
-    defaultValues: {
-      id: product.id,
-      quantity: product.quantity,
-      grower: growerName,
-      category: categoryName,
-      description: product.description || "",
-      updatedAt: new Date(product.updatedAt),
-    },
-  });
-
-  const queryClient = useQueryClient();
-
+  
   const { mutate, isPending } = useMutation({
     mutationFn: EditProduct,
     onSuccess: async (data: Product) => {
@@ -194,7 +195,62 @@ quantity: 0,
                 </FormItem>
               )}
             />
-
+ <FormField
+  control={form.control}
+  name="category"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Category</FormLabel>
+      <FormControl>
+        {!showCategoryPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || categoryName} // Displays the fetched growerName
+          onFocus={() => setShowCategoryPicker(true)} // Show picker on input focus
+          placeholder="Enter category name"
+        />
+      ) : (
+        <CategoryPicker
+          categoryName={categoryName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowCategoryPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
+    </FormItem>
+  )}
+/> 
+<FormField
+  control={form.control}
+  name="grower"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Grower</FormLabel>
+      <FormControl>
+        {!showPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || growerName} // Displays the fetched growerName
+          onFocus={() => setShowPicker(true)} // Show picker on input focus
+          placeholder="Enter grower name"
+        />
+      ) : (
+        <GrowerPicker
+          growerName={growerName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+      <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
+    </FormItem>
+  )}
+/> 
             <FormField
               control={form.control}
               name="description"
