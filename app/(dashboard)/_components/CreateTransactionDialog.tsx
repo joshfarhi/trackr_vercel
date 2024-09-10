@@ -126,6 +126,8 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       });
 
       setOpen((prev) => !prev);
+         // Force a page reload
+    window.location.reload();
     },
   });
 
