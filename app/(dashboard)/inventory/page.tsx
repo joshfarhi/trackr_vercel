@@ -22,7 +22,7 @@ function InventoryPage() {
           <div>
             <p className="text-3xl font-bold">Inventory</p>
           </div>
-          <DateRangePicker
+          {/* <DateRangePicker
             initialDateFrom={dateRange.from}
             initialDateTo={dateRange.to}
             showCompare={false}
@@ -38,7 +38,7 @@ function InventoryPage() {
               }
               setDateRange({ from, to });
             }}
-          />
+          /> */}
           <CreateProductDialog
             trigger={<Button>Create New Strain</Button>}
             successCallback={() => {

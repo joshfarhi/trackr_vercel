@@ -19,7 +19,7 @@ function TransactionsPage() {
           <div>
             <p className="text-3xl font-bold">Transactions history</p>
           </div>
-          <DateRangePicker
+          {/* <DateRangePicker
             initialDateFrom={dateRange.from}
             initialDateTo={dateRange.to}
             showCompare={false}
@@ -37,7 +37,7 @@ function TransactionsPage() {
 
               setDateRange({ from, to });
             }}
-          />
+          /> */}
         </div>
       </div>
       <div className="container">
