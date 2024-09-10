@@ -74,7 +74,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       grower: growerName,
       category: categoryName,
       description: product.description || "",
-      updatedAt: new Date(product.updatedAt),
+      createdAt: new Date(product.createdAt),
     },
   });
 
@@ -104,14 +104,14 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       fetchCategoryAndGrower();
     }
   }, [open, product.categoryId, product.growerId]);
-  
+
   const { mutate, isPending } = useMutation({
     mutationFn: EditProduct,
     onSuccess: async (data: Product) => {
       form.reset({
         id: product.id,
         description: "",
-updatedAt: new Date(),
+createdAt: new Date(),
 quantity: 0,
         // icon: "",
         // strain: undefined,
@@ -149,7 +149,7 @@ quantity: 0,
         data: {
           id: values.id,
           quantity: values.quantity,
-          updatedAt: values.updatedAt,
+          createdAt: values.createdAt,
           grower: values.grower,
           description: values.description,
           category: values.category, // Convert category to ID if present
@@ -268,9 +268,9 @@ quantity: 0,
                 </FormItem>
               )}
             />
-            {/* <FormField
+            { <FormField
               control={form.control}
-              name="updatedAt"
+              name="createdAt"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
                   <FormLabel>Date</FormLabel>
@@ -304,7 +304,7 @@ quantity: 0,
                   <FormMessage />
                 </FormItem>
               )}
-            /> */}
+            /> }
             <DialogFooter>
               <Button
                 type="button"

@@ -36,7 +36,7 @@ export async function EditProduct({
     throw new Error("Invalid product form");
   }
 
-  const { quantity, category, grower, updatedAt, description } = parsed.data;
+  const { quantity, category, grower, createdAt, description } = parsed.data;
 
   // Fetch grower ID from the grower code (e.g., "EV10")
   let growerConnect;
@@ -76,7 +76,7 @@ export async function EditProduct({
       },
       data: {
         quantity,
-        updatedAt: new Date(updatedAt),
+        createdAt: new Date(createdAt),
         description: description || "",
         ...(growerConnect && { grower: growerConnect }),   // Only connect if grower is valid
         ...(categoryConnect && { category: categoryConnect }), // Only connect if category is valid
