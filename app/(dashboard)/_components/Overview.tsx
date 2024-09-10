@@ -26,7 +26,7 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
       </p>
       </div>
         <div className="flex items-center gap-3">
-          {/* <DateRangePicker
+          <DateRangePicker
             initialDateFrom={dateRange.from}
             initialDateTo={dateRange.to}
             showCompare={false}
@@ -44,7 +44,7 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
 
               setDateRange({ from, to });
             }}
-          /> */}
+          />
         </div>
       </div>
       <div className="container flex w-full flex-col gap-2">

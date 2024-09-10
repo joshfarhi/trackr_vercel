@@ -120,6 +120,8 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
       });
 
       setOpen((prev) => !prev);
+         // Force a page reload
+    window.location.reload();
     },
     onError: () => {
       toast.error("Something went wrong", {

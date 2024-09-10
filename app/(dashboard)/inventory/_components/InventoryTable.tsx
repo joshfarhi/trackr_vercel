@@ -193,16 +193,19 @@ function ProductTable({ from, to }: Props) {
 
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
-    history.data?.forEach((inventory) => {
+  // Ensure history.data is an array before calling forEach
+  if (Array.isArray(history.data)) {
+    history.data.forEach((inventory) => {
       const categoryName = inventory.categoryName || "No Category";
       categoriesMap.set(categoryName, {
         value: categoryName,
         label: `${categoryName}`,
       });
     });
-    return Array.from(categoriesMap.values());
-  }, [history.data]);
+  }
 
+  return Array.from(categoriesMap.values());
+}, [history.data]);
   const growersOptions = useMemo(() => {
     const growersMap = new Map();
     history.data?.forEach((inventory) => {
@@ -351,14 +354,19 @@ const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
 
   return (
     <>
-      <EditProductDialog
-        open={showEditDialog}
-        setOpen={setShowEditDialog}
-        product={product}
-        productId={product.id.toString()}
-        trigger={undefined}
-      />
-
+      {/* Render the EditProductDialog conditionally */}
+      {showEditDialog && (
+        <EditProductDialog
+          open={showEditDialog}
+          setOpen={setShowEditDialog}
+          product={product}
+          productId={product.id}
+          trigger={undefined}
+          successCallback={() => {
+            console.log("Strain edited successfully");
+          }}
+        />
+      )}
       <DeleteProductDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
