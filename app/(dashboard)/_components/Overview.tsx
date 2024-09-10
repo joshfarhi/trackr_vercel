@@ -5,16 +5,15 @@ import StatsCards from "@/app/(dashboard)/_components/StatsCards";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { MAX_DATE_RANGE_DAYS } from "@/lib/constants";
 import { UserSettings } from "@prisma/client";
-import { differenceInDays, startOfMonth, startOfQuarter } from "date-fns";
+import { differenceInDays, startOfMonth, startOfQuarter, addDays } from "date-fns";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
 function Overview({ userSettings }: { userSettings: UserSettings }) {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: startOfQuarter(new Date()),
-    to: new Date(),
+    from: new Date(new Date().getFullYear(), 0, 1), // Set 'from' date to January 1st of this year
+    to: addDays(new Date(), 1), // Set the 'to' date to tomorrow
   });
-
   return (
     <>
       <div className="container flex flex-wrap items-end justify-between gap-2 py-6">
@@ -54,11 +53,6 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
           to={dateRange.to}
         />
 
-        {/* <ProductsStats
-          userSettings={userSettings}
-          from={dateRange.from}
-          to={dateRange.to}
-        /> */}
       </div>
     </>
   );
