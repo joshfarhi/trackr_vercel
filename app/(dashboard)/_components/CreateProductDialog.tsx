@@ -175,7 +175,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             Create
@@ -223,52 +223,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="icon"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Icon</FormLabel>
-                  <FormControl>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant={"outline"} className="h-[100px] w-full">
-                          {form.watch("icon") ? (
-                            <div className="flex flex-col items-center gap-2">
-                              <span className="text-5xl" role="img">
-                                {field.value}
-                              </span>
-                              <p className="text-xs text-muted-foreground">
-                                Click to change
-                              </p>
-                            </div>
-                          ) : (
-                            <div className="flex flex-col items-center gap-2">
-                              <CircleOff className="h-[48px] w-[48px]" />
-                              <p className="text-xs text-muted-foreground">
-                                Click to select
-                              </p>
-                            </div>
-                          )}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-full">
-                        <Picker
-                          data={data}
-                          theme={theme.resolvedTheme}
-                          onEmojiSelect={(emoji: { native: string }) => {
-                            field.onChange(emoji.native);
-                          }}
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </FormControl>
-                  <FormDescription>
-                    This is how your product will appear in the app
-                  </FormDescription>
-                </FormItem>
-              )}
-            /> */}
             <FormField
               control={form.control}
               name="category"
@@ -359,21 +313,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                   </FormItem>
                 )}
               />
-            {/* <FormField
-              control={form.control}
-              name="strain"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Strain</FormLabel>
-                  <FormControl>
-                    <StrainPicker onChange={handleStrainChange} />
-                  </FormControl>
-                  <FormDescription>
-                    Select a strain for this Product
-                  </FormDescription>
-                </FormItem>
-              )}
-            /> */}
           </form>
         </Form>
         <DialogFooter>
