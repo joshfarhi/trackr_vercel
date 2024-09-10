@@ -194,8 +194,9 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
                     <FormLabel>Strain</FormLabel>
                     <FormControl>
                       <ProductPicker
-                      onChange={handleProductChange}
-                                            />
+                      
+                        onChange={handleProductChange}
+                      />
                     </FormControl>
                     <FormDescription>
                       Select a strain for this transaction
