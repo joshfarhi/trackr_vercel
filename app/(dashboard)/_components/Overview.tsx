@@ -54,11 +54,6 @@ function Overview({ userSettings }: { userSettings: UserSettings }) {
           to={dateRange.to}
         />
 
-        {/* <ProductsStats
-          userSettings={userSettings}
-          from={dateRange.from}
-          to={dateRange.to}
-        /> */}
       </div>
     </>
   );
