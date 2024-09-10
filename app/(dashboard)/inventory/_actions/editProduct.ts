@@ -86,6 +86,6 @@ export async function EditProduct({
     return updatedProduct;
   } catch (error) {
     console.error("Error updating product details:", error); // Log the exact error
-    throw new Error(`Product update failed: ${error.message}`); // Pass the original error message for easier debugging
+    throw new Error(`Product update failed`); // Pass the original error message for easier debugging
   }
 }
