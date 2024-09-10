@@ -194,7 +194,7 @@ quantity: 0,
                 </FormItem>
               )}
             />
-{/* <FormField
+ <FormField
   control={form.control}
   name="category"
   render={({ field }) => (
@@ -221,8 +221,8 @@ quantity: 0,
       <FormDescription>*Warning Selecting this box will reset the category for this item</FormDescription>
     </FormItem>
   )}
-/> */}
-{/* <FormField
+/> 
+<FormField
   control={form.control}
   name="grower"
   render={({ field }) => (
@@ -249,7 +249,7 @@ quantity: 0,
       <FormDescription>*Warning* You will have to re-enter if you click Category or Grower</FormDescription>
     </FormItem>
   )}
-/> */}
+/> 
             <FormField
               control={form.control}
               name="description"
