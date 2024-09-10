@@ -354,17 +354,19 @@ const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
 
   return (
     <>
-      <EditProductDialog
-        open={showEditDialog}
-        setOpen={setShowEditDialog}
-        product={product}
-        productId={product.id}
-        trigger={undefined}
-        successCallback={() => {
-          // Logic to handle after a product is successfully created
-          console.log("Strain edited successfully");
-        }}  
-            />
+      {/* Render the EditProductDialog conditionally */}
+      {showEditDialog && (
+        <EditProductDialog
+          open={showEditDialog}
+          setOpen={setShowEditDialog}
+          product={product}
+          productId={product.id}
+          trigger={undefined}
+          successCallback={() => {
+            console.log("Strain edited successfully");
+          }}
+        />
+      )}
       <DeleteProductDialog
         open={showDeleteDialog}
         setOpen={setShowDeleteDialog}
