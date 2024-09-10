@@ -2,7 +2,7 @@
 
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { MAX_DATE_RANGE_DAYS } from "@/lib/constants";
-import { differenceInDays, startOfMonth } from "date-fns";
+import { differenceInDays, startOfQuarter, addDays } from "date-fns";
 import React, { useState } from "react";
 import { toast } from "sonner";
 import InventoryTable from "./_components/InventoryTable";
@@ -11,8 +11,8 @@ import CreateProductDialog from "@/app/(dashboard)/_components/CreateProductDial
 
 function InventoryPage() {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: startOfMonth(new Date()),
-    to: new Date(),
+    from: new Date(new Date().getFullYear(), 0, 1), // Set 'from' date to January 1st of this year
+    to: addDays(new Date(), 1), // Set the 'to' date to tomorrow
   });
 
   return (
@@ -22,7 +22,7 @@ function InventoryPage() {
           <div>
             <p className="text-3xl font-bold">Inventory</p>
           </div>
-          {/* <DateRangePicker
+          <DateRangePicker
             initialDateFrom={dateRange.from}
             initialDateTo={dateRange.to}
             showCompare={false}
@@ -38,7 +38,7 @@ function InventoryPage() {
               }
               setDateRange({ from, to });
             }}
-          /> */}
+          />
           <CreateProductDialog
             trigger={<Button>Create New Strain</Button>}
             successCallback={() => {

@@ -3,14 +3,14 @@
 import TransactionTable from "@/app/(dashboard)/transactions/_components/TransactionTable";
 import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { MAX_DATE_RANGE_DAYS } from "@/lib/constants";
-import { differenceInDays, startOfMonth, startOfQuarter } from "date-fns";
+import { differenceInDays, startOfMonth, startOfQuarter, addDays } from "date-fns";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
 function TransactionsPage() {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
-    from: startOfQuarter(new Date()),
-    to: new Date(),
+    from: new Date(new Date().getFullYear(), 0, 1), // Set 'from' date to January 1st of this year
+    to: addDays(new Date(), 1), // Set the 'to' date to tomorrow
   });
   return (
     <>
@@ -19,7 +19,7 @@ function TransactionsPage() {
           <div>
             <p className="text-3xl font-bold">Transactions history</p>
           </div>
-          {/* <DateRangePicker
+          <DateRangePicker
             initialDateFrom={dateRange.from}
             initialDateTo={dateRange.to}
             showCompare={false}
@@ -37,7 +37,7 @@ function TransactionsPage() {
 
               setDateRange({ from, to });
             }}
-          /> */}
+          />
         </div>
       </div>
       <div className="container">
