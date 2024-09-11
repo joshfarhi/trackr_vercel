@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
-import { Button } from '@/components/ui/button'; // Assuming you have this component
+import { Button } from '@/components/ui/button';
 
 // Define the shape of the product data
 interface Product {
@@ -15,14 +15,21 @@ const ProductModalPage = () => {
   const router = useRouter();
   const { id } = router.query; // Extract product ID from the URL
   const [product, setProduct] = useState<Product | null>(null);  // State for storing product data
+  const [error, setError] = useState<string | null>(null); // State for error handling
   const [modalIsOpen, setModalIsOpen] = useState(true);  // Control modal visibility
 
   useEffect(() => {
     if (id) {
       // Fetch product data by ID
-      fetch(`/api/products/${id}`)
-        .then((res) => res.json())
-        .then((data: Product) => setProduct(data));  // Assign the fetched data to product state
+      fetch(`/api/product/${id}`)  // Updated API endpoint for dynamic product fetching
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error('Product not found');
+          }
+          return res.json();
+        })
+        .then((data: Product) => setProduct(data))
+        .catch((err) => setError(err.message));  // Handle any errors
     }
   }, [id]);
 
@@ -32,7 +39,8 @@ const ProductModalPage = () => {
     router.push('/inventory');  // Redirect to the inventory page after closing
   };
 
-  // Handle loading state while fetching product details
+  // Handle loading state or error state while fetching product details
+  if (error) return <p>{error}</p>;
   if (!product) return <p>Loading...</p>;
 
   return (

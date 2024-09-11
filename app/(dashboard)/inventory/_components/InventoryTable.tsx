@@ -159,6 +159,7 @@ const csvConfig = mkConfig({
 function ProductTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [pageSize, setPageSize] = useState(20); // Set default page size to 20
 
   const history = useQuery<GetProductHistoryResponseType>({
     queryKey: ["products", "history", from, to],
@@ -183,6 +184,10 @@ function ProductTable({ from, to }: Props) {
     state: {
       sorting,
       columnFilters,
+      pagination: {
+        pageSize, // Use the pageSize state
+        pageIndex: 0,
+      },
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
