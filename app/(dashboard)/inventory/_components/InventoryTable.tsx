@@ -119,6 +119,15 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     ),
   },
   {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.description}</div>
+    ),
+  },
+  {
     accessorKey: "date",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Date Dropped" />
