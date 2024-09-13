@@ -361,6 +361,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  
 
 // Create a string with all the product details
 const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
