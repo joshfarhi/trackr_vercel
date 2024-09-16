@@ -67,6 +67,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
         {row.original.quantity}
       </p>
     ),
+    enableHiding: false, // Amount is visible by default
     sortingFn: (rowA, rowB) => {
       const amountA = rowA.original.quantity;
       const amountB = rowB.original.quantity;
@@ -87,6 +88,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
         {row.original.productName || "No Strain"}
       </div>
     ),
+    enableHiding: false, // Amount is visible by default
   },
   {
     accessorKey: "grower",
@@ -102,6 +104,8 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
         {row.original.growerName || "No Grower"}
       </div>
     ),
+    enableHiding: false, // Amount is visible by default
+
   },
   {
     accessorKey: "category",
@@ -117,6 +121,18 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
         {row.original.categoryName || "No Category"}
       </div>
     ),
+        enableHiding: false, // Amount is visible by default
+
+  },
+  {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.description}</div>
+    ),
+    enableHiding: true, // Description is visible by default
   },
   {
     accessorKey: "date",
@@ -137,6 +153,8 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
+    enableHiding: true, // Description is visible by default
+
     sortingFn: (rowA, rowB) => {
       const dateA = new Date(rowA.original.date).getTime();
       const dateB = new Date(rowB.original.date).getTime();
@@ -177,6 +195,11 @@ function ProductTable({ from, to }: Props) {
     XLSX.writeFile(workbook, "inventory.xlsx");
   };
 
+  const [columnVisibility, setColumnVisibility] = useState({
+    date: false, // Initially hidden
+    description: false, // Initially hidden
+    // You can add more columns here as needed
+  });
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -184,6 +207,8 @@ function ProductTable({ from, to }: Props) {
     state: {
       sorting,
       columnFilters,
+      columnVisibility, // Include the column visibility state here
+
       pagination: {
         pageSize, // Use the pageSize state
         pageIndex: 0,
@@ -194,6 +219,8 @@ function ProductTable({ from, to }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
+
   });
 
   const categoriesOptions = useMemo(() => {

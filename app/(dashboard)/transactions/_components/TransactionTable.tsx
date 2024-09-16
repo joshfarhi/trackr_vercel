@@ -64,41 +64,32 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         {row.original.amount}
       </p>
     ),
+    enableHiding: false, // Amount is visible by default
   },
   {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
     ),
-    filterFn: (row, id, value) => {
-      const strainName = row.original.productName; // Direct access to category name
-      return value.includes(strainName); // Filter logic that checks if the filter value includes the category name
-    },
     cell: ({ row }) => (
       <div className="flex gap-2">
         <div className="">{row.original.productName}</div>
       </div>
     ),
+    enableHiding: false, // Strain is visible by default
   },
   {
     accessorKey: "grower",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Grower" />
     ),
-    filterFn: (row, id, value) => {
-      const growerName = row.original.product.grower.name; // Direct access to category name
-      return value.includes(growerName); // Filter logic that checks if the filter value includes the category name
-    },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
         {row.original.product.grower.name}
-        
       </div>
     ),
+    enableHiding: false, // Grower is visible by default
   },
-
-
-
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -107,16 +98,13 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     cell: ({ row }) => (
       <div className="capitalize">{row.original.description}</div>
     ),
+    enableHiding: false, // Description is visible by default
   },
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Dropped" />
+      <DataTableColumnHeader column={column} title="Date Ordered/Retured" />
     ),
-    filterFn: (row, id, value) => {
-      const date = row.original.date;
-      return value.includes(date);
-    },
     cell: ({ row }) => {
       const date = new Date(row.original.date);
       const formattedDate = date.toLocaleDateString("default", {
@@ -127,54 +115,46 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
-    sortingFn: (rowA, rowB) => {
-      const dateA = new Date(rowA.original.date).getTime();
-      const dateB = new Date(rowB.original.date).getTime();
-      return dateA - dateB;
-    },
+    enableHiding: true, // Date is hidden by default
   },
   {
     accessorKey: "type",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
-    },
     cell: ({ row }) => (
       <div
         className={cn(
           "capitalize rounded-lg text-center p-2",
-          row.original.type === "order" &&
-            "bg-emerald-400/10 text-emerald-500",
+          row.original.type === "order" && "bg-emerald-400/10 text-emerald-500",
           row.original.type === "returns" && "bg-red-400/10 text-red-500"
         )}
       >
         {row.original.type === "order" ? "ordered" : "returned"}
       </div>
     ),
+    enableHiding: true, // Type is hidden by default
   },
   {
     accessorKey: "category",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Category" />
     ),
-    filterFn: (row, id, value) => {
-      const categoryName = row.original.product.category?.name || "No Category"; 
-      return value.includes(categoryName); 
-    },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
         {row.original.product.category?.name || "No Category"}
       </div>
     ),
+    enableHiding: true, // Category is hidden by default
   },
   {
     id: "actions",
-    enableHiding: false,
+    enableHiding: true, // Actions column is hidden by default
     cell: ({ row }) => <RowActions transaction={row.original} />,
   },
 ];
+
+
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -208,6 +188,13 @@ function TransactionTable({ from, to }: Props) {
     XLSX.writeFile(workbook, "transactions.xlsx");
   };
 
+  const [columnVisibility, setColumnVisibility] = useState({
+    date: false, // Initially hidden
+    // description: false, // Initially hidden
+    type: false,
+    category: false,
+    // You can add more columns here as needed
+  });
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -215,12 +202,15 @@ function TransactionTable({ from, to }: Props) {
     state: {
       sorting,
       columnFilters,
+      columnVisibility, // Include the column visibility state here
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
+
   });
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
@@ -313,7 +303,7 @@ function TransactionTable({ from, to }: Props) {
                 // strainIcon: row.original.strainIcon,
                 Description: row.original.description,
                 // formattedAmount: row.original.formattedAmount,
-                Date_Dropped: row.original.date,
+                Date_Ordered_or_Returned: row.original.date,
                 Type: row.original.type,
 
                 Category: row.original.categoryName,
