@@ -120,7 +120,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     cell: ({ row }) => {
       const date = new Date(row.original.date);
       const formattedDate = date.toLocaleDateString("default", {
-        timeZone: "UTC",
+        timeZone: "PST",
         year: "numeric",
         month: "2-digit",
         day: "2-digit",

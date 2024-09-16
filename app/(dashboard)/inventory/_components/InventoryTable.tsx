@@ -138,11 +138,14 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.original.date);
-      const formattedDate = date.toLocaleDateString("default", {
-        timeZone: "UTC",
+      const formattedDate = date.toLocaleString("default", {
+        timeZone: "PST",
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
