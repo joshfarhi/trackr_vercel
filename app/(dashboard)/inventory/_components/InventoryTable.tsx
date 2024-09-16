@@ -119,15 +119,6 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     ),
   },
   {
-    accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
-    ),
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.description}</div>
-    ),
-  },
-  {
     accessorKey: "date",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Date Dropped" />
@@ -138,14 +129,11 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.original.date);
-      const formattedDate = date.toLocaleString("default", {
+      const formattedDate = date.toLocaleDateString("default", {
         timeZone: "PST",
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
@@ -364,7 +352,6 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
-  
 
 // Create a string with all the product details
 const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
