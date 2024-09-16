@@ -38,6 +38,12 @@ export async function EditProduct({
 
   const { quantity, category, grower, createdAt, description } = parsed.data;
 
+   // Validate that the quantity is not negative
+   if (quantity < 0) {
+    throw new Error("Quantity cannot be negative.");
+  }
+
+
   // Fetch grower ID from the grower code (e.g., "EV10")
   let growerConnect;
   if (grower) {

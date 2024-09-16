@@ -51,6 +51,8 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
+import * as z from "zod";
+
 interface Props {
   trigger: ReactNode;
   successCallback: (product: Product) => void;
@@ -215,6 +217,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                       value={field.value ?? 0} // Ensure default value is 0
                       type="number"
                       placeholder="Enter product quantity"
+                      min={0} // Prevent negative values
                     />
                   </FormControl>
                   <FormDescription>
