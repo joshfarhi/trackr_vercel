@@ -103,7 +103,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Dropped" />
+      <DataTableColumnHeader column={column} title="Date Ordered/Retured" />
     ),
     cell: ({ row }) => {
       const date = new Date(row.original.date);
@@ -303,7 +303,7 @@ function TransactionTable({ from, to }: Props) {
                 // strainIcon: row.original.strainIcon,
                 Description: row.original.description,
                 // formattedAmount: row.original.formattedAmount,
-                Date_Dropped: row.original.date,
+                Date_Ordered_or_Returned: row.original.date,
                 Type: row.original.type,
 
                 Category: row.original.categoryName,
