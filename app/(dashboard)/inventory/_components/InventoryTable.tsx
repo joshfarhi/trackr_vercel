@@ -1,4 +1,5 @@
 "use client";
+import { VisibilityState } from "@tanstack/react-table"; // Import the correct type
 
 import { DateToUTCDate } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
@@ -195,14 +196,12 @@ function ProductTable({ from, to }: Props) {
     XLSX.writeFile(workbook, "inventory.xlsx");
   };
 
-  const [columnVisibility, setColumnVisibility] = useState({
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     date: false, // Initially hidden
     description: false, // Initially hidden
     // You can add more columns here as needed
   });
-  const handleColumnVisibilityChange = (updater: Updater<VisibilityState>) => {
-    setColumnVisibility(updater);
-  };
+
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -222,7 +221,7 @@ function ProductTable({ from, to }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnVisibilityChange: handleColumnVisibilityChange,
+    onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
 
   });
 
