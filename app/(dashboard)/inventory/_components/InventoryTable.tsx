@@ -297,14 +297,30 @@ function ProductTable({ from, to }: Props) {
             size={"sm"}
             className="ml-auto h-8 lg:flex"
             onClick={() => {
-              const data = table.getFilteredRowModel().rows.map((row) => ({
-                Amount: row.original.quantity,
-                Strain: row.original.productName,
-                Grower: row.original.growerName,
-                Category: row.original.categoryName,
-                Description: row.original.description,
-                Date_Dropped: row.original.date,
-              }));
+              const data = table.getFilteredRowModel().rows.map((row) => {
+                // Format the date here for the export
+                const date = new Date(row.original.date);
+                const formattedDateTime = `${date.toLocaleDateString("default", {
+                  timeZone: "PST",
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })} ${date.toLocaleTimeString("default", {
+                  timeZone: "PST",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}`;
+                
+                return {
+                  Amount: row.original.quantity,
+                  Strain: row.original.productName,
+                  Grower: row.original.growerName,
+                  Category: row.original.categoryName,
+                  Description: row.original.description,
+                  Date_Dropped: formattedDateTime, // Use the formatted date for export
+                };
+              });
               handleExportExcel(data);
             }}
           >

@@ -104,8 +104,12 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
   {
     accessorKey: "date",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Ordered/Retured" />
+      <DataTableColumnHeader column={column} title="Date Ordered/Returned" />
     ),
+    filterFn: (row, id, value) => {
+      const date = row.original.date;
+      return value.includes(date);
+    },
     cell: ({ row }) => {
       const date = new Date(row.original.date);
       const formattedDate = date.toLocaleDateString("default", {
@@ -292,24 +296,37 @@ function TransactionTable({ from, to }: Props) {
             size={"sm"}
             className="ml-auto h-8 lg:flex"
             onClick={() => {
-              const data = table.getFilteredRowModel().rows.map((row) => ({
-                Amount: row.original.amount,
+              const data = table.getFilteredRowModel().rows.map((row) => {
+                // Format the date and time for Date_Ordered_or_Returned. Idk why it needs me to manually add the hours like this sorry :/
+                const date = new Date(row.original.date);
+                const pstOffset = +4; // For PST without daylight savings, use -8
+                const pstDate = new Date(date.getTime() + pstOffset * 60 * 60 * 1000);
 
-                Strain: row.original.productName,
+                const formattedDateTime = `${pstDate.toLocaleDateString("default", {
+                  timeZone: "PST",
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })} ${pstDate.toLocaleTimeString("default", {
+                  timeZone: "PST",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: true, // This keeps the AM/PM format; remove if you prefer 24-hour format
 
-                // categoryIcon: row.original.categoryIcon,
-                Grower: row.original.growerName,
-                // growerIcon: row.original.growerIcon,
-                // strain: row.original.strain,
-                // strainIcon: row.original.strainIcon,
-                Description: row.original.description,
-                // formattedAmount: row.original.formattedAmount,
-                Date_Ordered_or_Returned: row.original.date,
-                Type: row.original.type,
-
-                Category: row.original.categoryName,
-
-              }));
+                })}`;
+              
+                return {
+                  Amount: row.original.amount, // Assuming this is numeric, no formatting required
+                  Strain: row.original.productName,
+                  Grower: row.original.growerName,
+                  Description: row.original.description,
+                  Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
+                  Type: row.original.type,
+                  Category: row.original.categoryName,
+                };
+              });
+              
               handleExportExcel(data); // Use Excel export function
 
               // handleExportCSV(data);
