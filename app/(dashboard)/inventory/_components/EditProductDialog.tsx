@@ -70,6 +70,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
     resolver: zodResolver(EditProductSchema),
     defaultValues: {
       id: product.id,
+      product: product.product,
       quantity: product.quantity,
       grower: growerName,
       category: categoryName,
@@ -147,6 +148,7 @@ quantity: 0,
       mutate({
         id: productId,
         data: {
+          product: values.product,
           id: values.id,
           quantity: values.quantity,
           createdAt: values.createdAt,
@@ -177,6 +179,19 @@ quantity: 0,
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <FormField
+              control={form.control}
+              name="product"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Strain Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter strain name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="quantity"
