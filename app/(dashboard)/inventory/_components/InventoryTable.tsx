@@ -200,6 +200,9 @@ function ProductTable({ from, to }: Props) {
     description: false, // Initially hidden
     // You can add more columns here as needed
   });
+  const handleColumnVisibilityChange = (updater: Updater<VisibilityState>) => {
+    setColumnVisibility(updater);
+  };
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -219,7 +222,7 @@ function ProductTable({ from, to }: Props) {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
+    onColumnVisibilityChange: handleColumnVisibilityChange,
 
   });
 
