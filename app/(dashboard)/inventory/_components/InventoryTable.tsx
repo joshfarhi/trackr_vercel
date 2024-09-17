@@ -182,6 +182,7 @@ function ProductTable({ from, to }: Props) {
     pageIndex: 0,
     pageSize: 40, // Default page size
   });
+  const prevHistory = usePrevious(history);
 
   // Query to fetch product history, including pagination
   const history = useQuery<GetProductHistoryResponseType>({
@@ -190,10 +191,8 @@ function ProductTable({ from, to }: Props) {
       fetch(
         `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`
       ).then((res) => res.json()),
-      options: {
-        keepPreviousData: true,
-      },
-      });
+      placeholderData: prevHistory?.data,
+    });
 
   // Assuming your server returns total rows available for pagination
   const totalRows = history.data?.totalRows ?? 0;
