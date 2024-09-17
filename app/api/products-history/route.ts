@@ -13,6 +13,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const from = searchParams.get("from");
   const to = searchParams.get("to");
+  const pageIndex = parseInt(searchParams.get("page") || "0", 10); // Default to page 0
+  const pageSize = parseInt(searchParams.get("pageSize") || "40", 10); // Default to 40 items per page
 
   const queryParams = OverviewQuerySchema.safeParse({
     from,
@@ -25,20 +27,44 @@ export async function GET(request: Request) {
     });
   }
 
+  // Fetch total count of products (for pagination)
+  const totalRows = await prisma.product.count({
+    where: {
+      createdAt: {
+        gte: queryParams.data.from,
+        lte: queryParams.data.to,
+      },
+    },
+  });
+
+  // Fetch products with pagination
   const products = await getProductsHistory(
     user.id,
     queryParams.data.from,
-    queryParams.data.to
+    queryParams.data.to,
+    pageIndex,
+    pageSize
   );
 
-  return new Response(JSON.stringify(products));
+  return new Response(
+    JSON.stringify({
+      rows: products, // Return paginated products
+      totalRows, // Return the total number of rows for pagination
+    })
+  );
 }
 
 export type GetProductHistoryResponseType = Awaited<
   ReturnType<typeof getProductsHistory>
 >;
 
-async function getProductsHistory(userId: string, from: Date, to: Date) {
+async function getProductsHistory(
+  userId: string,
+  from: Date,
+  to: Date,
+  pageIndex: number,
+  pageSize: number
+) {
   const userSettings = await prisma.userSettings.findUnique({
     where: {
       userId,
@@ -47,17 +73,12 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
   if (!userSettings) {
     throw new Error("User settings not found");
   }
-  // const today = new Date();
-  // const twoMonthsAgo = new Date(today.getFullYear(), today.getMonth() - 12, today.getDate());
 
-  // Fetch products including category and grower by their IDs
   const products = await prisma.product.findMany({
     where: {
       createdAt: {
         gte: from,
         lte: to,
-        // gte: twoMonthsAgo,  // Set the `from` date to two months ago
-        // lte: today,         // Set the `to` date to today
       },
     },
     orderBy: {
@@ -66,22 +87,24 @@ async function getProductsHistory(userId: string, from: Date, to: Date) {
     include: {
       category: {
         select: {
-          name: true,  // Include category name
+          name: true,
         },
       },
       grower: {
         select: {
-          name: true,  // Include grower name
+          name: true,
         },
       },
     },
+    skip: pageIndex * pageSize, // Skip items based on pageIndex
+    take: pageSize, // Limit the number of items to pageSize
   });
 
   return products.map((product) => ({
     ...product,
-    productName: product?.product || "Unknown Product",
-    growerName: product?.grower?.name || "Unknown Grower",
-    categoryName: product?.category?.name || "---",
-    date: product?.createdAt,
+    productName: product.product || "Unknown Product",
+    growerName: product.grower?.name || "Unknown Grower",
+    categoryName: product.category?.name || "---",
+    date: product.createdAt,
   }));
 }

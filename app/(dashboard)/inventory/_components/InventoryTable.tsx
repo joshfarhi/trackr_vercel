@@ -178,159 +178,45 @@ const csvConfig = mkConfig({
 function ProductTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pageSize, setPageSize] = useState(40); // Set default page size to 40
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 40, // Default page size
+  });
 
+  // Query to fetch product history, including pagination
   const history = useQuery<GetProductHistoryResponseType>({
-    queryKey: ["products", "history", from, to],
+    queryKey: ["products", "history", from, to, pagination.pageIndex, pagination.pageSize],
     queryFn: () =>
-      fetch(`/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`).then(
-        (res) => res.json()
-      ),
+      fetch(
+        `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`
+      ).then((res) => res.json()),
+    keepPreviousData: true, // Keep the previous data while fetching the next page
   });
 
-  const handleExportExcel = (data: any[]) => {
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
-    
-    XLSX.writeFile(workbook, "inventory.xlsx");
-  };
-
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    date: false, // Initially hidden
-    description: false, // Initially hidden
-    // You can add more columns here as needed
-  });
+  // Assuming your server returns total rows available for pagination
+  const totalRows = history.data?.totalRows ?? 0;
 
   const table = useReactTable({
-    data: history.data || emptyData,
+    data: history.data?.rows || emptyData, // Use paginated data
     columns,
+    pageCount: Math.ceil(totalRows / pagination.pageSize), // Calculate the total number of pages
+    manualPagination: true, // Inform the table that pagination is manual
     getCoreRowModel: getCoreRowModel(),
     state: {
       sorting,
       columnFilters,
-      columnVisibility, // Include the column visibility state here
-
-      pagination: {
-        pageSize, // Use the pageSize state
-        pageIndex: 0,
-      },
+      pagination, // Use the pagination state
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
-
+    onPaginationChange: setPagination, // Update pagination state when changed
   });
-
-  const categoriesOptions = useMemo(() => {
-    const categoriesMap = new Map<string, { value: string; label: string }>();
-  // Ensure history.data is an array before calling forEach
-  if (Array.isArray(history.data)) {
-    history.data.forEach((inventory) => {
-      const categoryName = inventory.categoryName || "No Category";
-      categoriesMap.set(categoryName, {
-        value: categoryName,
-        label: `${categoryName}`,
-      });
-    });
-  }
-
-  return Array.from(categoriesMap.values());
-}, [history.data]);
-  const growersOptions = useMemo(() => {
-    const growersMap = new Map();
-    history.data?.forEach((inventory) => {
-      growersMap.set(inventory.growerName, {
-        value: inventory.growerName,
-        label: `${inventory.growerName}`,
-      });
-    });
-    const uniqueGrowers = new Set(growersMap.values());
-    return Array.from(uniqueGrowers);
-  }, [history.data]);
-
-  const productsOptions = useMemo(() => {
-    const productsMap = new Map<string, { value: string; label: string }>();
-  
-    history.data?.forEach((inventory) => {
-      productsMap.set(inventory.productName, {
-        value: inventory.productName,
-        label: `${inventory.productName}`,
-      });
-    });
-  
-    return Array.from(productsMap.values());
-  }, [history.data]);
 
   return (
     <div className="w-full">
-      <div className="flex flex-wrap items-end justify-between gap-2 py-4">
-        <div className="flex gap-2">
-          {table.getColumn("category") && (
-            <DataTableFacetedFilter
-              title="Category"
-              column={table.getColumn("category")}
-              options={categoriesOptions}
-            />
-          )}
-          {table.getColumn("grower") && (
-            <DataTableFacetedFilter
-              title="Grower"
-              column={table.getColumn("grower")}
-              options={growersOptions}
-            />
-          )}
-          {table.getColumn("product") && (
-            <DataTableFacetedFilter
-              title="Strain"
-              column={table.getColumn("product")}
-              options={productsOptions}
-            />
-          )}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={"outline"}
-            size={"sm"}
-            className="ml-auto h-8 lg:flex"
-            onClick={() => {
-              const data = table.getFilteredRowModel().rows.map((row) => {
-                // Format the date here for the export
-                const date = new Date(row.original.date);
-                const formattedDateTime = `${date.toLocaleDateString("default", {
-                  timeZone: "PST",
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                })} ${date.toLocaleTimeString("default", {
-                  timeZone: "PST",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                })}`;
-                
-                return {
-                  Amount: row.original.quantity,
-                  Strain: row.original.productName,
-                  Grower: row.original.growerName,
-                  Category: row.original.categoryName,
-                  Description: row.original.description,
-                  Date_Dropped: formattedDateTime, // Use the formatted date for export
-                };
-              });
-              handleExportExcel(data);
-            }}
-          >
-            <DownloadIcon className="mr-2 h-4 w-4" />
-            Export Excel
-          </Button>
-          <DataTableViewOptions table={table} />
-        </div>
-      </div>
-
       <SkeletonWrapper isLoading={history.isFetching}>
         <div className="rounded-md border">
           <Table>
@@ -348,11 +234,11 @@ function ProductTable({ from, to }: Props) {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getRowModel().rows?.length ? (
+              {table.getRowModel().rows.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="p-4 text-center">
+                      <TableCell key={cell.id}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>
                     ))}
@@ -368,6 +254,7 @@ function ProductTable({ from, to }: Props) {
             </TableBody>
           </Table>
         </div>
+
         <div className="flex items-center justify-end space-x-2 py-4">
           <Button
             variant="outline"
@@ -392,6 +279,8 @@ function ProductTable({ from, to }: Props) {
 }
 
 export default ProductTable;
+
+
 
 function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
