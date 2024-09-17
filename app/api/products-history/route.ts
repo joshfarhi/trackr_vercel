@@ -13,8 +13,6 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const from = searchParams.get("from");
   const to = searchParams.get("to");
-  const pageIndex = parseInt(searchParams.get("page") || "0", 10); // Default to page 0
-  const pageSize = parseInt(searchParams.get("pageSize") || "40", 10); // Default to 40 items per page
 
   const queryParams = OverviewQuerySchema.safeParse({
     from,
@@ -28,30 +26,17 @@ export async function GET(request: Request) {
   }
 
   // Fetch total count of products (for pagination)
-  const totalRows = await prisma.product.count({
-    where: {
-      createdAt: {
-        gte: queryParams.data.from,
-        lte: queryParams.data.to,
-      },
-    },
-  });
 
   // Fetch products with pagination
   const products = await getProductsHistory(
     user.id,
     queryParams.data.from,
     queryParams.data.to,
-    pageIndex,
-    pageSize
+   
   );
 
-  return new Response(
-    JSON.stringify({
-      rows: products, // Return paginated products
-      totalRows, // Return the total number of rows for pagination
-    })
-  );
+  return new Response(JSON.stringify(products));
+
 }
 
 export type GetProductHistoryResponseType = Awaited<
@@ -62,8 +47,6 @@ async function getProductsHistory(
   userId: string,
   from: Date,
   to: Date,
-  pageIndex: number,
-  pageSize: number
 ) {
   const userSettings = await prisma.userSettings.findUnique({
     where: {
@@ -96,9 +79,7 @@ async function getProductsHistory(
         },
       },
     },
-    skip: pageIndex * pageSize, // Skip items based on pageIndex
-    take: pageSize, // Limit the number of items to pageSize
-  });
+     });
 
   return products.map((product) => ({
     ...product,

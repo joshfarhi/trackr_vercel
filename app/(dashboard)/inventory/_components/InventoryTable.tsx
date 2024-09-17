@@ -178,42 +178,32 @@ const csvConfig = mkConfig({
 function ProductTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: 40, // Default page size
-  });
-  const prevHistory = usePrevious(history);
 
   // Query to fetch product history, including pagination
   const history = useQuery<GetProductHistoryResponseType>({
-    queryKey: ["products", "history", from, to, pagination.pageIndex, pagination.pageSize],
+    queryKey: ["products", "history", from, to],
     queryFn: () =>
       fetch(
-        `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`
+        `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`
       ).then((res) => res.json()),
-      placeholderData: prevHistory?.data,
     });
 
   // Assuming your server returns total rows available for pagination
-  const totalRows = history.data?.totalRows ?? 0;
+  // const totalRows = history.data?.totalRows ?? 0;
 
   const table = useReactTable({
-    data: history.data?.rows || emptyData, // Use paginated data
+    data: history.data || emptyData, // Use paginated data
     columns,
-    pageCount: Math.ceil(totalRows / pagination.pageSize), // Calculate the total number of pages
-    manualPagination: true, // Inform the table that pagination is manual
     getCoreRowModel: getCoreRowModel(),
     state: {
       sorting,
       columnFilters,
-      pagination, // Use the pagination state
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    onPaginationChange: setPagination, // Update pagination state when changed
   });
 
   return (
