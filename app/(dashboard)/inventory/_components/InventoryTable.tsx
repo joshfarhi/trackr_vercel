@@ -190,8 +190,10 @@ function ProductTable({ from, to }: Props) {
       fetch(
         `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}&page=${pagination.pageIndex}&pageSize=${pagination.pageSize}`
       ).then((res) => res.json()),
-    keepPreviousData: true, // Keep the previous data while fetching the next page
-  });
+      options: {
+        keepPreviousData: true,
+      },
+      });
 
   // Assuming your server returns total rows available for pagination
   const totalRows = history.data?.totalRows ?? 0;
