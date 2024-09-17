@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const CreateTransactionSchema = z.object({
   amount: z.coerce.number().positive().multipleOf(0.01),
-  product: z.string(),
+  productId: z.number(),  // Use productId as it's unique
   description: z.string().nullable().optional(), // Make description optional
   date: z.coerce.date(),
   // categoryIcon: z.string().optional(),

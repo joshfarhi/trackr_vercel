@@ -20,7 +20,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   }
 
   // const { product, amount, date, description, type, category, grower} = parsedBody.data;
-  const { product, amount, date, description, type} = parsedBody.data;
+  const { productId, amount, date, description, type} = parsedBody.data;
 
 
   // const categoryRow = await prisma.category.findFirst({
@@ -55,15 +55,13 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   //   },
   // });
   // Fetch the product based on the unique combination of product name, growerId, and categoryId
-  const productRow = await prisma.product.findFirst({
+  const productRow = await prisma.product.findUnique({
     where: {
-      product: product, // Assuming product is the name
-      // grower: {
-      //   connect: { id: growerRow.id },    // Connect to an existing grower by ID
-      // },
-
+      id: productId, // Use productId to look up the product
+      // categoryId: parsedBody.data.categoryId, // If you need to filter by category as well
     },
   });
+  
 
   if (!productRow) {
     throw new Error("Product not found");

@@ -67,21 +67,25 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     defaultValues: {
       type,
       date: new Date(),
+      productId: undefined, // Initialize with undefined or null
     },
   });
-  const [open, setOpen] = useState(false);
-  
+  const [openDialog, setOpenDialog] = useState(false); // Separate state for the dialog
+
   const { data: userSettings, isLoading } = useQuery({
     queryKey: ["userSettings"],    // Query key
     queryFn: fetchUserSettings,    // Query function
   });
 
   const handleProductChange = useCallback(
-    (value: string) => {
-      form.setValue("product", value);
+    (productId: number) => {
+      form.setValue("productId", productId); // Set productId in the form
     },
     [form]
   );
+  
+
+  
   // const handleStrainChange = useCallback(
   //   (value: string) => {
   //     form.setValue("product.strain", value);
@@ -110,7 +114,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       });
 
       form.reset({
-        product: '',
+        productId: undefined,
         type,
         description: "",
         amount: 0,
@@ -125,9 +129,9 @@ function CreateTransactionDialog({ trigger, type }: Props) {
         queryKey: ["overview"],
       });
 
-      setOpen((prev) => !prev);
+      setOpenDialog((prev) => !prev);
          // Force a page reload
-    window.location.reload();
+    // window.location.reload();
     },
   });
 
@@ -139,6 +143,8 @@ function CreateTransactionDialog({ trigger, type }: Props) {
         ...values,
         date: DateToUTCDate(values.date),
       });
+      setOpenDialog(false);
+
     },
     [mutate]
   );
@@ -151,7 +157,7 @@ if (isLoading) {
 const weightUnit = userSettings?.weight || "g";  // Default to grams if not available
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={openDialog} onOpenChange={setOpenDialog}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -188,7 +194,7 @@ const weightUnit = userSettings?.weight || "g";  // Default to grams if not avai
 
 <FormField
                 control={form.control}
-                name="product"
+                name="productId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel>Strain</FormLabel>

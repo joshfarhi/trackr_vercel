@@ -22,16 +22,16 @@ import { Product } from "@prisma/client";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  onChange: (value: string) => void;
+  onChange: (value: number) => void; // Pass only the productId
 }
 
 function ProductPicker({ onChange }: Props) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState<{ productId: number; growerId: number } | null>(null);
 
   useEffect(() => {
     if (value) {
-      onChange(value);
+      onChange(value.productId); // Pass only productId to onChange
     }
   }, [onChange, value]);
 
@@ -45,39 +45,27 @@ function ProductPicker({ onChange }: Props) {
     queryFn: () => fetch(`/api/growers`).then((res) => res.json()),
   });
 
-  const categoriesQuery = useQuery({
-    queryKey: ["categories"],
-    queryFn: () => fetch(`/api/categories`).then((res) => res.json()),
-  });
-
   const products = Array.isArray(productsQuery.data) ? productsQuery.data : [];
   const growers = Array.isArray(growersQuery.data) ? growersQuery.data : [];
-  // const categories = Array.isArray(categoriesQuery.data) ? categoriesQuery.data : [];
 
-  const selectedProduct = products.find((product: Product) => product.product === value);
+  const selectedProduct = products.find(
+    (product: Product) => product.id === value?.productId && product.growerId === value?.growerId
+  );
 
   const successCallback = useCallback(
     (product: Product) => {
-      setValue(product.product);
+      setValue({ productId: product.id, growerId: product.growerId });
       setOpen(false);
     },
     []
   );
 
-  // Handle loading and error states separately
-  // if (growersQuery.isLoading || categoriesQuery.isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
-  // if (growersQuery.isError ) {
-  //   return <div>Error: {(growersQuery.error || categoriesQuery.error).message}</div>;
-  // }
   if (growersQuery.isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (growersQuery.isError ) {
-    return <div>Error: {(growersQuery.error).message}</div>;
+  if (growersQuery.isError) {
+    return <div>Error: {(growersQuery.error as Error).message}</div>;
   }
 
   return (
@@ -109,17 +97,18 @@ function ProductPicker({ onChange }: Props) {
             <CommandList>
               {products.map((product: Product) => (
                 <CommandItem
-                  key={product.product}
+                  key={`${product.product}-${product.growerId}`} // Use a composite key to account for multiple growers
                   onSelect={() => {
-                    setValue(product.product);
-                    setOpen(false);
+                    setValue({ productId: product.id, growerId: product.growerId });
+                    setOpen(false); // Close only the ProductPicker, not the entire dialog
                   }}
+                  
                 >
                   <ProductRow product={product} growers={growers} />
                   <Check
                     className={cn(
                       "mr-2 w-4 h-4 opacity-0",
-                      value === product.product && "opacity-100"
+                      value?.productId === product.id && value?.growerId === product.growerId && "opacity-100"
                     )}
                   />
                 </CommandItem>
@@ -134,17 +123,21 @@ function ProductPicker({ onChange }: Props) {
 
 export default ProductPicker;
 
-// function ProductRow({ product, growers, categories }: { product: Product, growers: any[], categories: any[] }) {
-
-function ProductRow({ product, growers }: { product: Product, growers: any[]}) {
-  const growerName = growers.find((grower) => grower.id === product.growerId)?.name;
-  // const categoryName = categories.find((category) => category.id === product.categoryId)?.name;
+function ProductRow({
+  product,
+  growers,
+}: {
+  product: Product;
+  growers: any[];
+}) {
+  const growerName = growers.find(
+    (grower) => grower.id === product.growerId
+  )?.name;
 
   return (
     <div className="flex items-center gap-2">
       <span>{product.product}</span>
       <span> - {growerName}</span>
-      {/* <span> - {categoryName}</span> */}
     </div>
   );
 }
