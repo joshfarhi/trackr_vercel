@@ -48,6 +48,7 @@ import EditProductDialog from "@/app/(dashboard)/inventory/_components/EditProdu
 import * as XLSX from "xlsx";
 import { QRCodeSVG } from 'qrcode.react';
 import Modal from 'react-modal';
+
 interface Props {
   from: Date;
   to: Date;
@@ -178,6 +179,11 @@ const csvConfig = mkConfig({
 function ProductTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    date: false,
+    type: false,
+    category: false,
+  });
 
 // Add pagination state with pageSize set to 30
 const [pagination, setPagination] = useState({
@@ -207,14 +213,81 @@ const [pagination, setPagination] = useState({
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
-    onPaginationChange: setPagination, // Handle pagination changes
+    onColumnVisibilityChange: setColumnVisibility,
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const handleExportExcel = (data: any[]) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
+    XLSX.writeFile(workbook, "Inventory.xlsx");
+  };
+  const categoriesOptions = useMemo(() => {
+    const categoriesMap = new Map<string, { value: string; label: string }>();
+    history.data?.forEach((product) => {
+      const categoryName = product.category?.name || "No Category";
+      categoriesMap.set(categoryName, {
+        value: categoryName,
+        label: `${categoryName}`,
+      });
+    });
+    return Array.from(categoriesMap.values());
+  }, [history.data]);
+
+  const productsOptions = useMemo(() => {
+    const productsMap = new Map<string, { value: string; label: string }>();
+    history.data?.forEach((product) => {
+      productsMap.set(product.productName, {
+        value: product.productName,
+        label: `${product.productName}`,
+      });
+    });
+    return Array.from(productsMap.values());
+  }, [history.data]);
+  
   return (
     <div className="w-full">
+      <div className="flex flex-wrap items-end justify-between gap-2 py-4">
+        <div className="flex gap-2">
+          {table.getColumn("category") && (
+            <DataTableFacetedFilter
+              title="Category"
+              column={table.getColumn("category")}
+              options={categoriesOptions}
+            />
+          )}
+          {table.getColumn("product") && (
+            <DataTableFacetedFilter
+              title="Product"
+              column={table.getColumn("product")}
+              options={productsOptions}
+            />
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            className="ml-auto h-8 lg:flex"
+            onClick={() => {
+              const data = table.getFilteredRowModel().rows.map((row) => ({
+                Amount: row.original.amount,
+                Product: row.original.productName,
+                Category: row.original.categoryName,
+                Date: row.original.date,
+              }));
+              handleExportExcel(data);
+            }}
+          >
+            <DownloadIcon className="mr-2 h-4 w-4" />
+            Export Excel
+          </Button>
+          <DataTableViewOptions table={table} />
+        </div>
+      </div>
       <SkeletonWrapper isLoading={history.isFetching}>
         <div className="rounded-md border">
           <Table>
@@ -252,7 +325,6 @@ const [pagination, setPagination] = useState({
             </TableBody>
           </Table>
         </div>
-
         <div className="flex items-center justify-end space-x-2 py-4">
           <Button
             variant="outline"
