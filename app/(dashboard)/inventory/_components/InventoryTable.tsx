@@ -179,6 +179,11 @@ function ProductTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+// Add pagination state with pageSize set to 30
+const [pagination, setPagination] = useState({
+  pageIndex: 0,
+  pageSize: 30,
+});
   // Query to fetch product history, including pagination
   const history = useQuery<GetProductHistoryResponseType>({
     queryKey: ["products", "history", from, to],
@@ -186,21 +191,23 @@ function ProductTable({ from, to }: Props) {
       fetch(
         `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`
       ).then((res) => res.json()),
-    });
+  });
 
   // Assuming your server returns total rows available for pagination
   // const totalRows = history.data?.totalRows ?? 0;
 
   const table = useReactTable({
-    data: history.data || emptyData, // Use paginated data
+    data: history.data || emptyData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     state: {
       sorting,
       columnFilters,
+      pagination, // Include pagination state
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
+    onPaginationChange: setPagination, // Handle pagination changes
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
