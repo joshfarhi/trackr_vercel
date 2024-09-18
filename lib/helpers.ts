@@ -13,6 +13,12 @@ export function DateToUTCDate(date: Date) {
     )
   );
 }
+export async function fetchTransactionById(id: number) {
+  const response = await fetch(`/api/transactions/${id}`);
+  if (!response.ok) throw new Error("Failed to fetch transaction");
+  return await response.json();
+}
+
 
 export function GetFormatterForWeight(unit: string) {
   const weightInfo = Weights.find((w) => w.value === unit);

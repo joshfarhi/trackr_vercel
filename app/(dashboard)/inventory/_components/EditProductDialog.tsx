@@ -130,7 +130,6 @@ quantity: 0,
         queryKey: ["products"],
       });
       setOpen(false); // Close the dialog after success
-
       // setOpen((prev) => !prev);
     },
     onError: () => {
