@@ -77,24 +77,6 @@ transaction: {
             type: "order" || "returns",
         },
     });
-
-    // Load transaction details when the dialog opens
-    // useEffect(() => {
-    //     if (open) {
-    //         fetchTransactionById(id)
-    //             .then((data) => {
-    //                 form.reset({
-    //                     amount: data.amount,
-    //                     description: data.description,
-    //                     date: new Date(data.date),
-    //                 });
-    //             })
-    //             .catch(() => {
-    //                 toast.error("Failed to fetch transaction data.");
-    //             })
-    //             .finally(() => setIsLoadingTransaction(false));
-    //     }
-    // }, [open, id]);
     const queryClient = useQueryClient();
     useEffect(() => {
         async function fetchTransaction() {
@@ -105,7 +87,7 @@ transaction: {
     
 
             if (transactionResponse.ok) {
-setTransactionAmount(transactionData.amount);          
+            setTransactionAmount(transactionData.amount);          
             setTransactionDescription(transactionData.description)            }
                       } 
           catch (error) {
@@ -252,26 +234,28 @@ setTransactionAmount(transactionData.amount);
         />
 
         {/* Type Dropdown Field */}
-        <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type</FormLabel>
-              <FormControl>
-                <select
-                  {...field}
-                  className="border rounded-md p-2 w-full"
-                >
-                  <option value="">Select Type</option>
-                  <option value="order">Order</option>
-                  <option value="returns">Returns</option>
-                </select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <FormField 
+  control={form.control}
+  name="type"
+  render={({ field }) => (
+    <FormItem style={{ marginBottom: '20px' }}>
+      <FormLabel>Type</FormLabel>
+      <FormControl>
+        <select
+          {...field}
+          className="border rounded-md p-2
+           w-full"
+          style={{ minWidth: '100%' }} // Ensure the select box does not overflow
+        >
+          <option value="">Select Type</option>
+          <option value="order">Order</option>
+          <option value="returns">Returns</option>
+        </select>
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
 
         <DialogFooter>
           <Button
