@@ -36,13 +36,24 @@ export async function EditTransaction({
     throw new Error("Invalid transaction form");
   }
 
-  const { amount, type, date, description } = parsed.data;
+  const { amount, client, type, date, description } = parsed.data;
 
    // Validate that the quantity is not negative
    if (amount < 0) {
     throw new Error("Amount cannot be negative.");
   }
+  // Fetch client ID from the client code (e.g., "EV10")
+  let clientConnect;
+  if (client) {
+    const clientRecord = await prisma.client.findUnique({
+      where: { name: client }, // Assuming 'code' is the field storing values like "EV10"
+    });
 
+    if (!clientRecord) {
+      throw new Error(`Client with code ${client} not found`);
+    }
+    clientConnect = { connect: { id: clientRecord.id } };
+  }
 
   // Fetch type ID from the type code (e.g., "MISC")
   let typeConnect;
@@ -57,7 +68,7 @@ export async function EditTransaction({
     typeConnect = { connect: { id: typeRecord.id } };
   }
 
-  // Log the grower and category connections before the update
+  // Log the client and category connections before the update
   console.log("Type connect:", typeConnect);
 
   // Update the transaction in the database
@@ -68,6 +79,8 @@ export async function EditTransaction({
       },
       data: {
         amount,
+        ...(clientConnect && { client: clientConnect }),   // Only connect if grower is valid
+
         date: new Date(date),
         description: description || "",
 type         },

@@ -44,6 +44,8 @@ import {
 
 import { cn } from "@/lib/utils";
 import { EditTransaction } from "@/app/(dashboard)/transactions/_actions/editTransaction";
+import ClientPicker from "../../_components/ClientPicker";
+
 interface Props {
     trigger: ReactNode;
     successCallback: (transaction: Transaction) => void;
@@ -51,7 +53,10 @@ interface Props {
 transaction: {
     id: number;
     amount: number;
-    date: Date;
+    client: {
+      name: string;
+    };
+        date: Date;
     description: string | null;
     type: string;
 }
@@ -65,6 +70,7 @@ transaction: {
     const [transactionDescription, setTransactionDescription] = useState<string>("");
 
     const [showPicker, setShowPicker] = useState(false); 
+    const [clientName, setClientName] = useState<string>("");
 
     // React Hook Form setup with Zod validation
     const form = useForm<EditTransactionSchemaType>({
@@ -72,6 +78,7 @@ transaction: {
         defaultValues: {
             id: transaction.id,
             amount: transaction.amount,
+            client: "",
             description: transaction.description || "",
             date: new Date(),
             type: "order" || "returns",
@@ -98,7 +105,7 @@ transaction: {
         if (open) {
           fetchTransaction();
         }
-      }, [open, transaction.amount, transaction.description]);
+      }, [open, transaction.amount, transaction.description, transaction.client]);
 
     const { mutate, isPending } = useMutation({
         mutationFn: EditTransaction,
@@ -132,6 +139,7 @@ transaction: {
             id: transactionId,
             data: {
               id: values.id,
+              client: values.client,
               amount: values.amount,
               date: values.date,
               description: values.description,
@@ -162,6 +170,33 @@ transaction: {
     </DialogHeader>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FormField
+  control={form.control}
+  name="client"
+  render={({ field }) => (
+    <FormItem className="flex flex-col">
+      <FormLabel>Client</FormLabel>
+      <FormControl>
+        {!showPicker ? (
+        <Input
+          {...field} // Connects the input field to react-hook-form
+          value={field.value || clientName} // Displays the fetched growerName
+          onFocus={() => setShowPicker(true)} // Show picker on input focus
+          placeholder="Enter grower name"
+        />
+      ) : (
+        <ClientPicker
+          clientName={clientName} // Pass the current grower name
+          onChange={(value: string) => {
+            field.onChange(value); // Update form value
+            setShowPicker(false); // Hide picker once a value is selected
+          }}
+        />
+      )}
+      </FormControl>
+    </FormItem>
+  )}
+/> 
         {/* Amount Field */}
         <FormField
           control={form.control}
