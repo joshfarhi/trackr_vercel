@@ -188,7 +188,7 @@ function ProductTable({ from, to }: Props) {
 // Add pagination state with pageSize set to 30
 const [pagination, setPagination] = useState({
   pageIndex: 0,
-  pageSize: 30,
+  pageSize: 5000,
 });
   // Query to fetch product history, including pagination
   const history = useQuery<GetProductHistoryResponseType>({
@@ -342,24 +342,7 @@ const [pagination, setPagination] = useState({
             </TableBody>
           </Table>
         </div>
-        <div className="flex items-center justify-end space-x-2 py-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
-        </div>
+        
       </SkeletonWrapper>
     </div>
   );
