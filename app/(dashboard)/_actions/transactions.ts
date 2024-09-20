@@ -31,15 +31,20 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   if (!productRow) {
     throw new Error("Product not found");
   }
+  if (!client) {
+    throw new Error("Client name is required.");
+  }
+  
   const clientRow = await prisma.client.findFirst({
     where: {
-      name: client, // Use productId to look up the product
+      name: client,
     },
   });
-
+  
   if (!clientRow) {
     throw new Error("Client not found");
   }
+  
   const currentInventory = productRow.quantity;
 
   // Calculate new inventory level based on the transaction type (order or return)
