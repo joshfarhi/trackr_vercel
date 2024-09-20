@@ -40,6 +40,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   // Prevent negative inventory for orders
   if (newInventory < 0) {
     throw new Error("Error: Negative inventory not allowed");
+    return;
   }
 
   // Proceed with transaction creation if inventory is valid
