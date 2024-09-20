@@ -19,108 +19,50 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     redirect("/sign-in");
   }
 
-  // const { product, amount, date, description, type, category, grower} = parsedBody.data;
-  const { productId, amount, date, description, type} = parsedBody.data;
+  const { productId, amount, date, description, type } = parsedBody.data;
 
-
-  // const categoryRow = await prisma.category.findFirst({
-  //   where: {
-  //     name: category,
-  //   },
-  // });
-
-  // if (!categoryRow) {
-  //   throw new Error("Category not found");
-  // }
-
-  // const growerRow = await prisma.grower.findFirst({
-  //   where: {
-    
-  //     name: grower,
-  //   },
-  // });
-
-  // if (!growerRow) {
-  //   throw new Error("grower not found");
-  // }
-
-
-  // const productRow = await prisma.product.findUnique({
-  //   where: {
-  //     product_growerId_categoryId: {
-  //       product: parsedBody.data.product,
-  //       // growerId: growerRow.id,
-  //       // categoryId: categoryRow.id,
-  //     },
-  //   },
-  // });
-  // Fetch the product based on the unique combination of product name, growerId, and categoryId
+  // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({
     where: {
       id: productId, // Use productId to look up the product
-      // categoryId: parsedBody.data.categoryId, // If you need to filter by category as well
     },
   });
-  
 
   if (!productRow) {
     throw new Error("Product not found");
   }
 
+  const currentInventory = productRow.quantity;
 
+  // Calculate new inventory level based on the transaction type (order or return)
+  const newInventory = type === "order" ? currentInventory - amount : currentInventory + amount;
 
-  // const strainRow = await prisma.strain.findFirst({
-  //   where: {
-  //     // name: strain,
-  //   },
-  // });
+  // Prevent negative inventory for orders
+  if (newInventory < 0) {
+    throw new Error("This action would result in a negative inventory. Please adjust the amount.");
+  }
 
-  // if (!strainRow) {
-  //   throw new Error("strain not found");
-  // }
+  // Proceed with transaction creation if inventory is valid
+  await prisma.transaction.create({
+    data: {
+      amount: amount,
+      description: description || "", // Set to empty string if not provided
+      date: date,
+      type: type,
+      productId: productRow.id, // Link using the product's ID
+    },
+  });
 
-  // await prisma.transaction.create({
-  //   data: {
-  //     amount: parsedBody.data.amount,
-  //     description: description || null || "", // Set to null if not provided
-  //     date: parsedBody.data.date,
-  //     type: parsedBody.data.type,
-  //     product: {
-  //       connect: { product: productRow.product }, // Use the product's ID for the relation
-  //     },
-  //     // productId: productRow.id, // You might not need this if the relation is already being set via `product`
-  //   },
-  // });
-
-  // await prisma.product.update({
-  //   where: { product: parsedBody.data.product },
-  //   data: {
-  //     quantity: {
-  //       increment: type === "order" ? -amount : amount, // Decrement for orders, increment for returns
-  //     },
-  //   },
-  // });
-
-    // Create the transaction
-    await prisma.transaction.create({
-      data: {
-        amount: amount,
-        description: description || "", // Set to empty string if not provided
-        date: date,
-        type: type,
-        productId: productRow.id, // Link using the product's ID
+  // Update the product quantity
+  await prisma.product.update({
+    where: { id: productRow.id },
+    data: {
+      quantity: {
+        increment: type === "order" ? -amount : amount, // Decrement for orders, increment for returns
       },
-    });
-  
-    // Update the product quantity
-    await prisma.product.update({
-      where: { id: productRow.id },
-      data: {
-        quantity: {
-          increment: type === "order" ? -amount : amount, // Decrement for orders, increment for returns
-        },
-      },
-    });
+    },
+  });
+
   // Update month aggregate table
   await prisma.monthHistory.upsert({
     where: {
