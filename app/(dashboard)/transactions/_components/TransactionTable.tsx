@@ -94,6 +94,18 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: false, // Grower is visible by default
   },
   {
+    accessorKey: "client",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Client" />
+    ),
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.clientName}
+      </div>
+    ),
+    enableHiding: false, // Grower is visible by default
+  },
+  {
     accessorKey: "description",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Description" />
@@ -254,7 +266,17 @@ function TransactionTable({ from, to }: Props) {
   
     return Array.from(productsMap.values());
   }, [history.data]);
-
+  const clientsOptions = useMemo(() => {
+    const clientsMap = new Map();
+    history.data?.forEach((transaction) => {
+      clientsMap.set(transaction.clientName, {
+        value: transaction.clientName,
+        label: `${transaction.clientName}`,
+      });
+    });
+    const uniqueClients = new Set(clientsMap.values());
+    return Array.from(uniqueClients);
+  }, [history.data]);
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
@@ -280,7 +302,13 @@ function TransactionTable({ from, to }: Props) {
               options={productsOptions}
             />
           )}
-          
+                    {table.getColumn("client") && (
+            <DataTableFacetedFilter
+              title="Client"
+              column={table.getColumn("client")}
+              options={clientsOptions}
+            />
+          )}
           {table.getColumn("type") && (
             <DataTableFacetedFilter
               title="Type"
@@ -322,6 +350,7 @@ function TransactionTable({ from, to }: Props) {
                   Amount: row.original.amount, // Assuming this is numeric, no formatting required
                   Strain: row.original.productName,
                   Grower: row.original.growerName,
+                  Client: row.original.clientName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
                   Type: row.original.type,

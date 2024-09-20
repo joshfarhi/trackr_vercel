@@ -19,7 +19,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     redirect("/sign-in");
   }
 
-  const { productId, amount, date, description, type } = parsedBody.data;
+  const { productId, client, amount, date, description, type } = parsedBody.data;
 
   // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({
@@ -31,7 +31,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   if (!productRow) {
     throw new Error("Product not found");
   }
+  const clientRow = await prisma.client.findFirst({
+    where: {
+      name: client, // Use productId to look up the product
+    },
+  });
 
+  if (!clientRow) {
+    throw new Error("Client not found");
+  }
   const currentInventory = productRow.quantity;
 
   // Calculate new inventory level based on the transaction type (order or return)
@@ -46,11 +54,15 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   await prisma.transaction.create({
     data: {
       amount: amount,
+      client: {
+        connect: { id: clientRow.id },    // Connect to an existing grower by ID
+      },      
       description: description || "", // Set to empty string if not provided
       date: date,
       type: type,
-      productId: productRow.id, // Link using the product's ID
-    },
+      product: {
+        connect: { id: productRow.id },    // Connect to an existing grower by ID
+      },        },
   });
 
   // Update the product quantity

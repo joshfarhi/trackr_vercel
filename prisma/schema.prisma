@@ -38,6 +38,12 @@ model Grower {
 
 }
 
+model Client {
+   id           Int            @id @default(autoincrement())
+   createdAt    DateTime       @default(now())
+   name         String         @unique
+   transactions Transaction[]  // Relation to transactions
+}
 
 model Product {
   id          Int       @id @default(autoincrement())
@@ -63,8 +69,10 @@ model Transaction {
   description String?
   date        DateTime
   type        String   @default("order")
-  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)  // Specify @relation here
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId   Int
+  clientId    Int      // Foreign key reference to Client
+  client      Client   @relation(fields: [clientId], references: [id])  // Set up relation to Client
 }
 
 

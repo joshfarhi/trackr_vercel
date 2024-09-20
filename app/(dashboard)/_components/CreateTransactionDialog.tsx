@@ -29,6 +29,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import ClientPicker from "@/app/(dashboard)/_components/ClientPicker";
 import ProductPicker from "@/app/(dashboard)/_components/ProductPicker";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -48,6 +49,8 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     defaultValues: {
       type,
       date: new Date(),
+      client: undefined, // Initialize with undefined or null
+
       productId: undefined, // Initialize with undefined or null
     },
   });
@@ -66,6 +69,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       form.reset({
         productId: undefined,
         type,
+        client: "",
         description: "",
         amount: 0,
         date: new Date(),
@@ -83,7 +87,12 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       toast.error(error?.message || "An error occurred during the transaction.");
     },
   });
-
+  const handleClientChange = useCallback(
+    (value: string) => {
+      form.setValue("client", value);
+    },
+    [form]
+  );
   const handleSubmit = useCallback(
     async (values: CreateTransactionSchemaType) => {
       try {
@@ -135,7 +144,21 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="client"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Client</FormLabel>
+                  <FormControl>
+                  <ClientPicker clientName="" onChange={handleClientChange} />
+                  </FormControl>
+                  <FormDescription>
+                    Select a client for this transaction
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="amount"
