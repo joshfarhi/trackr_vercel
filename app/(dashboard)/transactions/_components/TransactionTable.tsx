@@ -74,6 +74,10 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
     ),
+    filterFn: (row, id, value) => {
+      const strainName = row.original.productName;
+      return value.includes(strainName);
+    },
     cell: ({ row }) => (
       <div className="flex gap-2">
         <div className="">{row.original.productName}</div>
@@ -86,6 +90,10 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Grower" />
     ),
+    filterFn: (row, id, value) => {
+      const growerName = row.original.growerName;
+      return value.includes(growerName);
+    },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
         {row.original.product.grower.name}
@@ -98,12 +106,16 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Client" />
     ),
-    cell: ({ row }) => (
+    filterFn: (row, id, value) => {
+      const clientName = row.original.clientName;
+      return value.includes(clientName);
+    },
+     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.clientName}
+        {row.original.client.name}
       </div>
     ),
-    enableHiding: false, // Grower is visible by default
+    enableHiding: true, // Grower is visible by default
   },
   {
     accessorKey: "description",
@@ -141,6 +153,10 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Type" />
     ),
+    filterFn: (row, id, value) => {
+      const typeName = row.original.type;
+      return value.includes(typeName);
+    },
     cell: ({ row }) => (
       <div
         className={cn(
@@ -159,6 +175,10 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Category" />
     ),
+    filterFn: (row, id, value) => {
+      const categoryName = row.original.categoryName;
+      return value.includes(categoryName);
+    },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
         {row.original.product.category?.name || "No Category"}
@@ -212,6 +232,7 @@ function TransactionTable({ from, to }: Props) {
     // description: false, // Initially hidden
     type: false,
     category: false,
+    client: false,
     // You can add more columns here as needed
   });
   const table = useReactTable({
@@ -242,7 +263,17 @@ function TransactionTable({ from, to }: Props) {
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
-
+  const clientsOptions = useMemo(() => {
+    const clientsMap = new Map();
+    history.data?.forEach((transaction) => {
+      clientsMap.set(transaction.client.name, {
+        value: transaction.client.name,
+        label: `${transaction.client.name}`,
+      });
+    });
+    const uniqueGrowers = new Set(clientsMap.values());
+    return Array.from(uniqueGrowers);
+  }, [history.data]);
   const growersOptions = useMemo(() => {
     const growersMap = new Map();
     history.data?.forEach((transaction) => {
@@ -266,17 +297,7 @@ function TransactionTable({ from, to }: Props) {
   
     return Array.from(productsMap.values());
   }, [history.data]);
-  const clientsOptions = useMemo(() => {
-    const clientsMap = new Map();
-    history.data?.forEach((transaction) => {
-      clientsMap.set(transaction.clientName, {
-        value: transaction.clientName,
-        label: `${transaction.clientName}`,
-      });
-    });
-    const uniqueClients = new Set(clientsMap.values());
-    return Array.from(uniqueClients);
-  }, [history.data]);
+
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
