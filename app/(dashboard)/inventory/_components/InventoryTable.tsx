@@ -236,7 +236,17 @@ const [pagination, setPagination] = useState({
     });
     return Array.from(categoriesMap.values());
   }, [history.data]);
-
+  const growersOptions = useMemo(() => {
+    const growersMap = new Map();
+    history.data?.forEach((inventory) => {
+      growersMap.set(inventory.growerName, {
+        value: inventory.growerName,
+        label: `${inventory.growerName}`,
+      });
+    });
+    const uniqueGrowers = new Set(growersMap.values());
+    return Array.from(uniqueGrowers);
+  }, [history.data]);
   const productsOptions = useMemo(() => {
     const productsMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((product) => {
@@ -257,6 +267,13 @@ const [pagination, setPagination] = useState({
               title="Category"
               column={table.getColumn("category")}
               options={categoriesOptions}
+            />
+          )}
+                    {table.getColumn("grower") && (
+            <DataTableFacetedFilter
+              title="Grower"
+              column={table.getColumn("grower")}
+              options={growersOptions}
             />
           )}
           {table.getColumn("product") && (
