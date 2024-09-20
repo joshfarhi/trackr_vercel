@@ -4,6 +4,9 @@ import CreateCategoryDialog from "@/app/(dashboard)/_components/CreateCategoryDi
 import DeleteCategoryDialog from "@/app/(dashboard)/_components/DeleteCategoryDialog";
 import CreateGrowerDialog from "@/app/(dashboard)/_components/CreateGrowerDialog";
 import DeleteGrowerDialog from "@/app/(dashboard)/_components/DeleteGrowerDialog";
+import CreateClientDialog from "@/app/(dashboard)/_components/CreateClientDialog";
+import DeleteClientDialog from "@/app/(dashboard)/_components/DeleteClientDialog";
+
 // import CreateStrainDialog from "@/app/(dashboard)/_components/CreateStrainDialog";
 // import DeleteStrainDialog from "@/app/(dashboard)/_components/DeleteStrainDialog";
 import { WeightComboBox } from "@/components/WeightComboBox";
@@ -22,6 +25,8 @@ import { cn } from "@/lib/utils";
 import { Category, Product } from "@prisma/client";
 // import { Strain } from "@prisma/client";
 import { Grower } from "@prisma/client";
+import { Client } from "@prisma/client";
+
 import { useQuery } from "@tanstack/react-query";
 //START needed for deleting product 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -132,7 +137,8 @@ function page() {
         {/* <ProductList /> */}
         <GrowerList  />
         <CategoryList  />
-     
+        <ClientList  />
+
         
        
         
@@ -428,7 +434,99 @@ function GrowerCard({ grower }: { grower: Grower }) {
     </div>
   );
 }
+function ClientList() {
+  const clientsQuery = useQuery({
+    queryKey: ["clients"],
+    queryFn: () =>
+      fetch(`/api/clients`).then((res) => res.json()),
+  });
 
+  const dataAvailable = clientsQuery.data && clientsQuery.data.length > 0;
+
+  return (
+    <SkeletonWrapper isLoading={clientsQuery.isLoading}>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+             
+              <div>
+                clients
+                <div className="text-sm text-muted-foreground">
+                  Sorted by name
+                </div>
+              </div>
+            </div>
+
+            <CreateClientDialog
+          
+              successCallback={() => clientsQuery.refetch()}
+              trigger={
+                <Button className="gap-2 text-sm">
+                  <PlusSquare className="h-4 w-4" />
+                  Create client
+                </Button>
+              }
+            />
+          </CardTitle>
+        </CardHeader>
+        <Separator />
+        {!dataAvailable && (
+          <div className="flex h-40 w-full flex-col items-center justify-center">
+            <p>
+              No
+              <span
+                className={cn(
+                  "m-1",
+                "text-emerald-500" 
+                )}
+              >
+                
+              </span>
+              clients yet
+            </p>
+
+            <p className="text-sm text-muted-foreground">
+              Create one to get started
+            </p>
+          </div>
+        )}
+        {dataAvailable && (
+          <div className="grid grid-flow-row gap-2 p-2 sm:grid-flow-row sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {clientsQuery.data.map((client: Client) => (
+              <ClientCard client={client} key={client.name} />
+            ))}
+          </div>
+        )}
+      </Card>
+    </SkeletonWrapper>
+  );
+}
+
+function ClientCard({ client }: { client: Client }) {
+  return (
+    <div className="flex border-separate flex-col justify-between rounded-md border shadow-md shadow-black/[0.1] dark:shadow-white/[0.1]">
+      <div className="flex flex-col items-center gap-2 p-4">
+        {/* <span className="text-3xl" role="img">
+          {grower.icon}
+        </span> */}
+        <span>{client.name}</span>
+      </div>
+      <DeleteClientDialog
+        client={client}
+        trigger={
+          <Button
+            className="flex w-full border-separate items-center gap-2 rounded-t-none text-muted-foreground hover:bg-red-500/20"
+            variant={"secondary"}
+          >
+            <TrashIcon className="h-4 w-4" />
+            Remove
+          </Button>
+        }
+      />
+    </div>
+  );
+}
 // function StrainList() {
 //   const strainsQuery = useQuery({
 //     queryKey: ["strains"],
