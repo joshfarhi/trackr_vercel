@@ -36,7 +36,7 @@ export async function EditProduct({
     throw new Error("Invalid product form");
   }
 
-  const { product, quantity, category, grower, createdAt, description } = parsed.data;
+  const { product, quantity, value, category, grower, createdAt, description } = parsed.data;
 
    // Validate that the quantity is not negative
    if (quantity < 0) {
@@ -83,6 +83,7 @@ export async function EditProduct({
       data: {
         product: parsed.data.product,  // Update strain name
         quantity,
+        value: value || undefined,
         createdAt: new Date(createdAt),
         description: description || "",
         ...(growerConnect && { grower: growerConnect }),   // Only connect if grower is valid

@@ -77,6 +77,23 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     },
   },
   {
+    accessorKey: "value",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Value ($)" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.value}
+      </p>
+    ),
+    enableHiding: true, 
+    sortingFn: (rowA, rowB) => {
+      const amountA = rowA.original.value ?? 0;
+      const amountB = rowB.original.value ?? 0;
+      return amountA - amountB;
+    },
+  },
+  {
     accessorKey: "product",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Strain" />
@@ -180,7 +197,9 @@ function ProductTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    description: false,
     date: false,
+    value: false,
     type: false,
     category: false,
   });
@@ -210,6 +229,7 @@ const [pagination, setPagination] = useState({
       sorting,
       columnFilters,
       pagination, // Include pagination state
+      columnVisibility,
     },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -278,7 +298,7 @@ const [pagination, setPagination] = useState({
           )}
           {table.getColumn("product") && (
             <DataTableFacetedFilter
-              title="Product"
+              title="Strain"
               column={table.getColumn("product")}
               options={productsOptions}
             />
@@ -292,6 +312,7 @@ const [pagination, setPagination] = useState({
             onClick={() => {
               const data = table.getFilteredRowModel().rows.map((row) => ({
                 Amount: row.original.amount,
+                Value: row.original.value,
                 Product: row.original.productName,
                 Category: row.original.categoryName,
                 Date: row.original.date,
