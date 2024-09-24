@@ -62,21 +62,21 @@ function generateQrCodeUrl(strainId: string): string {
 
 const emptyData: any[] = [];
 
-// type ProductHistoryRow = GetProductHistoryResponseType[0];
-type ProductHistoryRow = {
-  id: number;
-  createdAt: Date;
-  updatedAt: Date;
-  productName: string;
-  growerName: string;
-  categoryName: string;
-  quantity: number;
-  value: number;
-  description: string | null;
-  date: Date;
-  grower: { name: string };
-  category: { name: string } | null;
-};
+type ProductHistoryRow = GetProductHistoryResponseType[0];
+// type ProductHistoryRow = {
+//   id: number;
+//   createdAt: Date;
+//   updatedAt: Date;
+//   productName: string;
+//   growerName: string;
+//   categoryName: string;
+//   quantity: number;
+//   value: number;
+//   description: string | null;
+//   date: Date;
+//   grower: { name: string };
+//   category: { name: string } | null;
+// };
 
 const columns: ColumnDef<ProductHistoryRow>[] = [
   {
@@ -421,7 +421,17 @@ const qrCodeUrl = `http://localhost:3000/products/${product.id}`;
         <EditProductDialog
           open={showEditDialog}
           setOpen={setShowEditDialog}
-          product={product}
+          product={{
+            id: product.id,
+            product: product.productName,
+            growerId: product.growerId,// Assuming grower has an id
+            categoryId: product.categoryId || null, // Assuming category has an id
+            description: product.description,
+            quantity: product.quantity,
+            value: product.value || 0,
+            createdAt: product.createdAt,
+            updatedAt: product.updatedAt,
+          }}
           productId={product.id}
           trigger={undefined}
           successCallback={() => {
