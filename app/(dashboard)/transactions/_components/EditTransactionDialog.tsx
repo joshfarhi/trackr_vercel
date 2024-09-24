@@ -53,6 +53,7 @@ interface Props {
 transaction: {
     id: number;
     amount: number;
+    price: number;
     client: {
       name: string;
     };
@@ -78,6 +79,7 @@ transaction: {
         defaultValues: {
             id: transaction.id,
             amount: transaction.amount,
+            price: transaction.price || undefined,
             client: "",
             description: transaction.description || "",
             date: new Date(),
@@ -115,6 +117,7 @@ transaction: {
                 description: "",
         date: new Date(),
         amount: 0,
+        price: undefined,
               });
               toast.success(`Transaction ${data.id} edited successfully 🎉`, {
                 id: transactionId,
@@ -141,6 +144,7 @@ transaction: {
               id: values.id,
               client: values.client,
               amount: values.amount,
+              price: values.price,
               date: values.date,
               description: values.description,
               type: values.type, // Convert category to ID if present
@@ -197,6 +201,19 @@ transaction: {
     </FormItem>
   )}
 /> 
+        {/* Price Field */}
+        <FormField
+          control={form.control}
+          name="price"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Price</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" />
+              </FormControl>
+            </FormItem>
+          )}
+        />
         {/* Amount Field */}
         <FormField
           control={form.control}

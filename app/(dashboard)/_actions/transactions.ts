@@ -19,7 +19,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
     redirect("/sign-in");
   }
 
-  const { productId, client, amount, date, description, type } = parsedBody.data;
+  const { productId, client, price, amount, date, description, type } = parsedBody.data;
 
   // Fetch the product based on the productId
   const productRow = await prisma.product.findUnique({
@@ -60,6 +60,7 @@ export async function CreateTransaction(form: CreateTransactionSchemaType) {
   await prisma.transaction.create({
     data: {
       amount: amount,
+      price: price || undefined,
       client: {
         connect: { id: clientRow.id },    // Connect to an existing grower by ID
       },      

@@ -74,6 +74,8 @@ model Transaction {
   productId   Int
   clientId    Int      // Foreign key reference to Client
   client      Client   @relation(fields: [clientId], references: [id])  // Set up relation to Client
+  price    Int?       @default(0)
+
 }
 
 
