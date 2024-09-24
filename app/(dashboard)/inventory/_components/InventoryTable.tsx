@@ -62,7 +62,21 @@ function generateQrCodeUrl(strainId: string): string {
 
 const emptyData: any[] = [];
 
-type ProductHistoryRow = GetProductHistoryResponseType[0];
+// type ProductHistoryRow = GetProductHistoryResponseType[0];
+type ProductHistoryRow = {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  productName: string;
+  growerName: string;
+  categoryName: string;
+  quantity: number;
+  value: number;
+  description: string | null;
+  date: Date;
+  grower: { name: string };
+  category: { name: string } | null;
+};
 
 const columns: ColumnDef<ProductHistoryRow>[] = [
   {
