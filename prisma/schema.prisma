@@ -56,6 +56,7 @@ model Product {
   category    Category?  @relation(fields: [categoryId], references: [id])
   transactions Transaction[]  // No @relation attribute needed here
   quantity    Int       @default(0)
+  value    Int?       @default(0)
   description String?
 
   @@unique([product, growerId])  // Enforce unique combination of product, grower, and category
@@ -73,6 +74,8 @@ model Transaction {
   productId   Int
   clientId    Int      // Foreign key reference to Client
   client      Client   @relation(fields: [clientId], references: [id])  // Set up relation to Client
+  price    Int?       @default(0)
+
 }
 
 

@@ -21,7 +21,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
     redirect("/sign-in");
   }
 
-  const { product, quantity, category, grower, createdAt, description } = parsedBody.data;
+  const { product, quantity, value, category, grower, createdAt, description } = parsedBody.data;
 
   // const productRow = await prisma.product.findFirst({
   //   where: {
@@ -44,6 +44,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
       throw new Error("Category not found");
     }
   }
+  
   const growerRow = await prisma.grower.findFirst({
     where: {
     
@@ -70,6 +71,7 @@ export async function CreateProduct(form: CreateProductSchemaType) {
   return await prisma.product.create({
     data: {
       quantity,
+      value: value || undefined,
       product,
       description: description || "", // Set to empty string if not provided
       // icon: icon ?? "",  // Default to an empty string if icon is null

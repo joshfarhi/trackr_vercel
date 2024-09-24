@@ -49,6 +49,7 @@ interface Props {
     growerId: number;
     categoryId: number | null;
     quantity: number;
+    value: number;
     description: string | null;
   };
   productId: number;
@@ -72,6 +73,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
       id: product.id,
       product: product.product,
       quantity: product.quantity,
+      value: product.value,
       grower: growerName,
       category: categoryName,
       description: product.description || "",
@@ -114,6 +116,7 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
         description: "",
 createdAt: new Date(),
 quantity: 0,
+value: 0,
         // icon: "",
         // strain: undefined,
         grower: undefined,
@@ -150,6 +153,7 @@ quantity: 0,
           product: values.product,
           id: values.id,
           quantity: values.quantity,
+          value: values.value,
           createdAt: values.createdAt,
           grower: values.grower,
           description: values.description,
@@ -188,6 +192,24 @@ quantity: 0,
                     <Input placeholder="Enter strain name" {...field} />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+                        <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Value</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={Number(field.value) ?? undefined}
+                      type="value"
+                      placeholder="Enter product value"
+                    />
+                  </FormControl>
+                  <FormDescription>Click to adjust the total item value in the inventory</FormDescription>
                 </FormItem>
               )}
             />

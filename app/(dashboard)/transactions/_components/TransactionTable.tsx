@@ -69,6 +69,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     enableHiding: false, // Amount is visible by default
   },
+
   {
     accessorKey: "product",
     header: ({ column }) => (
@@ -100,6 +101,18 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </div>
     ),
     enableHiding: false, // Grower is visible by default
+  },
+  {
+    accessorKey: "price",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Price ($)" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.price}
+      </p>
+    ),
+    enableHiding: true, // Amount is visible by default
   },
   {
     accessorKey: "client",
@@ -228,8 +241,9 @@ function TransactionTable({ from, to }: Props) {
   };
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    description: false, // Initially hidden
     date: false, // Initially hidden
-    // description: false, // Initially hidden
+    price: false,
     type: false,
     category: false,
     client: false,
@@ -374,6 +388,7 @@ function TransactionTable({ from, to }: Props) {
                   Client: row.original.clientName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
+                 Price: row.original.price,
                   Type: row.original.type,
                   Category: row.original.categoryName,
                 };

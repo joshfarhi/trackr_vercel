@@ -68,6 +68,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
 
       form.reset({
         productId: undefined,
+        price: undefined,
         type,
         client: "",
         description: "",
@@ -141,6 +142,27 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                     <ProductPicker onChange={(productId: number) => form.setValue("productId", productId)} />
                   </FormControl>
                   <FormDescription>Select a strain for this transaction</FormDescription>
+                </FormItem>
+              )}
+            />
+                                    <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? undefined} // Ensure default value is 0
+                      type="number"
+                      placeholder="Enter transaction price"
+                      min={0} // Prevent negative values
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Price
+                  </FormDescription>
                 </FormItem>
               )}
             />

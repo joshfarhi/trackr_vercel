@@ -36,7 +36,7 @@ export async function EditTransaction({
     throw new Error("Invalid transaction form");
   }
 
-  const { amount, client, type, date, description } = parsed.data;
+  const { amount, price, client, type, date, description } = parsed.data;
 
    // Validate that the quantity is not negative
    if (amount < 0) {
@@ -79,6 +79,7 @@ export async function EditTransaction({
       },
       data: {
         amount,
+        price,
         ...(clientConnect && { client: clientConnect }),   // Only connect if grower is valid
 
         date: new Date(date),

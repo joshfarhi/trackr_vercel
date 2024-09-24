@@ -39,7 +39,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CircleOff, Loader2, PlusSquare } from "lucide-react";
 import React, { ReactNode, useCallback, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, FormState } from "react-hook-form";
 import Picker from "@emoji-mart/react";
 import data from "@emoji-mart/data";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -109,14 +109,17 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
 
   const queryClient = useQueryClient();
   const theme = useTheme();
+  const { register, handleSubmit, formState } = useForm();
 
   const { mutate, isPending } = useMutation({
     mutationFn: CreateProduct,
     onSuccess: async (data: Product) => {
+      console.log('Form data:', data);
+      console.log('Validation errors:', formState.errors);
       form.reset({
         product: "",
         description: "",
-
+        value: undefined,
         // icon: "",
         // strain: undefined,
         grower: undefined,
@@ -205,13 +208,33 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
+                        <FormField
+              control={form.control}
+              name="value"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Value</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      value={field.value ?? undefined} // Ensure default value is 0
+                      type="number"
+                      placeholder="Enter strain value"
+                      min={0} // Prevent negative values
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Value
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
+Quantity                  <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? 0} // Ensure default value is 0
