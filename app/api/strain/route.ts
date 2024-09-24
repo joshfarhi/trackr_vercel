@@ -1,23 +1,13 @@
-// Filename: /pages/api/strain/[id].ts
-
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-export default async function(req: NextApiRequest, res: NextApiResponse) {
-    const { query, method } = req;
+// Handle GET request
+export async function GET(req: NextRequest) {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
 
-    // Handle HTTP method restrictions
-    if (method !== 'GET') {
-        res.setHeader('Allow', ['GET']);
-        res.status(405).end(`Method ${method} Not Allowed`);
-        return;
-    }
-
-    // Extract the strain ID from the query parameters and ensure it is provided
-    const { id } = query;
     if (!id) {
-        res.status(400).json({ message: "ID is required" });
-        return;
+        return NextResponse.json({ message: "ID is required" }, { status: 400 });
     }
 
     try {
@@ -25,16 +15,23 @@ export default async function(req: NextApiRequest, res: NextApiResponse) {
         const strain = await prisma.product.findUnique({
             where: { id: Number(id) },
             include: {
-                grower:
-                true, category: true, } });
+                grower: true,
+                category: true,
+            },
+        });
 
-                if (!strain) {
-                    res.status(404).json({ message: "Strain not found" });
-                    return;
-                }
-            
-                res.status(200).json(strain);
-            } catch (error) {
-                res.status(500).json({ message: "Server error", error });
-            }
+        if (!strain) {
+            return NextResponse.json({ message: "Strain not found" }, { status: 404 });
+        }
+
+        return NextResponse.json(strain, { status: 200 });
+    } catch (error) {
+        return NextResponse.json({ message: "Server error", error }, { status: 500 });
+    }
+}
+
+// If you want to handle other methods like POST, you can add those here, for example:
+export async function POST(req: NextRequest) {
+    // Implement POST logic here
+    return NextResponse.json({ message: "POST request received" });
 }
