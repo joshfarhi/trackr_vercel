@@ -3,7 +3,7 @@ import { VisibilityState } from "@tanstack/react-table"; // Import the correct t
 
 import { DateToUTCDate } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -46,12 +46,18 @@ import DeleteProductDialog from "@/app/(dashboard)/inventory/_components/DeleteP
 import EditProductDialog from "@/app/(dashboard)/inventory/_components/EditProductDialog";
 
 import * as XLSX from "xlsx";
-import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeSVG, QRCodeCanvas } from 'qrcode.react';
 import Modal from 'react-modal';
+import NextImage from "next/image";
 
 interface Props {
   from: Date;
   to: Date;
+}
+
+function generateQrCodeUrl(strainId: string): string {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
+  return `${baseUrl}/strain/${strainId}`;
 }
 
 const emptyData: any[] = [];
@@ -351,15 +357,27 @@ const [pagination, setPagination] = useState({
 export default ProductTable;
 
 
-
 function RowActions({ product }: { product: ProductHistoryRow }) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const qrRef = useRef(null);
 
+  const downloadQRCode = () => {
+    if (qrRef.current) {
+      const canvas = (qrRef.current as HTMLDivElement).querySelector('canvas');
+      if (canvas) {
+        const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        const link = document.createElement('a');
+        link.download = 'qr-code.png';
+        link.href = image;
+        link.click();
+      }
+    }
+  };
+  
 // Create a string with all the product details
-const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
-
+const qrCodeUrl = `http://localhost:3000/products/${product.id}`;
 
   return (
     <>
@@ -415,25 +433,32 @@ const qrCodeValue = `${process.env.NEXT_PUBLIC_APP_URL}/product/${product.id}`;
 
 
         {/* QR Code Modal */}
+        {/* Modal for Google QR Code */}
         <Modal
-        isOpen={isQrModalOpen}
-        onRequestClose={() => setIsQrModalOpen(false)}
-        contentLabel="QR Code Modal"
-        className="fixed inset-0 flex items-center justify-center p-4"
-        overlayClassName="fixed inset-0 bg-black/50"
-        >
-  
-          <div className="bg-white rounded-lg p-6 w-full max-w-sm">
-              <h2 className="text-lg font-semibold mb-4">QR Code for {product.productName}</h2>
-                <QRCodeSVG value={qrCodeValue} size={150} className="mx-auto" />
-                <button
-                  className="mt-4 bg-gray-800 text-white px-4 py-2 rounded w-full"
-                  onClick={() => setIsQrModalOpen(false)}
-                >
-                Close
-                </button>
-            </div>
-          </Modal>
-          </>
-          );
-          }
+  isOpen={isQrModalOpen}
+  onRequestClose={() => setIsQrModalOpen(false)}
+  className="fixed inset-0 z-50 overflow-auto bg-smoke-light flex"
+>
+  <div className="relative p-4 w-full max-w-md m-auto flex-col flex bg-white rounded-lg shadow-lg">
+    <div className="flex items-center justify-between pb-3">
+      <h2 className="text-lg font-semibold text-black">QR Code for {product.productName}</h2>
+      <button onClick={() => setIsQrModalOpen(false)} className="text-black close-modal">
+        &times;
+      </button>
+    </div>
+    <div className="mb-4 flex justify-center">
+      <QRCodeCanvas value={`http://localhost:3000/products/${product.id}`} size={256} />
+    </div>
+    <div className="flex justify-center">
+      <button
+        onClick={downloadQRCode}
+        className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded hover:bg-blue-700"
+      >
+        Save QR Code
+      </button>
+    </div>
+  </div>
+</Modal>
+    </>
+  );
+}

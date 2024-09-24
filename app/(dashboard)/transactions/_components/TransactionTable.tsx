@@ -96,7 +96,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.product.grower.name}
+        {row.original.growerName}
       </div>
     ),
     enableHiding: false, // Grower is visible by default
@@ -112,7 +112,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     },
      cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.client.name}
+        {row.original.clientName}
       </div>
     ),
     enableHiding: true, // Grower is visible by default
@@ -146,7 +146,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
-    enableHiding: true, // Date is hidden by default
+    enableHiding: false, // Date is hidden by default
   },
   {
     accessorKey: "type",
@@ -168,7 +168,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         {row.original.type === "order" ? "ordered" : "returned"}
       </div>
     ),
-    enableHiding: true, // Type is hidden by default
+    enableHiding: false, // Type is hidden by default
   },
   {
     accessorKey: "category",
@@ -181,14 +181,14 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
-        {row.original.product.category?.name || "No Category"}
+        {row.original.categoryName || "No Category"}
       </div>
     ),
-    enableHiding: true, // Category is hidden by default
+    enableHiding: false, // Category is hidden by default
   },
   {
     id: "actions",
-    enableHiding: true, // Actions column is hidden by default
+    enableHiding: false, // Actions column is hidden by default
     cell: ({ row }) => <RowActions transaction={row.original} />,
   },
 ];
@@ -255,7 +255,7 @@ function TransactionTable({ from, to }: Props) {
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((transaction) => {
-      const categoryName = transaction.product.category?.name || "No Category";
+      const categoryName = transaction.categoryName || "No Category";
       categoriesMap.set(categoryName, {
         value: categoryName,
         label: `${categoryName}`,
@@ -266,9 +266,9 @@ function TransactionTable({ from, to }: Props) {
   const clientsOptions = useMemo(() => {
     const clientsMap = new Map();
     history.data?.forEach((transaction) => {
-      clientsMap.set(transaction.client.name, {
-        value: transaction.client.name,
-        label: `${transaction.client.name}`,
+      clientsMap.set(transaction.clientName, {
+        value: transaction.clientName,
+        label: `${transaction.clientName}`,
       });
     });
     const uniqueGrowers = new Set(clientsMap.values());
@@ -277,9 +277,9 @@ function TransactionTable({ from, to }: Props) {
   const growersOptions = useMemo(() => {
     const growersMap = new Map();
     history.data?.forEach((transaction) => {
-      growersMap.set(transaction.product.grower.name, {
-        value: transaction.product.grower.name,
-        label: `${transaction.product.grower.name}`,
+      growersMap.set(transaction.growerName, {
+        value: transaction.growerName,
+        label: `${transaction.growerName}`,
       });
     });
     const uniqueGrowers = new Set(growersMap.values());
@@ -477,7 +477,10 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
         <EditTransactionDialog
           open={showEditDialog}
           setOpen={setShowEditDialog}
-          transaction={transaction}
+          transaction={{
+            ...transaction,
+            client: { name: transaction.clientName }, // Ensure client property is included
+          }}
           transactionId={transaction.id}
           trigger={undefined}
           successCallback={() => {
@@ -518,9 +521,6 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
 
         </DropdownMenuContent>
       </DropdownMenu>
-
-
-
-          </>
-          );
-          }
+    </>
+  );
+}
