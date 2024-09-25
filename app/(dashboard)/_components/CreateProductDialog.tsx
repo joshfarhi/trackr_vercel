@@ -120,6 +120,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         product: "",
         description: "",
         value: undefined,
+        quantity: undefined,
         // icon: "",
         // strain: undefined,
         grower: undefined,
