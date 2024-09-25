@@ -213,7 +213,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>Value ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}

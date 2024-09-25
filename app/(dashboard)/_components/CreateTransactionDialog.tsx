@@ -150,7 +150,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
               name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Price</FormLabel>
+                  <FormLabel>Price ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}

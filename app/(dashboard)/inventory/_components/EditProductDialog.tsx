@@ -200,7 +200,7 @@ value: 0,
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>Value ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
