@@ -494,6 +494,7 @@ function RowActions({ transaction }: { transaction: TransactionHistoryRow }) {
           setOpen={setShowEditDialog}
           transaction={{
             ...transaction,
+            price: transaction.price || 0,
             client: { name: transaction.clientName }, // Ensure client property is included
           }}
           transactionId={transaction.id}
