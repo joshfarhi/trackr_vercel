@@ -299,7 +299,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 name="createdAt"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Transaction date</FormLabel>
+                    <FormLabel>Date Added</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>

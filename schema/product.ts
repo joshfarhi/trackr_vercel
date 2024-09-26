@@ -10,7 +10,7 @@ export const CreateProductSchema = z.object({
     if (quantity === "" || quantity === undefined) return 0; // Default to 0 if empty
     return Number(quantity);
   }, z.number().min(0).multipleOf(0.01)), // Use preprocess to handle string input
-  createdAt: z.date(),
+  createdAt: z.coerce.date(),
   description: z.string().nullable().optional(),
   category: z.string().nullable().optional(),
   grower: z.string(),

@@ -68,9 +68,9 @@ type ProductHistoryRow = GetProductHistoryResponseType[0];
 
 const columns: ColumnDef<ProductHistoryRow>[] = [
   {
-    accessorKey: "amount",
+    accessorKey: "quantity",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Amount" />
+      <DataTableColumnHeader column={column} title="Quantity" />
     ),
     cell: ({ row }) => (
       <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
@@ -84,23 +84,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       return amountA - amountB;
     },
   },
-  {
-    accessorKey: "value",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Value ($)" />
-    ),
-    cell: ({ row }) => (
-      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
-        {row.original.value}
-      </p>
-    ),
-    enableHiding: true, 
-    sortingFn: (rowA, rowB) => {
-      const amountA = rowA.original.value ?? 0;
-      const amountB = rowB.original.value ?? 0;
-      return amountA - amountB;
-    },
-  },
+
   {
     accessorKey: "product",
     header: ({ column }) => (
@@ -134,23 +118,7 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     enableHiding: false, // Amount is visible by default
 
   },
-  {
-    accessorKey: "category",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
-    ),
-    filterFn: (row, id, value) => {
-      const categoryName = row.original.categoryName;
-      return value.includes(categoryName);
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.categoryName || "No Category"}
-      </div>
-    ),
-        enableHiding: false, // Amount is visible by default
 
-  },
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -167,11 +135,11 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
       <DataTableColumnHeader column={column} title="Date Dropped" />
     ),
     filterFn: (row, id, value) => {
-      const date = row.original.date;
+      const date = row.original.createdAt;
       return value.includes(date);
     },
     cell: ({ row }) => {
-      const date = new Date(row.original.date);
+      const date = new Date(row.original.createdAt);
       const formattedDate = date.toLocaleDateString("default", {
         timeZone: "PST",
         year: "numeric",
@@ -183,11 +151,45 @@ const columns: ColumnDef<ProductHistoryRow>[] = [
     enableHiding: true, // Description is visible by default
 
     sortingFn: (rowA, rowB) => {
-      const dateA = new Date(rowA.original.date).getTime();
-      const dateB = new Date(rowB.original.date).getTime();
+      const dateA = new Date(rowA.original.createdAt).getTime();
+      const dateB = new Date(rowB.original.createdAt).getTime();
       return dateA - dateB;
     },
   },
+  {
+    accessorKey: "value",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Value ($)" />
+    ),
+    cell: ({ row }) => (
+      <p className="text-md rounded-lg bg-gray-400/5 p-2 text-center font-medium">
+        {row.original.value}
+      </p>
+    ),
+    enableHiding: true, 
+    sortingFn: (rowA, rowB) => {
+      const amountA = rowA.original.value ?? 0;
+      const amountB = rowB.original.value ?? 0;
+      return amountA - amountB;
+    },
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+    filterFn: (row, id, value) => {
+      const categoryName = row.original.categoryName;
+      return value.includes(categoryName);
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.categoryName || "No Category"}
+      </div>
+    ),
+        enableHiding: true, 
+  },
+
   {
     id: "actions",
     enableHiding: false,
@@ -318,13 +320,37 @@ const [pagination, setPagination] = useState({
             size={"sm"}
             className="ml-auto h-8 lg:flex"
             onClick={() => {
-              const data = table.getFilteredRowModel().rows.map((row) => ({
-                Amount: row.original.amount,
-                Value: row.original.value,
-                Product: row.original.productName,
+              const data = table.getFilteredRowModel().rows.map((row) => {
+                // Format the date and time for Date_Ordered_or_Returned. Idk why it needs me to manually add the hours like this sorry :/
+                const date = new Date(row.original.createdAt);
+                const pstOffset = +0; // For PST without daylight savings, use -8
+                const pstDate = new Date(date.getTime() +pstOffset * 60 * 60 * 1000);
+
+                const formattedDateTime = `${pstDate.toLocaleDateString("default", {
+                  timeZone: "PST",
+                  year: "numeric",
+                  month: "2-digit",
+                  day: "2-digit",
+                })} ${pstDate.toLocaleTimeString("default", {
+                  timeZone: "PST",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                  hour12: true, // This keeps the AM/PM format; remove if you prefer 24-hour format
+
+                })}`;
+
+           return { 
+            Quantity: row.original.quantity,
+                Strain: row.original.productName,
+                Grower: row.original.growerName,
                 Category: row.original.categoryName,
-                Date: row.original.date,
-              }));
+                Description: row.original.description,
+                Date_Dropped: formattedDateTime,
+                Value: row.original.value,
+
+              };
+              });
               handleExportExcel(data);
             }}
           >
