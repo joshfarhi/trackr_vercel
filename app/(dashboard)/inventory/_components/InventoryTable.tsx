@@ -55,9 +55,13 @@ interface Props {
   to: Date;
 }
 
-function generateQrCodeUrl(strainId: string): string {
+function generateQrCodeUrl(strainId: string, quantity: number, category: string, grower: string): string {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL; // Use your app's URL
-  return `${baseUrl}/strain/${strainId}`;
+  const url = new URL(`${baseUrl}/strain/${strainId}`);
+  url.searchParams.append('quantity', quantity.toString());
+  url.searchParams.append('category', category);
+  url.searchParams.append('grower', grower);
+  return url.toString();
 }
 
 const emptyData: any[] = [];
@@ -412,7 +416,7 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   };
   
 // Create a string with all the product details
-const qrCodeUrl = `http://localhost:3000/products/${product.id}`;
+const qrCodeUrl = `http://localhost:3000/products/${product.id}?quantity=${product.quantity}&category=${product.category}&grower=${product.grower}`;
 
   return (
     <>
@@ -485,7 +489,10 @@ const qrCodeUrl = `http://localhost:3000/products/${product.id}`;
       </button>
     </div>
     <div className="mb-4 flex justify-center">
-      <QRCodeCanvas value={`http://localhost:3000/products/${product.id}`} size={256} />
+    <QRCodeCanvas 
+  value={`http://localhost:3000/products/${product.id}?quantity=${product.quantity}&category=${product.category}&grower=${product.grower}`} 
+  size={256} 
+/>
     </div>
     <div className="flex justify-center">
       <button
