@@ -1,6 +1,5 @@
 "use client";
 import { VisibilityState } from "@tanstack/react-table"; // Import the correct type
-
 import { DateToUTCDate } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
 import React, { useMemo, useState, useRef } from "react";
@@ -16,7 +15,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { GetProductHistoryResponseType } from "@/app/api/products-history/route";
- 
 import {
   Table,
   TableBody,
@@ -67,20 +65,6 @@ function generateQrCodeUrl(strainName: string, quantity: number, category: strin
 const emptyData: any[] = [];
 
 type ProductHistoryRow = GetProductHistoryResponseType[0];
-// type ProductHistoryRow = {
-//   id: number;
-//   createdAt: Date;
-//   updatedAt: Date;
-//   productName: string;
-//   growerName: string;
-//   categoryName: string;
-//   quantity: number;
-//   value: number;
-//   description: string | null;
-//   date: Date;
-//   grower: { name: string };
-//   category: { name: string } | null;
-// };
 
 const columns: ColumnDef<ProductHistoryRow>[] = [
   {
