@@ -426,15 +426,8 @@ const qrCodeUrl = `http://localhost:3000/products/${product.id}?quantity=${produ
           open={showEditDialog}
           setOpen={setShowEditDialog}
           product={{
-            id: product.id,
-            product: product.productName,
-            growerId: product.growerId,// Assuming grower has an id
-            categoryId: product.categoryId || null, // Assuming category has an id
-            description: product.description,
-            quantity: product.quantity,
+            ...product,
             value: product.value || 0,
-            createdAt: product.createdAt,
-            updatedAt: product.updatedAt,
           }}
           productId={product.id}
           trigger={undefined}

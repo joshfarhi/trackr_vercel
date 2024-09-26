@@ -48,8 +48,8 @@ interface Props {
     product: string;
     growerId: number;
     categoryId: number | null;
-    quantity: number;
-    value: number;
+    quantity: number | 0;
+    value: number | 0;
     description: string | null;
   };
   productId: number;
@@ -72,8 +72,8 @@ function EditProductDialog({ productId, trigger, successCallback, product, open,
     defaultValues: {
       id: product.id,
       product: product.product,
-      quantity: product.quantity,
-      value: product.value,
+      quantity: product.quantity || 0,
+      value: product.value || 0,
       grower: growerName,
       category: categoryName,
       description: product.description || "",
@@ -200,7 +200,7 @@ value: 0,
               name="value"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Value</FormLabel>
+                  <FormLabel>Value ($)</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
