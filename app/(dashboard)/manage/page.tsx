@@ -135,11 +135,11 @@ function page() {
           </CardContent>
         </Card> */}
         {/* <ProductList /> */}
-        <GrowerList  />
-        <CategoryList  />
-        <ClientList  />
 
-        
+
+        <ClientList  />
+        <CategoryList  />
+        <GrowerList  />
        
         
       
