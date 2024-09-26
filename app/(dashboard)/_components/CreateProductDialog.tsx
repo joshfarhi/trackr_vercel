@@ -120,7 +120,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         product: "",
         description: "",
         value: undefined,
-        quantity: undefined,
+        quantity: 0,
         // icon: "",
         // strain: undefined,
         grower: undefined,
@@ -230,12 +230,13 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                 </FormItem>
               )}
             />
-            <FormField
+ <FormField
               control={form.control}
               name="quantity"
               render={({ field }) => (
                 <FormItem>
-Quantity                  <FormControl>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
                     <Input
                       {...field}
                       value={field.value ?? 0} // Ensure default value is 0
