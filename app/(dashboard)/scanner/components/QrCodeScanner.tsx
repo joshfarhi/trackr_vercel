@@ -23,10 +23,10 @@ const QrCodeScanner = () => {
 
         // Parse the URL to extract query parameters
         const url = new URL(decodedText);
-        const strainId = url.pathname.split('/').pop() || '';
+        const strainId = decodeURIComponent(url.pathname.split('/').pop() || '');
         const quantity = parseInt(url.searchParams.get('quantity') || '0', 10);
-        const category = url.searchParams.get('category') || '';
-        const grower = url.searchParams.get('grower') || '';
+        const category = decodeURIComponent(url.searchParams.get('category') || '');
+        const grower = decodeURIComponent(url.searchParams.get('grower') || '');
 
         setStrainInfo({ strainId, quantity, category, grower });
         setIsModalOpen(true); // Open the modal when QR code is scanned
