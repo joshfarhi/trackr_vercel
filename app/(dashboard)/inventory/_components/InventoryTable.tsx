@@ -15,6 +15,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { GetProductHistoryResponseType } from "@/app/api/products-history/route";
+import { useEffect } from "react";
+
 import {
   Table,
   TableBody,
@@ -204,16 +206,41 @@ const csvConfig = mkConfig({
 });
 
 function ProductTable({ from, to }: Props) {
+  const [isMounted, setIsMounted] = useState(false);
+
+    // Detect when the component has mounted on the client
+    useEffect(() => {
+      setIsMounted(true);
+    }, []);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    description: false,
-    date: false,
-    value: false,
-    type: false,
-    category: false,
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => {
+    if (typeof window !== "undefined") {
+      const savedFilters = localStorage.getItem('productTableFilters');
+      return savedFilters ? JSON.parse(savedFilters) : [];
+    }
+    return [];
   });
 
+
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
+    if (typeof window !== "undefined") {
+      const savedVisibility = localStorage.getItem('productTableVisibility');
+      return savedVisibility ? JSON.parse(savedVisibility) : {
+        description: false,
+        date: false,
+        value: false,
+        type: false,
+        category: false,
+      };
+    }
+    return {
+      description: false,
+      date: false,
+      value: false,
+      type: false,
+      category: false,
+    };
+  });
 // Add pagination state with pageSize set to 30
 const [pagination, setPagination] = useState({
   pageIndex: 0,
@@ -227,6 +254,19 @@ const [pagination, setPagination] = useState({
         `/api/products-history?from=${DateToUTCDate(from)}&to=${DateToUTCDate(to)}`
       ).then((res) => res.json()),
   });
+
+  // Save filters and visibility state to localStorage on client side only
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('productTableFilters', JSON.stringify(columnFilters));
+    }
+  }, [columnFilters, isMounted]);
+
+  useEffect(() => {
+    if (isMounted) {
+      localStorage.setItem('productTableVisibility', JSON.stringify(columnVisibility));
+    }
+  }, [columnVisibility, isMounted]);
 
   // Assuming your server returns total rows available for pagination
   // const totalRows = history.data?.totalRows ?? 0;
@@ -248,6 +288,7 @@ const [pagination, setPagination] = useState({
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
 
   const handleExportExcel = (data: any[]) => {
     const worksheet = XLSX.utils.json_to_sheet(data);
@@ -287,7 +328,10 @@ const [pagination, setPagination] = useState({
     });
     return Array.from(productsMap.values());
   }, [history.data]);
-  
+   // Render a fallback (e.g., a loading state) while the component is hydrating
+   if (!isMounted) {
+    return <div>Loading...</div>;
+  }
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">

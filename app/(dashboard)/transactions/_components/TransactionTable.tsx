@@ -16,6 +16,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { GetTransactionHistoryResponseType } from "@/app/api/transactions-history/route";
+import { useEffect } from "react";
 
 import {
   Table,
@@ -227,8 +228,22 @@ const csvConfig = mkConfig({
 });
 
 function TransactionTable({ from, to }: Props) {
+  // State to track if the component is rendering on the client
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Detect when the component has mounted on the client
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(() => {
+    if (typeof window !== "undefined") {
+      const savedFilters = localStorage.getItem('transactionTableFilters');
+      return savedFilters ? JSON.parse(savedFilters) : [];
+    }
+    return [];
+  });
+
 
 const [pagination, setPagination] = useState({
     pageIndex: 0,
@@ -257,15 +272,42 @@ const [pagination, setPagination] = useState({
     XLSX.writeFile(workbook, "transactions.xlsx");
   };
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    description: false, // Initially hidden
-    date: false, // Initially hidden
-    price: false,
-    category: false,
-    client: false,
-    type: false,
-    // You can add more columns here as needed
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
+    if (typeof window !== "undefined") {
+      const savedVisibility = localStorage.getItem('transactionTableVisibility');
+      return savedVisibility ? JSON.parse(savedVisibility) : {
+        description: false, // Initially hidden
+        date: false, // Initially hidden
+        price: false,
+        category: false,
+        client: false,
+        type: false,
+      };
+    }
+    return {
+      description: false, // Initially hidden
+      date: false, // Initially hidden
+      price: false,
+      category: false,
+      client: false,
+      type: false,
+    };
   });
+
+
+ // Save filters and visibility state to localStorage on client side only
+ useEffect(() => {
+  if (isMounted) {
+    localStorage.setItem('transactionTableFilters', JSON.stringify(columnFilters));
+  }
+}, [columnFilters, isMounted]);
+
+useEffect(() => {
+  if (isMounted) {
+    localStorage.setItem('transactionTableVisibility', JSON.stringify(columnVisibility));
+  }
+}, [columnVisibility, isMounted]);
+
   const table = useReactTable({
     data: history.data || emptyData,
     columns,
@@ -329,6 +371,11 @@ const [pagination, setPagination] = useState({
     return Array.from(productsMap.values());
   }, [history.data]);
 
+
+    // Render a fallback (e.g., a loading state) while the component is hydrating
+    if (!isMounted) {
+      return <div>Loading...</div>;
+    }
   return (
     <div className="w-full">
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
