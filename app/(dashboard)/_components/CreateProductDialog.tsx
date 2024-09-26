@@ -224,9 +224,6 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                       min={0} // Prevent negative values
                     />
                   </FormControl>
-                  <FormDescription>
-                    Value
-                  </FormDescription>
                 </FormItem>
               )}
             />
@@ -245,9 +242,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                       min={0} // Prevent negative values
                     />
                   </FormControl>
-                  <FormDescription>
-                    Quantity
-                  </FormDescription>
+
                 </FormItem>
               )}
             />

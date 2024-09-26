@@ -160,9 +160,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                       min={0} // Prevent negative values
                     />
                   </FormControl>
-                  <FormDescription>
-                    Price
-                  </FormDescription>
                 </FormItem>
               )}
             />
