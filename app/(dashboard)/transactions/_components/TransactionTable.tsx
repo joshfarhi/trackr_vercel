@@ -103,6 +103,48 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     enableHiding: false, // Grower is visible by default
   },
   {
+    accessorKey: "description",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Description" />
+    ),
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.description}</div>
+    ),
+    enableHiding: true, // Description is visible by default
+  },
+  
+  {
+    accessorKey: "date",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Date Ordered/Returned" />
+    ),
+    filterFn: (row, id, value) => {
+      const date = row.original.date;
+      return value.includes(date);
+    },
+    cell: ({ row }) => {
+      // const date = new Date(row.original.date);
+      // const formattedDate = date.toLocaleDateString("default", {
+      //   timeZone: "PST",
+      //   year: "numeric",
+      //   month: "2-digit",
+      //   day: "2-digit",
+      // });
+      const date = new Date(row.original.date);
+      const pstOffset = +4; // For PST without daylight savings, use -8
+      const pstDate = new Date(date.getTime() + pstOffset * 60 * 60 * 1000);
+
+      const formattedDate = `${pstDate.toLocaleDateString("default", {
+        timeZone: "PST",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })}`;
+      return <div className="text-muted-foreground">{formattedDate}</div>;
+    },
+    enableHiding: true, // Date is hidden by default
+  },
+  {
     accessorKey: "price",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Price ($)" />
@@ -113,6 +155,22 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </p>
     ),
     enableHiding: true, // Amount is visible by default
+  },
+  {
+    accessorKey: "category",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+    filterFn: (row, id, value) => {
+      const categoryName = row.original.categoryName;
+      return value.includes(categoryName);
+    },
+    cell: ({ row }) => (
+      <div className="flex gap-2 capitalize">
+        {row.original.categoryName || "No Category"}
+      </div>
+    ),
+    enableHiding: false, // Category is hidden by default
   },
   {
     accessorKey: "client",
@@ -129,37 +187,6 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       </div>
     ),
     enableHiding: true, // Grower is visible by default
-  },
-  {
-    accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Description" />
-    ),
-    cell: ({ row }) => (
-      <div className="capitalize">{row.original.description}</div>
-    ),
-    enableHiding: false, // Description is visible by default
-  },
-  {
-    accessorKey: "date",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Date Ordered/Returned" />
-    ),
-    filterFn: (row, id, value) => {
-      const date = row.original.date;
-      return value.includes(date);
-    },
-    cell: ({ row }) => {
-      const date = new Date(row.original.date);
-      const formattedDate = date.toLocaleDateString("default", {
-        timeZone: "PST",
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-      });
-      return <div className="text-muted-foreground">{formattedDate}</div>;
-    },
-    enableHiding: true, // Date is hidden by default
   },
   {
     accessorKey: "type",
@@ -183,22 +210,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     enableHiding: false, // Type is hidden by default
   },
-  {
-    accessorKey: "category",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Category" />
-    ),
-    filterFn: (row, id, value) => {
-      const categoryName = row.original.categoryName;
-      return value.includes(categoryName);
-    },
-    cell: ({ row }) => (
-      <div className="flex gap-2 capitalize">
-        {row.original.categoryName || "No Category"}
-      </div>
-    ),
-    enableHiding: false, // Category is hidden by default
-  },
+
   {
     id: "actions",
     enableHiding: false, // Actions column is hidden by default
@@ -244,9 +256,9 @@ function TransactionTable({ from, to }: Props) {
     description: false, // Initially hidden
     date: false, // Initially hidden
     price: false,
-    type: false,
     category: false,
     client: false,
+    type: false,
     // You can add more columns here as needed
   });
   const table = useReactTable({
