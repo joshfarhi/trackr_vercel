@@ -101,10 +101,23 @@ const QrCodeScanner = () => {
 
   return (
     <div>
-      <h1>QR Code Scanner</h1>
-      <div id="qr-reader" style={{ width: "500px" }}></div>
+      <div className="border-b bg-card">
+        <div className="container flex flex-wrap items-center justify-between gap-6 py-8">
+          <div>
+            <p className="text-3xl font-bold">Scanner</p>
+            <p className="text-muted-foreground">
+              Scan the QR code to view the strain information
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="container flex flex-col items-center gap-4 p-4">
+      <div id="qr-reader" style={{ width: "500px", marginTop: "20px" }}></div>
+      <div className="flex gap-2">
       <Button onClick={stopScanning}>Stop Scanning</Button>
       <Button onClick={reinitializeScanner}>Reinitialize Scanner</Button>
+        </div>
+        </div>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild>
           <Button variant={"ghost"} className="hidden">Open Modal</Button>
@@ -116,7 +129,7 @@ const QrCodeScanner = () => {
           </DialogHeader>
           {strainInfo && (
             <div className="space-y-4">
-              <p><strong>Strain ID:</strong> {strainInfo.strainId}</p>
+              <p><strong>Strain Name:</strong> {strainInfo.strainId}</p>
               <p><strong>Quantity:</strong> {strainInfo.quantity}</p>
               <p><strong>Category:</strong> {strainInfo.category}</p>
               <p><strong>Grower:</strong> {strainInfo.grower}</p>
