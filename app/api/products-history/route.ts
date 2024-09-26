@@ -86,6 +86,6 @@ async function getProductsHistory(
     productName: product.product || "Unknown Product",
     growerName: product.grower?.name || "Unknown Grower",
     categoryName: product.category?.name || "---",
-    date: product.createdAt,
+    // date: product.createdAt,
   }));
 }

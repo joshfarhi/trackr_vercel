@@ -159,7 +159,7 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
       });
       return <div className="text-muted-foreground">{formattedDate}</div>;
     },
-    enableHiding: false, // Date is hidden by default
+    enableHiding: true, // Date is hidden by default
   },
   {
     accessorKey: "type",
@@ -385,13 +385,12 @@ function TransactionTable({ from, to }: Props) {
                   Amount: row.original.amount, // Assuming this is numeric, no formatting required
                   Strain: row.original.productName,
                   Grower: row.original.growerName,
+                  Category: row.original.categoryName,
                   Client: row.original.clientName,
                   Description: row.original.description,
                   Date_Ordered_or_Returned: formattedDateTime, // Use the formatted date and time for export
                  Price: row.original.price,
-                  Type: row.original.type,
-                  Category: row.original.categoryName,
-                };
+                  Type: row.original.type,                };
               });
               
               handleExportExcel(data); // Use Excel export function
