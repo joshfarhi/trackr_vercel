@@ -115,7 +115,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
   
         // Check if inventory is sufficient
         if (inventory <= 0) {
-          toast.error("Inventory is insufficient. No more orders can be placed for this strain and grower.");
+          toast.error("Too few items in inventory.");
           return;
         }
   
