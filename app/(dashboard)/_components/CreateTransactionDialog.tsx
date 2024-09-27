@@ -169,7 +169,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                   <FormControl>
                     <ProductPicker onChange={(productId: number) => form.setValue("productId", productId)} />
                   </FormControl>
-                  <FormDescription>Select a strain for this transaction</FormDescription>
                 </FormItem>
               )}
             />
@@ -201,7 +200,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                     <ClientPicker clientName="" onChange={handleClientChange} />
                   </FormControl>
                   <FormDescription>
-                    Select a client for this transaction
                   </FormDescription>
                 </FormItem>
               )}

@@ -88,9 +88,6 @@ async function getTransactionsHistory(userId: string, from: Date, to: Date) {
 
   return transactions.map((transaction) => ({
     ...transaction,
-    productName: transaction.product?.product || "Unknown Product",  // Add product name
-    growerName: transaction.product?.grower?.name || "Unknown Grower",  // Add grower name
-    categoryName: transaction.product?.category?.name || "Unknown Category",  // Add category name
     clientName: transaction.client?.name || "",  // Add client name
     amount: transaction.amount,  // Format the amount based on user weight
   }));

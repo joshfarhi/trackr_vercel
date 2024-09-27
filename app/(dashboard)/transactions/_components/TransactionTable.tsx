@@ -209,7 +209,6 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
         {row.original.type === "order" ? "ordered" : "returned"}
       </div>
     ),
-    enableHiding: false, // Type is hidden by default
   },
 
   {
