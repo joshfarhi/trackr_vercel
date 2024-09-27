@@ -457,15 +457,13 @@ function RowActions({ product }: { product: ProductHistoryRow }) {
   const qrRef = useRef(null);
 
   const downloadQRCode = () => {
-    if (qrRef.current) {
-      const canvas = (qrRef.current as HTMLDivElement).querySelector('canvas');
-      if (canvas) {
-        const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        const link = document.createElement('a');
-        link.download = 'qr-code.png';
-        link.href = image;
-        link.click();
-      }
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+      const link = document.createElement('a');
+      link.download = 'qr-code.png';
+      link.href = image;
+      link.click();
     }
   };
   
