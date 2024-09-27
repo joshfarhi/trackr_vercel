@@ -83,8 +83,8 @@ async function getProductsHistory(
 
   return products.map((product) => ({
     ...product,
-    productName: product.product || "Unknown Product",
-    growerName: product.grower?.name || "Unknown Grower",
+    productName: product.product || "---",
+    growerName: product.grower?.name || "---",
     categoryName: product.category?.name || "---",
     // date: product.createdAt,
   }));
