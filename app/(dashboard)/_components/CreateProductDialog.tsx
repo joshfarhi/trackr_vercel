@@ -204,6 +204,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <Input placeholder="Strain" {...field} />
                   </FormControl>
                   <FormDescription>
+                    This is how your strain will appear in the app (required)
                   </FormDescription>
                 </FormItem>
               )}
@@ -270,6 +271,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
                     <GrowerPicker growerName="" onChange={handleGrowerChange} />
                   </FormControl>
                   <FormDescription>
+                    Select a grower for this Strain (required)
                   </FormDescription>
                 </FormItem>
               )}
@@ -287,6 +289,7 @@ function CreateProductDialog({ trigger, successCallback }: Props) {
         />
           </FormControl>
                   <FormDescription>
+                    New strain description/notes
                   </FormDescription>
                 </FormItem>
               )}
