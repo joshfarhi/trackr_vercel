@@ -50,7 +50,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       type,
       date: new Date(),
       client: undefined, // Initialize with undefined or null
-
       productId: undefined, // Initialize with undefined or null
     },
   });
@@ -84,28 +83,57 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       setOpenDialog((prev) => !prev);
     },
     onError: (error: any) => {
+      // Dismiss the loading toast
+      toast.dismiss("create-transaction");
+
       // Catch any error thrown from the server (including negative inventory)
       toast.error(error?.message || "An error occurred during the transaction.");
     },
   });
+
   const handleClientChange = useCallback(
     (value: string) => {
       form.setValue("client", value);
     },
     [form]
   );
+
+  const fetchInventory = async (productId: number): Promise<number> => {
+    // Replace with actual API call to fetch inventory
+    // Example:
+    // const response = await fetch(`/api/inventory?productId=${productId}`);
+    // const data = await response.json();
+    // return data.inventory;
+    return 10; // Mocked inventory value for demonstration
+  };
+
   const handleSubmit = useCallback(
     async (values: CreateTransactionSchemaType) => {
       try {
+        // Fetch current inventory
+        const inventory = await fetchInventory(values.productId);
+  
+        // Check if inventory is sufficient
+        if (inventory <= 0) {
+          toast.error("Inventory is insufficient. No more orders can be placed for this strain and grower.");
+          return;
+        }
+  
+        // Show loading toast
+        const toastId = toast.loading("Creating transaction...", { id: "create-transaction" });
+  
         // Proceed with transaction creation
-        toast.loading("Creating transaction...", { id: "create-transaction" });
-
         mutate({
           ...values,
           date: DateToUTCDate(values.date),
         });
-
+  
       } catch (error) {
+        // Dismiss the loading toast
+        toast.dismiss("create-transaction");
+  
+        // Show error toast
+        toast.error("An error occurred during the transaction.");
         console.error("Error submitting transaction:", error);
       }
     },
@@ -145,7 +173,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-                                    <FormField
+            <FormField
               control={form.control}
               name="price"
               render={({ field }) => (
@@ -170,7 +198,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 <FormItem className="flex flex-col">
                   <FormLabel>Client</FormLabel>
                   <FormControl>
-                  <ClientPicker clientName="" onChange={handleClientChange} />
+                    <ClientPicker clientName="" onChange={handleClientChange} />
                   </FormControl>
                   <FormDescription>
                     Select a client for this transaction
@@ -191,7 +219,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="description"
