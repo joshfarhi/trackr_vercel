@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import  CreateTransactionDialog  from './components/CreateTransactionDialog';
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
@@ -19,7 +20,7 @@ const QrCodeScanner = () => {
     );
 
     newScanner.render(
-      (decodedText, decodedResult) => {
+      async (decodedText, decodedResult) => {
         // Process the decoded result (for example, fetch item details)
         console.log("Decoded text: ", decodedText);
         setDecodedText(decodedText);
@@ -31,12 +32,19 @@ const QrCodeScanner = () => {
         const category = decodeURIComponent(url.searchParams.get('category') || '');
         const grower = decodeURIComponent(url.searchParams.get('grower') || '');
 
-        setStrainInfo({ 
-          strainId, 
-          quantity, 
-          category, 
-          grower
-        });
+        try {
+          const response = await fetch(`/api/strains/${strainId}`);
+          const data = await response.json();
+          setStrainInfo({ 
+            strainId: data.name, 
+            quantity, 
+            category: data.category, 
+            grower: data.grower 
+          });
+        } catch (error) {
+          console.error('Error fetching strain info:', error);
+        }
+        
         setIsModalOpen(true); // Open the modal when QR code is scanned
       },
       (error) => {
