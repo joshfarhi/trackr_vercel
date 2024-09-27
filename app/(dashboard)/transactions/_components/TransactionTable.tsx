@@ -247,7 +247,7 @@ function TransactionTable({ from, to }: Props) {
 
 const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 5000,
+    pageSize: 10000,
   });
 
   const history = useQuery<GetTransactionHistoryResponseType>({

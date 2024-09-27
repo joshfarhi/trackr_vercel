@@ -244,7 +244,7 @@ function ProductTable({ from, to }: Props) {
 // Add pagination state with pageSize set to 30
 const [pagination, setPagination] = useState({
   pageIndex: 0,
-  pageSize: 5000,
+  pageSize: 10000,
 });
   // Query to fetch product history, including pagination
   const history = useQuery<GetProductHistoryResponseType>({
