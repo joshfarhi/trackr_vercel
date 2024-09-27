@@ -15,6 +15,7 @@ import {
   CreateTransactionSchema,
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
+
 import { ReactNode, useCallback, useState } from "react";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -43,7 +44,7 @@ interface Props {
   type: TransactionType;
 }
 
-function CreateTransactionDialog({ trigger, type }: Props) {
+function QRCreateTransactionDialog({ trigger, type }: Props) {
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -259,4 +260,4 @@ function CreateTransactionDialog({ trigger, type }: Props) {
   );
 }
 
-export default CreateTransactionDialog;
+export default QRCreateTransactionDialog;

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import  CreateTransactionDialog  from './components/CreateTransactionDialog';
+import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
@@ -132,8 +132,8 @@ const QrCodeScanner = () => {
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Strain Information</DialogTitle>
-            <DialogDescription>Details of the scanned strain</DialogDescription>
+            <DialogTitle>Strain </DialogTitle>
+            <DialogDescription> strain</DialogDescription>
           </DialogHeader>
           {strainInfo && (
             <div className="space-y-4">
@@ -141,6 +141,28 @@ const QrCodeScanner = () => {
               <p><strong>Quantity:</strong> {strainInfo.quantity}</p>
               <p><strong>Category:</strong> {decodeURIComponent(strainInfo.category)}</p>
               <p><strong>Grower:</strong> {decodeURIComponent(strainInfo.grower)}</p>
+              <CreateTransactionDialog
+              trigger={
+                <Button
+                  variant={"outline"}
+                  className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                  >
+                  New Order
+                </Button>
+              }
+              type="order"
+            />
+                        <CreateTransactionDialog
+              trigger={
+                <Button
+                  variant={"outline"}
+                  className="bg-gradient-to-r from-red-800 to-red-900 text-white hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                  >
+                  New Return
+                </Button>
+              }
+              type="returns"
+            />
             </div>
           )}
         </DialogContent>

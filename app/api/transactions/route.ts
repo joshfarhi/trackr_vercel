@@ -33,7 +33,6 @@ export async function GET(request: Request) {
     if (!transaction) {
       return NextResponse.json({ error: "Transaction not found" }, { status: 404 });
     }
-
     return NextResponse.json({ id: transaction.id });
   }
 

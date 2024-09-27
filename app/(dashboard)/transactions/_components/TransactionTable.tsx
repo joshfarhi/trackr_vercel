@@ -211,7 +211,6 @@ const columns: ColumnDef<TransactionHistoryRow>[] = [
     ),
     enableHiding: true, // Type is hidden by default
   },
-
   {
     id: "actions",
     enableHiding: false, // Actions column is hidden by default

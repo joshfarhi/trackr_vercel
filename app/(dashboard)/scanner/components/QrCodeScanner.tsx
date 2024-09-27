@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import QRCreateTransactionDialog from "@/app/(dashboard)/scanner/components/QRCreateTransactionDialog";
+import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
 
 const QrCodeScanner = () => {
   const [decodedText, setDecodedText] = useState<string | null>(null);
@@ -52,7 +54,7 @@ const QrCodeScanner = () => {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Strain Information</DialogTitle>
-            <DialogDescription>Details of the scanned strain</DialogDescription>
+            <DialogDescription> strain</DialogDescription>
           </DialogHeader>
           {strainInfo && (
             <div className="space-y-4">
@@ -60,10 +62,27 @@ const QrCodeScanner = () => {
               <p><strong>Quantity:</strong> {strainInfo.quantity}</p>
               <p><strong>Category:</strong> {strainInfo.category}</p>
               <p><strong>Grower:</strong> {strainInfo.grower}</p>
+              <div>
+              <CreateTransactionDialog
+              trigger={
+                <Button
+                  variant={"outline"}
+                  className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                  >
+                  New Order
+                </Button>
+              }
+              type="returns"
+            />
+            </div>
             </div>
           )}
         </DialogContent>
+        
       </Dialog>
+<div>
+
+</div>
     </div>
   );
 };
