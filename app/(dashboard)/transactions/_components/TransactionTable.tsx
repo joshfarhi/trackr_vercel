@@ -246,7 +246,7 @@ function TransactionTable({ from, to }: Props) {
 
 const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10000,
+    pageSize: 10,
   });
 
   const history = useQuery<GetTransactionHistoryResponseType>({
@@ -519,6 +519,26 @@ useEffect(() => {
           </Table>
         </div>
       </SkeletonWrapper>
+      <div className="flex justify-between items-center py-4">
+        <Button
+          variant="outline"
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+        >
+          Previous
+        </Button>
+        <span>
+          Page {table.getState().pagination.pageIndex + 1} of{" "}
+          {table.getPageCount()}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+        >
+          Next
+        </Button>
+      </div>
     </div>
   );
 }
