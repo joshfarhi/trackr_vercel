@@ -6,6 +6,8 @@ import { MAX_DATE_RANGE_DAYS } from "@/lib/constants";
 import { differenceInDays, startOfMonth, startOfQuarter, addDays } from "date-fns";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import CreateTransactionDialog from "@/app/(dashboard)/_components/CreateTransactionDialog";
+import { Button } from "@/components/ui/button";
 
 function TransactionsPage() {
   const [dateRange, setDateRange] = useState<{ from: Date; to: Date }>({
@@ -38,8 +40,34 @@ function TransactionsPage() {
               setDateRange({ from, to });
             }}
           />
+          <div className="flex items-center gap-3">
+            <CreateTransactionDialog
+              trigger={
+                <Button
+                  variant={"outline"}
+                  className="bg-gradient-to-r from-blue-500 to-blue-700 text-white hover:from-blue-600 hover:to-blue-800 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                >
+                  New Order
+                </Button>
+              }
+              type="order"
+            />
+
+            <CreateTransactionDialog
+              trigger={
+                <Button
+                  variant={"outline"}
+                  className="bg-gradient-to-r from-red-800 to-red-900 text-white hover:from-red-700 hover:to-red-800 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                >
+                  New Return
+                </Button>
+              }
+              type="returns"
+            />
+          </div>
         </div>
       </div>
+
       <div className="container">
         <TransactionTable from={dateRange.from} to={dateRange.to} />
       </div>
