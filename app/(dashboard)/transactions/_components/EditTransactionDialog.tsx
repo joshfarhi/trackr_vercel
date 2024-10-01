@@ -83,7 +83,7 @@ transaction: {
             client: "",
             description: transaction.description || "",
             date: new Date(),
-            type: "order" || "returns",
+            type: transaction.type === "order" || transaction.type === "returns" ? transaction.type : "order",
         },
     });
     const queryClient = useQueryClient();
