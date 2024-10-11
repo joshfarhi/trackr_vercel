@@ -246,7 +246,7 @@ function TransactionTable({ from, to }: Props) {
 
 const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10,
+    pageSize: 15,
   });
 
   const history = useQuery<GetTransactionHistoryResponseType>({
@@ -321,8 +321,12 @@ useEffect(() => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+          pageSize: 25,
+      },
+    },
     onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
-
   });
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
