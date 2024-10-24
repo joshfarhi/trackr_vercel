@@ -63,6 +63,7 @@
     "react-countup": "^6.5.3",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.10",
     "react-hook-form": "^7.51.3",
     "react-modal": "^3.16.1",
     "react-resizable-panels": "^2.0.18",
