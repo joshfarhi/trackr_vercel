@@ -2,7 +2,7 @@
 import { VisibilityState } from "@tanstack/react-table"; // Import the correct type
 import { DateToUTCDate } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState, useRef, useCallback } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -16,7 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { GetProductHistoryResponseType } from "@/app/api/products-history/route";
 import { useEffect } from "react";
-
+import { useDropzone } from "react-dropzone";
 import {
   Table,
   TableBody,
@@ -29,11 +29,12 @@ import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { DataTableColumnHeader } from "@/components/datatable/ColumnHeader";
 import { cn } from "@/lib/utils";
 import { DataTableFacetedFilter } from "@/components/datatable/FacetedFilters";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DataTableViewOptions } from "@/components/datatable/ColumnToggle";
 
 import { download, generateCsv, mkConfig } from "export-to-csv";
-import { DownloadIcon, MoreHorizontal } from "lucide-react";
+import { DownloadIcon, MoreHorizontal, FileUp} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -296,6 +297,34 @@ const [pagination, setPagination] = useState({
     XLSX.utils.book_append_sheet(workbook, worksheet, "Inventory");
     XLSX.writeFile(workbook, "Inventory.xlsx");
   };
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target) {
+        const data = new Uint8Array(event.target.result as ArrayBuffer);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(worksheet);
+    
+        // Process the JSON data
+        addStrains(jsonData)
+          .then(() => {
+            toast.success("Strains imported successfully!");
+          })
+          .catch((error) => {
+            toast.error("Failed to import strains.");
+            console.error(error);
+          });
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  }, []);
+  
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((product) => {
@@ -337,69 +366,73 @@ const [pagination, setPagination] = useState({
       <div className="flex flex-wrap items-end justify-between gap-2 py-4">
         <div className="flex gap-2">
           {table.getColumn("category") && (
-            <DataTableFacetedFilter
-              title="Category"
-              column={table.getColumn("category")}
-              options={categoriesOptions}
-            />
+        <DataTableFacetedFilter
+          title="Category"
+          column={table.getColumn("category")}
+          options={categoriesOptions}
+        />
           )}
-                    {table.getColumn("grower") && (
-            <DataTableFacetedFilter
-              title="Grower"
-              column={table.getColumn("grower")}
-              options={growersOptions}
-            />
+          {table.getColumn("grower") && (
+        <DataTableFacetedFilter
+          title="Grower"
+          column={table.getColumn("grower")}
+          options={growersOptions}
+        />
           )}
           {table.getColumn("product") && (
-            <DataTableFacetedFilter
-              title="Strain"
-              column={table.getColumn("product")}
-              options={productsOptions}
-            />
+        <DataTableFacetedFilter
+          title="Strain"
+          column={table.getColumn("product")}
+          options={productsOptions}
+        />
           )}
         </div>
         <div className="flex flex-wrap gap-2">
+          <div {...getRootProps()} className="dropzone">
+        <input {...getInputProps()} />
+        <Button variant="outline" size="sm" className="ml-auto h-8 lg:flex">
+        <FileUp className="mr-2 h-4 w-4" />
+          Import Excel
+        </Button>
+          </div>
           <Button
-            variant={"outline"}
-            size={"sm"}
-            className="ml-auto h-8 lg:flex"
-            onClick={() => {
-              const data = table.getFilteredRowModel().rows.map((row) => {
-                // Format the date and time for Date_Ordered_or_Returned. Idk why it needs me to manually add the hours like this sorry :/
-                const date = new Date(row.original.createdAt);
-                const pstOffset = +0; // For PST without daylight savings, use -8
-                const pstDate = new Date(date.getTime() +pstOffset * 60 * 60 * 1000);
+        variant={"outline"}
+        size={"sm"}
+        className="ml-auto h-8 lg:flex"
+        onClick={() => {
+          const data = table.getFilteredRowModel().rows.map((row) => {
+            const date = new Date(row.original.createdAt);
+            const pstOffset = +0; // For PST without daylight savings, use -8
+            const pstDate = new Date(date.getTime() + pstOffset * 60 * 60 * 1000);
 
-                const formattedDateTime = `${pstDate.toLocaleDateString("default", {
-                  timeZone: "PST",
-                  year: "numeric",
-                  month: "2-digit",
-                  day: "2-digit",
-                })} ${pstDate.toLocaleTimeString("default", {
-                  timeZone: "PST",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  second: "2-digit",
-                  hour12: true, // This keeps the AM/PM format; remove if you prefer 24-hour format
+            const formattedDateTime = `${pstDate.toLocaleDateString("default", {
+          timeZone: "PST",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+            })} ${pstDate.toLocaleTimeString("default", {
+          timeZone: "PST",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true, // This keeps the AM/PM format; remove if you prefer 24-hour format
+            })}`;
 
-                })}`;
-
-           return { 
-            Quantity: row.original.quantity,
-                Strain: row.original.productName,
-                Grower: row.original.growerName,
-                Category: row.original.categoryName,
-                Description: row.original.description,
-                Date_Dropped: formattedDateTime,
-                Value: row.original.value,
-
-              };
-              });
-              handleExportExcel(data);
-            }}
+            return {
+          Quantity: row.original.quantity,
+          Strain: row.original.productName,
+          Grower: row.original.growerName,
+          Category: row.original.categoryName,
+          Description: row.original.description,
+          Date_Dropped: formattedDateTime,
+          Value: row.original.value,
+            };
+          });
+          handleExportExcel(data);
+        }}
           >
-            <DownloadIcon className="mr-2 h-4 w-4" />
-            Export Excel
+        <DownloadIcon className="mr-2 h-4 w-4" />
+        Export Excel
           </Button>
           <DataTableViewOptions table={table} />
         </div>
@@ -558,4 +591,19 @@ const qrCodeUrl = generateQrCodeUrl(product.productName, product.quantity, produ
 </Modal>
     </>
   );
+}
+
+async function addStrains(jsonData: unknown[]): Promise<void> {
+  // Implement the function to process the JSON data and return a Promise
+  return new Promise((resolve, reject) => {
+    try {
+      // Simulate an async operation
+      setTimeout(() => {
+        console.log("Strains added:", jsonData);
+        resolve();
+      }, 1000);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
