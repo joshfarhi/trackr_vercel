@@ -257,13 +257,7 @@ const [pagination, setPagination] = useState({
           from
         )}&to=${DateToUTCDate(to)}`
       ).then((res) => res.json()),
-    refetchInterval: 10000, // Refetch every 10 seconds
-    refetchOnWindowFocus: true,
-    staleTime: 0,
-    refetchOnMount: true,
-    retry: 3,
-    retryDelay: 1000,
-});
+  });
 
   const handleExportCSV = (data: any[]) => {
     const csv = generateCsv(csvConfig)(data);
@@ -313,30 +307,27 @@ useEffect(() => {
   }
 }, [columnVisibility, isMounted]);
 
-const table = useReactTable({
-  data: history.data || emptyData,
-  columns,
-  getCoreRowModel: getCoreRowModel(),
-  state: {
-    sorting,
-    columnFilters,
-    columnVisibility, // Include the column visibility state here
-  },
-  onSortingChange: setSorting,
-  onColumnFiltersChange: setColumnFilters,
-  getSortedRowModel: getSortedRowModel(),
-  getFilteredRowModel: getFilteredRowModel(),
-  getPaginationRowModel: getPaginationRowModel(),
-  initialState: {
-    pagination: {
-      pageSize: 25,
+  const table = useReactTable({
+    data: history.data || emptyData,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility, // Include the column visibility state here
     },
-    columnVisibility: {
-      date: true,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+          pageSize: 25,
+      },
     },
-  },
-  onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
-});
+    onColumnVisibilityChange: setColumnVisibility, // Update visibility state based on changes
+  });
   const categoriesOptions = useMemo(() => {
     const categoriesMap = new Map<string, { value: string; label: string }>();
     history.data?.forEach((transaction) => {

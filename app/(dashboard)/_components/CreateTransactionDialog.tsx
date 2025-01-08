@@ -49,10 +49,9 @@ import { DateToUTCDate } from "@/lib/helpers";
 interface Props {
   trigger: ReactNode;
   type: TransactionType;
-  onTransactionCreated: () => void;
 }
 
-function CreateTransactionDialog({ trigger, type, onTransactionCreated}: Props) {
+function CreateTransactionDialog({ trigger, type }: Props) {
   const form = useForm<CreateTransactionSchemaType>({
     resolver: zodResolver(CreateTransactionSchema),
     defaultValues: {
@@ -84,8 +83,12 @@ function CreateTransactionDialog({ trigger, type, onTransactionCreated}: Props) 
         date: new Date(),
       });
 
-      queryClient.invalidateQueries({ queryKey: ["transactions", "history"] });
-      onTransactionCreated();
+      // After creating a transaction, invalidate queries to refetch data
+      queryClient.invalidateQueries({
+        queryKey: ["overview"],
+      });
+
+      setOpenDialog((prev) => !prev);
     },
     onError: (error: any) => {
       // Dismiss the loading toast
